@@ -56,6 +56,8 @@ public class AccountHistoryTransferVO extends WebServicesEntityVO {
 
     private String              traceNumber;
 
+    private String              description;
+
     @XmlTransient
     private Map<String, String> fieldsMap;
     private List<FieldValueVO>  fields;
@@ -130,6 +132,10 @@ public class AccountHistoryTransferVO extends WebServicesEntityVO {
         return transferType;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setAmount(final BigDecimal amount) {
         this.amount = amount;
     }
@@ -186,12 +192,16 @@ public class AccountHistoryTransferVO extends WebServicesEntityVO {
         this.transferType = transferType;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         if (fromMember != null || fromSystemAccountName != null) {
-            return "AccountHistoryTransferVO [amount=" + amount + ", fields=" + fields + ", formattedAmount=" + formattedAmount + ", formattedDate=" + formattedDate + ", formattedProcessDate=" + formattedProcessDate + ", fromMember=" + fromMember + ", toMember=" + member + ", fromSystemAccountName=" + fromSystemAccountName + ", toSystemAccountName=" + systemAccountName + ", traceNumber=" + traceNumber + ", transactionNumber=" + transactionNumber + ", transferType=" + transferType + "]";
+            return "AccountHistoryTransferVO [amount=" + amount + ", fields=" + fields + ", formattedAmount=" + formattedAmount + ", formattedDate=" + formattedDate + ", formattedProcessDate=" + formattedProcessDate + ", fromMember=" + fromMember + ", toMember=" + member + ", fromSystemAccountName=" + fromSystemAccountName + ", toSystemAccountName=" + systemAccountName + ", traceNumber=" + traceNumber + ", transactionNumber=" + transactionNumber + ", transferType=" + transferType + ", description=" + description + "]";
         } else {
-            return "AccountHistoryTransferVO [amount=" + amount + ", fields=" + fields + ", formattedAmount=" + formattedAmount + ", formattedDate=" + formattedDate + ", formattedProcessDate=" + formattedProcessDate + ", member=" + member + ", systemAccountName=" + systemAccountName + ", traceNumber=" + traceNumber + ", transactionNumber=" + transactionNumber + ", transferType=" + transferType + "]";
+            return "AccountHistoryTransferVO [amount=" + amount + ", fields=" + fields + ", formattedAmount=" + formattedAmount + ", formattedDate=" + formattedDate + ", formattedProcessDate=" + formattedProcessDate + ", member=" + member + ", systemAccountName=" + systemAccountName + ", traceNumber=" + traceNumber + ", transactionNumber=" + transactionNumber + ", transferType=" + transferType + ", description=" + description + "]";
         }
     }
 

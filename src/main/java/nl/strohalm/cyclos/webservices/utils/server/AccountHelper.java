@@ -290,6 +290,7 @@ public class AccountHelper {
         vo.setProcessDate(transfer.getProcessDate());
         vo.setFormattedProcessDate(localSettings.getDateConverter().toString(vo.getProcessDate()));
         vo.setTransactionNumber(transfer.getTransactionNumber());
+        vo.setDescription(transfer.getDescription());
         // only for the client which originate the transfer sets the trace number
         if (WebServiceHelper.isCurrentClient(transfer.getClientId())) {
             vo.setTraceNumber(transfer.getTraceNumber());
