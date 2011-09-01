@@ -41,6 +41,7 @@ public class AccountHistorySearchParameters extends SearchParameters {
     private List<FieldValueVO> fields;
     private boolean            reverseOrder;
     private String             credentials;
+    private String             transactionNumber;
 
     public Long getAccountTypeId() {
         return accountTypeId;
@@ -84,6 +85,10 @@ public class AccountHistorySearchParameters extends SearchParameters {
 
     public boolean isReverseOrder() {
         return reverseOrder;
+    }
+
+    public String getTransactionNumber() {
+        return transactionNumber;
     }
 
     public void setAccountTypeId(final Long accountTypeId) {
@@ -130,8 +135,12 @@ public class AccountHistorySearchParameters extends SearchParameters {
         this.reverseOrder = reverseOrder;
     }
 
+    public void setTransactionNumber(String transactionNumber) {
+        this.transactionNumber = transactionNumber;
+    }
+
     @Override
     public String toString() {
-        return "AccountHistorySearchParameters [accountTypeId=" + accountTypeId + ", beginDate=" + beginDate + ", credentials=****" + ", currency=" + currency + ", endDate=" + endDate + ", fields=" + fields + ", principal=" + principal + ", principalType=" + principalType + ", relatedMember=" + relatedMember + ", relatedMemberPrincipalType=" + relatedMemberPrincipalType + ", reverseOrder=" + reverseOrder + ", " + super.toString() + "]";
+        return "AccountHistorySearchParameters [accountTypeId=" + accountTypeId + ", beginDate=" + beginDate + ", credentials=****" + ", currency=" + currency + ", endDate=" + endDate + ", fields=" + fields + ", principal=" + principal + ", principalType=" + principalType + ", relatedMember=" + relatedMember + ", relatedMemberPrincipalType=" + relatedMemberPrincipalType + ", reverseOrder=" + reverseOrder + ", transactionNumber=" + transactionNumber + ", " + super.toString() + "]";
     }
 }

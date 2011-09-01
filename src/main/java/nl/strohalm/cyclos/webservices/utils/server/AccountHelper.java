@@ -175,6 +175,7 @@ public class AccountHelper {
         query.setType(CoercionHelper.coerce(AccountType.class, params.getAccountTypeId()));
         // Use the client member when restricted
         final Member ownerMember = memberHelper.resolveMember(params.getPrincipalType(), params.getPrincipal());
+        query.setTransactionNumber(params.getTransactionNumber());
         query.setOwner(ownerMember == null ? SystemAccountOwner.instance() : ownerMember);
         query.setMember(memberHelper.loadByPrincipal(params.getRelatedMemberPrincipalType(), params.getRelatedMember()));
         final List<FieldValueVO> fields = params.getFields();
