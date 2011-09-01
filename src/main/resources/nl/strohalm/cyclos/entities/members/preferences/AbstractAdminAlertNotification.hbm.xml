@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.members.preferences.AbstractAdminAlertNotification" table="admin_alert_notification_preferences" abstract="true">
+        <id name="id" type="long">
+		    <column name="id" sql-type="integer"/>
+			<generator class="native" />
+        </id>
+        <discriminator column="subclass" type="string" length="1"/>
+
+		<many-to-one name="notificationPreference" update="false" class="nl.strohalm.cyclos.entities.members.preferences.AdminNotificationPreference">
+			<column name="preference_id" sql-type="integer" />
+		</many-to-one>
+
+	</class>
+</hibernate-mapping>

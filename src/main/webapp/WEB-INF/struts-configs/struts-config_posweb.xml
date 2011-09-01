@@ -1,0 +1,50 @@
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+	<form-beans>
+        <form-bean name="poswebLoginForm" type="nl.strohalm.cyclos.controls.posweb.LoginForm" />
+        <form-bean name="poswebMakePaymentForm" type="nl.strohalm.cyclos.controls.posweb.MakePaymentForm" />
+        <form-bean name="poswebReceivePaymentForm" type="nl.strohalm.cyclos.controls.posweb.ReceivePaymentForm" />
+	</form-beans>
+	
+	<action-mappings type="org.apache.struts.config.SecureActionConfig">
+
+		<action 
+			path="/posweb/login" 
+			type="nl.strohalm.cyclos.controls.posweb.LoginAction"
+            name="poswebLoginForm"
+            scope="request"
+            input="posweb/_login">
+			<set-property property="secure" value="true" />
+			<forward name="receivePayment" path="/do/posweb/receivePayment" redirect="true" />
+			<forward name="makePayment" path="/do/posweb/makePayment" redirect="true" />
+		</action>
+
+		<action 
+			path="/posweb/logout" 
+			type="nl.strohalm.cyclos.controls.posweb.LogoutAction">
+			<set-property property="secure" value="true" />
+		</action>
+
+		<action 
+			path="/posweb/makePayment" 
+			type="nl.strohalm.cyclos.controls.posweb.MakePaymentAction"
+            name="poswebMakePaymentForm"
+            scope="request"
+            input="posweb/_makePayment">
+			<set-property property="secure" value="true" />
+			<forward name="success" path="/do/posweb/makePayment" redirect="true" />
+		</action>
+
+		<action 
+			path="/posweb/receivePayment" 
+			type="nl.strohalm.cyclos.controls.posweb.ReceivePaymentAction"
+            name="poswebReceivePaymentForm"
+            scope="request"
+            input="posweb/_receivePayment">
+			<set-property property="secure" value="true" />
+			<forward name="success" path="/do/posweb/receivePayment" redirect="true" />
+		</action>
+		
+	</action-mappings>
+
+</struts-config>

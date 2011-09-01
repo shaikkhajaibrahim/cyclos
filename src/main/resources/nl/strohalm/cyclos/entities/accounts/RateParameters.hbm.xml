@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.accounts.RateParameters" abstract="true" table="rate_parameters" >
+    	<cache usage="read-write" />
+		<id name="id" type="long" >
+		    <column name="id" sql-type="integer" />
+			<generator class="native" />
+		</id>
+		<discriminator column="subclass" type="string" length="1"/>
+		<many-to-one name="currency" class="nl.strohalm.cyclos.entities.accounts.Currency">
+			<column name="currency_id" sql-type="integer" not-null="true" />
+		</many-to-one>
+		<property name="date" update="false" type="calendar" >
+			<column name="date" index="ix_date" not-null="true" />
+		</property>
+		<property name="initValue" update="false" column="init_value"
+			type="big_decimal" precision="15" scale="6" not-null="true" />
+        <property name="initDate" update="false" column="init_date" type="calendar" not-null="true"/>
+		<property name="creationValue" update="false" column="creation_value"
+			type="big_decimal" precision="15" scale="6" not-null="true" />
+		<property name="enabledSince" update="false" column="enabled_since" type="calendar" not-null="true"/>
+    </class>
+
+</hibernate-mapping>

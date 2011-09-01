@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Bean definitions for the service layer
+ -->
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+			http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+	   >
+	   
+	<bean id="cyclosProperties" class="nl.strohalm.cyclos.spring.CyclosConfigurationFactoryBean"  />
+	   
+	<bean id="fetchService" class="nl.strohalm.cyclos.services.fetch.FetchServiceImpl" />
+	<bean id="applicationService" class="nl.strohalm.cyclos.services.application.ApplicationServiceImpl" />
+	<bean id="accessService" class="nl.strohalm.cyclos.services.access.AccessServiceImpl" />
+	<bean id="channelService" class="nl.strohalm.cyclos.services.access.ChannelServiceImpl" />
+	<bean id="permissionService" class="nl.strohalm.cyclos.services.permissions.PermissionServiceImpl" />
+
+	<bean id="groupService" class="nl.strohalm.cyclos.services.groups.GroupServiceImpl" />
+	<bean id="groupFilterService" class="nl.strohalm.cyclos.services.groups.GroupFilterServiceImpl" />	
+	<bean id="memberAccountHandler" class="nl.strohalm.cyclos.services.accounts.MemberAccountHandler" />
+
+	<bean id="elementService" class="nl.strohalm.cyclos.services.elements.ElementServiceImpl">
+		<property name="forceKeywords" value="#{cyclosProperties['cyclos.forceKeywordsOnMemberSearch'] or false}" />
+		<property name="skipOrder" value="#{cyclosProperties['cyclos.disableOrderOnMemberSearch'] or false}" />
+	</bean>
+	<bean id="memberService" class="nl.strohalm.cyclos.services.elements.MemberServiceImpl" />
+	<bean id="memberImportService" class="nl.strohalm.cyclos.services.elements.MemberImportServiceImpl" />
+	<bean id="contactService" class="nl.strohalm.cyclos.services.elements.ContactServiceImpl" />
+	<bean id="brokeringService" class="nl.strohalm.cyclos.services.elements.BrokeringServiceImpl" />
+	<bean id="referenceService" class="nl.strohalm.cyclos.services.elements.ReferenceServiceImpl" />
+	<bean id="remarkService" class="nl.strohalm.cyclos.services.elements.RemarkServiceImpl" />
+	<bean id="messageService" class="nl.strohalm.cyclos.services.elements.MessageServiceImpl">
+		<property name="maxSmsThreads" value="#{cyclosProperties['cyclos.maxSmsSenderThreads']}" />
+	</bean>
+	<bean id="memberRecordTypeService" class="nl.strohalm.cyclos.services.elements.MemberRecordTypeServiceImpl" />
+	<bean id="memberRecordService" class="nl.strohalm.cyclos.services.elements.MemberRecordServiceImpl" />
+	<bean id="registrationAgreementService" class="nl.strohalm.cyclos.services.elements.RegistrationAgreementServiceImpl" />
+
+	<bean id="adService" class="nl.strohalm.cyclos.services.ads.AdServiceImpl">
+		<property name="skipOrder" value="#{cyclosProperties['cyclos.disableOrderOnAdSearch'] or false}" />
+	</bean>
+	<bean id="adCategoryService" class="nl.strohalm.cyclos.services.ads.AdCategoryServiceImpl" />
+	<bean id="adInterestService" class="nl.strohalm.cyclos.services.elements.AdInterestServiceImpl" />
+	<bean id="adImportService" class="nl.strohalm.cyclos.services.ads.AdImportServiceImpl" />
+
+	<bean id="currencyService" class="nl.strohalm.cyclos.services.accounts.CurrencyServiceImpl" />
+
+				<bean id="aRateService" class="nl.strohalm.cyclos.services.accounts.rates.ARateServiceMock" />
+			
+
+				<bean id="dRateService" class="nl.strohalm.cyclos.services.accounts.rates.DRateServiceMock" />
+			
+	<bean id="accountService" class="nl.strohalm.cyclos.services.accounts.AccountServiceImpl" />
+	<bean id="accountStatusHandler" class="nl.strohalm.cyclos.services.accounts.AccountStatusHandlerImpl"/>
+	<bean id="accountTypeService" class="nl.strohalm.cyclos.services.accounts.AccountTypeServiceImpl" />
+	<bean id="accountFeeService" class="nl.strohalm.cyclos.services.accountfees.AccountFeeServiceImpl" />
+	<bean id="chargeAccountFeeThread" scope="prototype" class="nl.strohalm.cyclos.services.accountfees.ChargeAccountFeeThread" />
+
+	<bean id="externalAccountService" class="nl.strohalm.cyclos.services.accounts.external.ExternalAccountServiceImpl" />
+	<bean id="externalTransferTypeService" class="nl.strohalm.cyclos.services.accounts.external.ExternalTransferTypeServiceImpl" />
+	<bean id="externalTransferImportService" class="nl.strohalm.cyclos.services.accounts.external.ExternalTransferImportServiceImpl" />
+	<bean id="externalTransferService" class="nl.strohalm.cyclos.services.accounts.external.ExternalTransferServiceImpl" />
+
+	<bean id="fileMappingService" class="nl.strohalm.cyclos.services.accounts.external.filemapping.FileMappingServiceImpl" />
+	<bean id="fieldMappingService" class="nl.strohalm.cyclos.services.accounts.external.filemapping.FieldMappingServiceImpl" />
+
+	<bean id="guaranteeTypeService" class="nl.strohalm.cyclos.services.accounts.guarantees.GuaranteeTypeServiceImpl" />
+	
+	<bean id="certificationService" class="nl.strohalm.cyclos.services.accounts.guarantees.CertificationServiceImpl" />
+	<bean id="guaranteeService" class="nl.strohalm.cyclos.services.accounts.guarantees.GuaranteeServiceImpl" />
+	<bean id="paymentObligationService" class="nl.strohalm.cyclos.services.accounts.guarantees.PaymentObligationServiceImpl" />
+			
+	<bean id="transferTypeService" class="nl.strohalm.cyclos.services.transfertypes.TransferTypeServiceImpl" />
+	<bean id="authorizationLevelService" class="nl.strohalm.cyclos.services.transfertypes.AuthorizationLevelServiceImpl" />
+	<bean id="paymentFilterService" class="nl.strohalm.cyclos.services.transfertypes.PaymentFilterServiceImpl" />
+	<bean id="transactionFeeService" class="nl.strohalm.cyclos.services.transfertypes.TransactionFeeServiceImpl" />
+	<bean id="paymentService" class="nl.strohalm.cyclos.services.transactions.PaymentServiceImpl" />
+	<bean id="invoiceService" class="nl.strohalm.cyclos.services.transactions.InvoiceServiceImpl" />
+	<bean id="ticketService" class="nl.strohalm.cyclos.services.transactions.TicketServiceImpl" />
+	<bean id="transferAuthorizationService" class="nl.strohalm.cyclos.services.transactions.TransferAuthorizationServiceImpl" />
+ 	<bean id="loanGroupService" class="nl.strohalm.cyclos.services.loangroups.LoanGroupServiceImpl" />
+	<bean id="loanService" class="nl.strohalm.cyclos.services.transactions.LoanServiceImpl">
+		<property name="singlePaymentHandler"><bean class="nl.strohalm.cyclos.services.transactions.SinglePaymentLoanHandler" /></property>
+		<property name="multiPaymentHandler"><bean class="nl.strohalm.cyclos.services.transactions.MultiPaymentLoanHandler" /></property>
+		<property name="withInterestHandler"><bean class="nl.strohalm.cyclos.services.transactions.LoanWithInterestHandler" /></property>
+	</bean>
+	<bean id="scheduledPaymentService" class="nl.strohalm.cyclos.services.transactions.ScheduledPaymentServiceImpl" />
+
+	<bean id="settingsService" class="nl.strohalm.cyclos.services.settings.SettingsServiceImpl" init-method="initialize">
+		<property name="accessSettingsHandler"><bean class="nl.strohalm.cyclos.services.settings.AccessSettingsHandler"/></property>
+		<property name="alertSettingsHandler"><bean class="nl.strohalm.cyclos.services.settings.AlertSettingsHandler"/></property>
+		<property name="localSettingsHandler"><bean class="nl.strohalm.cyclos.services.settings.LocalSettingsHandler"/></property>
+		<property name="logSettingsHandler"><bean class="nl.strohalm.cyclos.services.settings.LogSettingsHandler"/></property>
+		<property name="mailSettingsHandler"><bean class="nl.strohalm.cyclos.services.settings.MailSettingsHandler"/></property>
+		<property name="mailTranslationHandler"><bean class="nl.strohalm.cyclos.services.settings.MailTranslationHandler"/></property>
+		<property name="messageSettingsHandler"><bean class="nl.strohalm.cyclos.services.settings.MessageSettingsHandler"/></property>
+	</bean>
+
+	<bean id="errorLogService" class="nl.strohalm.cyclos.services.alerts.ErrorLogServiceImpl" />
+	<bean id="alertService" class="nl.strohalm.cyclos.services.alerts.AlertServiceImpl" />
+	
+	<bean id="customFieldService" class="nl.strohalm.cyclos.services.customization.CustomFieldServiceImpl" />
+	<bean id="customizedFileService" class="nl.strohalm.cyclos.services.customization.CustomizedFileServiceImpl" />
+	<bean id="documentService" class="nl.strohalm.cyclos.services.customization.DocumentServiceImpl" />
+	<bean id="translationMessageService" class="nl.strohalm.cyclos.services.customization.TranslationMessageServiceImpl" />
+	<bean id="imageService" class="nl.strohalm.cyclos.services.customization.ImageServiceImpl" />
+	<bean id="statisticalKeyDevelopmentsService" class="nl.strohalm.cyclos.services.stats.StatisticalKeyDevelopmentsServiceImpl" />
+	<bean id="statisticalActivityService" class="nl.strohalm.cyclos.services.stats.StatisticalActivityServiceImpl" />
+	<bean id="statisticalFinancesService" class="nl.strohalm.cyclos.services.stats.StatisticalFinancesServiceImpl" />
+	<bean id="statisticalTaxesService" class="nl.strohalm.cyclos.services.stats.StatisticalTaxesServiceImpl" />
+	
+	<bean id="messageCategoryService" class="nl.strohalm.cyclos.services.elements.MessageCategoryServiceImpl" />
+	
+	<bean id="preferenceService" class="nl.strohalm.cyclos.services.preferences.PreferenceServiceImpl" />
+	<bean id="commissionService" class="nl.strohalm.cyclos.services.elements.CommissionServiceImpl" />
+
+	<bean id="smsLogService" class="nl.strohalm.cyclos.services.sms.SmsLogServiceImpl" />
+	<bean id="smsMailingService" class="nl.strohalm.cyclos.services.sms.SmsMailingServiceImpl" />
+	<bean id="serviceClientService" class="nl.strohalm.cyclos.services.services.ServiceClientServiceImpl" />
+
+	<bean id="hashHandler" class="nl.strohalm.cyclos.utils.HashHandler" />
+	
+	<bean id="cardService" class="nl.strohalm.cyclos.services.accounts.cards.CardServiceImpl" />
+	<bean id="cardTypeService" class="nl.strohalm.cyclos.services.accounts.cards.CardTypeServiceImpl" />
+	
+	<bean id="posService" class="nl.strohalm.cyclos.services.accounts.pos.PosServiceImpl" />
+	<bean id="memberPosService" class="nl.strohalm.cyclos.services.accounts.pos.MemberPosServiceImpl" />
+	
+	<bean id="infoTextService" class="nl.strohalm.cyclos.services.infotexts.InfoTextServiceImpl" />
+	
+	<bean id="mailHandler" class="nl.strohalm.cyclos.utils.MailHandler">
+		<property name="maxThreads" value="#{cyclosProperties['cyclos.maxMailSenderThreads']}" />
+	</bean>
+</beans>	

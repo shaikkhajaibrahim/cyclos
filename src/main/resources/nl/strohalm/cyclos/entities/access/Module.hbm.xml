@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.access.Module" table="modules">
+    	<cache usage="read-write"/>
+        <id name="id" type="long">
+		    <column name="id" sql-type="integer"/>
+            <generator class="native"/>
+        </id>
+        <natural-id>
+	        <property name="type" column="type" length="2">
+	            <type name="nl.strohalm.cyclos.utils.hibernate.StringValuedEnumType">
+	                <param name="enumClassName">nl.strohalm.cyclos.entities.access.Module$Type</param>
+	            </type>
+			</property>
+	        <property name="name" column="name" not-null="true" type="string" length="50"/>
+	    </natural-id>
+        <property name="messageKey" column="message_key" not-null="true" type="string" length="100"/>
+		
+        <bag name="operations" table="operations" inverse="true">
+			<key column="module_id"/>
+            <one-to-many class="nl.strohalm.cyclos.entities.access.Operation"/>
+        </bag>
+	</class>
+</hibernate-mapping>

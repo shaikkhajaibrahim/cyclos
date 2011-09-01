@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.members.Element" abstract="true" table="members">
+    	<cache usage="read-write"/>
+		<id name="id" type="long">
+		    <column name="id" sql-type="integer"/>
+			<generator class="native"/>
+		</id>
+        <discriminator column="subclass" type="string" length="1"/>
+        <property name="indexed" type="boolean">
+        	<column name="is_indexed" not-null="true" default="false"/>
+        </property>
+        <property name="name" length="100" column="name" type="string" not-null="true"/>
+        <property name="creationDate" column="creation_date" type="calendar" not-null="true"/>
+        <many-to-one name="group" class="nl.strohalm.cyclos.entities.groups.Group">
+            <column name="group_id" not-null="true" sql-type="integer"/>
+    	</many-to-one>
+        <property name="email" length="100" column="email" type="string" index="ix_email"/>
+        <one-to-one name="user" cascade="all" class="nl.strohalm.cyclos.entities.access.User" />
+        <bag name="groupHistoryLogs" cascade="delete" inverse="true" order-by="start_date">
+            <key> 
+            	<column name="element_id" sql-type="integer"/>
+            </key>
+			<one-to-many class="nl.strohalm.cyclos.entities.groups.GroupHistoryLog"/>
+		</bag>
+    </class>
+    
+</hibernate-mapping>

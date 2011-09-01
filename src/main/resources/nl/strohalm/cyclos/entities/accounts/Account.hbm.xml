@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.accounts.Account" abstract="true" table="accounts">
+    	<cache usage="read-write"/>
+		<id name="id" type="long">
+		    <column name="id" sql-type="integer"/>
+			<generator class="native"/>
+		</id>
+        <discriminator column="subclass" type="string" length="1"/>
+        <property name="creationDate" update="false" column="creation_date" type="calendar" not-null="true"/>
+        <property name="ownerName" column="owner_name" type="string" not-null="true"/>
+		<many-to-one name="type" update="false" class="nl.strohalm.cyclos.entities.accounts.AccountType">
+		    <column name="type_id" sql-type="integer"/>
+		</many-to-one>
+        <property name="creditLimit" column="credit_limit" type="big_decimal" precision="15" scale="6"/>
+        <property name="upperCreditLimit" column="upper_credit_limit" type="big_decimal" precision="15" scale="6"/>
+        
+        <bag name="statuses" cascade="delete" inverse="true" order-by="date desc, id desc">
+            <key> 
+            	<column name="account_id" sql-type="integer"/>
+            </key>
+			<one-to-many class="nl.strohalm.cyclos.entities.accounts.AccountStatus"/>
+		</bag>
+        
+    </class>
+    
+</hibernate-mapping>

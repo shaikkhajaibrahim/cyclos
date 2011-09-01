@@ -1,0 +1,98 @@
+/*
+* login: default light blue - Cyclos3.6 new style
+*/
+
+
+body {
+	margin: 0px !important;
+	padding: 0px !important;
+}
+body, td, th {
+	color: #343434;
+	font-family:    Liberation sans, Arial, Sans-serif;
+	font-size:		9pt;
+}
+body.login {
+	background-color: #f1f1f1;
+	text-align: center;
+}
+.tdContents {
+    padding: 0px;
+    text-align: center;
+}
+
+.loginTable, .loginFormTable {
+	margin-right: auto !important;
+	margin-left: auto !important;
+}
+
+.loginTable {
+	width: 685px;
+	margin-top: 15px;
+}
+
+.loginFormContainer, .loginRegistration {
+	vertical-align: top;
+	border: 1px solid #cccccc;
+	padding: 5px;
+	text-align: center;
+}
+
+.loginFormContainer {
+	width: 350px;
+	background-color: #eff4f9;
+}
+
+.loginRegistration {
+	width: 240px;
+	background-color: #fffcf4;
+	height: 100%;
+}
+
+.loginRegistrationDiv {
+	height: 100%;
+	position: relative;	
+}
+.loginRegistrationDiv input {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+}
+
+.loginTitle {
+    text-align: left;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+.loginText {
+	text-align: justify;
+	padding-bottom: 15px;
+}
+
+.loginSeparator {
+	width: 25px;
+}
+
+.loginFormDecoration {
+	background-image: url(login_form_icon.gif) !important;
+	background-repeat: no-repeat;
+	width: 48px;
+	height: 48px;
+}
+
+.button {
+	border: 1px solid #EC9A38 !important;
+}
+
+input {
+	border: #cccccc 1px solid;
+}
+
+.InputBoxDisabled {
+	background-color: #f1f1f1;
+}
+
+.bottomText {
+	padding-top: 15px;
+}

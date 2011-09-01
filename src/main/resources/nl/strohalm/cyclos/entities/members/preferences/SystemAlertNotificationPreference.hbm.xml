@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <subclass dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.members.preferences.SystemAlertNotificationPreference" extends="nl.strohalm.cyclos.entities.members.preferences.AbstractAdminAlertNotification" discriminator-value="S">
+        
+        <property name="type" column="type" length="70" not-null="true">
+            <type name="nl.strohalm.cyclos.utils.hibernate.StringValuedEnumType">
+                <param name="enumClassName">nl.strohalm.cyclos.entities.alerts.SystemAlert$Alerts</param>
+            </type>
+		</property>
+
+	</subclass>
+</hibernate-mapping>

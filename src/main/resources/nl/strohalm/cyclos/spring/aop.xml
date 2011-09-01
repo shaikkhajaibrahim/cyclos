@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Bean definitions for the service layer
+ -->
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	   >
+
+	<!-- Use autoproxy for AspectJ annotations -->
+	<aop:aspectj-autoproxy />
+
+	<!-- Aspect used to trace actions and check permissions -->
+	<bean id="traceAspect" class="nl.strohalm.cyclos.aop.TraceAspect" />
+	
+	<!-- Aspect used to send messages on specific events for members -->
+	<bean id="messageAspect" class="nl.strohalm.cyclos.aop.MessageAspect" />
+	
+	<!-- Aspect used to send messages on specific events for admins -->
+	<bean id="adminNotificationAspect" class="nl.strohalm.cyclos.aop.AdminNotificationAspect" />
+	
+</beans>

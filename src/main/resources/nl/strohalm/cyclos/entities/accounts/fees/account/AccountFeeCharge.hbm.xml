@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.accounts.fees.account.AccountFeeCharge" table="account_fee_charges">
+        <id name="id" type="long">
+        	<column name="id" sql-type="bigint" />
+            <generator class="native"/>
+        </id>
+		<property name="period" type="period">
+			<column name="period_start" not-null="true" />
+			<column name="period_end" not-null="true" />
+		</property>
+		<property name="availableBalance" column="available_balance" type="big_decimal" precision="18" scale="6" not-null="true"/>
+		<property name="amount" column="amount" type="big_decimal" precision="15" scale="6" not-null="true"/>
+		<many-to-one name="account" class="nl.strohalm.cyclos.entities.accounts.MemberAccount">
+		    <column name="account_id" not-null="true" sql-type="integer"/>
+		</many-to-one>
+		<many-to-one name="accountFeeLog" class="nl.strohalm.cyclos.entities.accounts.fees.account.AccountFeeLog">
+		    <column name="account_fee_log_id" not-null="true" sql-type="integer"/>
+		</many-to-one>
+    </class>
+
+</hibernate-mapping>

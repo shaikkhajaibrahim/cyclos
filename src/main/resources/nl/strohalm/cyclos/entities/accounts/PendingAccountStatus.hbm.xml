@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.accounts.PendingAccountStatus" table="pending_account_status">
+		<id name="id" type="long">
+		    <column name="id" sql-type="bigint"/>
+			<generator class="native"/>
+		</id>
+        <property name="type" update="false" column="type" length="3" not-null="true">
+            <type name="nl.strohalm.cyclos.utils.hibernate.StringValuedEnumType">
+                <param name="enumClassName">nl.strohalm.cyclos.entities.accounts.PendingAccountStatus$Type</param>
+            </type>
+		</property>
+        <property name="date" update="false" column="date" type="calendar"/>
+		<many-to-one name="account" update="false" class="nl.strohalm.cyclos.entities.accounts.Account">
+		    <column name="account_id" sql-type="integer"/>
+		</many-to-one> 
+		<many-to-one name="transfer" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.Transfer">
+		    <column name="transfer_id" sql-type="bigint"/>
+		</many-to-one>
+        <property name="transferStatus" column="transfer_status" length="1" update="false">
+            <type name="nl.strohalm.cyclos.utils.hibernate.StringValuedEnumType">
+                <param name="enumClassName">nl.strohalm.cyclos.entities.accounts.transactions.Payment$Status</param>
+            </type>
+		</property>
+		<many-to-one name="scheduledPayment" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.ScheduledPayment">
+		    <column name="scheduled_payment_id" sql-type="integer"/>
+		</many-to-one>
+		<many-to-one name="invoice" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.Invoice">
+		    <column name="invoice_id" sql-type="integer"/>
+		</many-to-one>
+		<many-to-one name="by" update="false" class="nl.strohalm.cyclos.entities.members.Element">
+		    <column name="by_id" sql-type="integer"/>
+		</many-to-one>
+		<many-to-one name="transferAuthorization" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.TransferAuthorization">
+		    <column name="transfer_authorization_id" sql-type="bigint"/>
+		</many-to-one>
+        <property name="lowerLimit" update="false" column="lower_limit" type="big_decimal" precision="15" scale="6"/>
+        <property name="upperLimit" update="false" column="upper_limit" type="big_decimal" precision="15" scale="6"/>
+        <property name="subtractedAmount" update="false" column="subtracted_amount" type="big_decimal" precision="15" scale="6"/>
+    </class>
+    
+</hibernate-mapping>

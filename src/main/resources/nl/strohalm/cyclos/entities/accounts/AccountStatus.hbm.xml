@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.accounts.AccountStatus" table="account_status" abstract="true">
+		<id name="id" type="long">
+		    <column name="id" sql-type="bigint" index="ix_account_status_adi" />
+			<generator class="native"/>
+		</id>
+        <discriminator column="subclass" type="string" length="1"/>
+		<many-to-one name="account" update="false" class="nl.strohalm.cyclos.entities.accounts.Account">
+		    <column name="account_id" index="ix_account_status_adi" sql-type="integer" not-null="true"/>
+		</many-to-one>
+        <property name="date" update="false" type="calendar">
+        	<column name="date" index="ix_date, ix_account_status_adi" not-null="true" />
+        </property>
+        <component name="rootCredits" class="nl.strohalm.cyclos.services.transactions.TransactionSummaryVO">
+	        <property name="count" type="integer">
+	        	<column name="root_credits_count" not-null="true" default="0"/>
+	        </property>
+	        <property name="amount" type="big_decimal">
+	        	<column name="root_credits_amount" precision="21" scale="6" not-null="true" default="0"/>
+	        </property>
+        </component>
+        <component name="rootDebits" class="nl.strohalm.cyclos.services.transactions.TransactionSummaryVO">
+	        <property name="count" type="integer">
+	        	<column name="root_debits_count" not-null="true" default="0"/>
+	        </property>
+	        <property name="amount" type="big_decimal">
+	        	<column name="root_debits_amount" precision="21" scale="6" not-null="true" default="0"/>
+	        </property>
+        </component>
+        <component name="nestedCredits" class="nl.strohalm.cyclos.services.transactions.TransactionSummaryVO">
+	        <property name="count" type="integer">
+	        	<column name="nested_credits_count" not-null="true" default="0"/>
+	        </property>
+	        <property name="amount" type="big_decimal">
+	        	<column name="nested_credits_amount" precision="21" scale="6" not-null="true" default="0"/>
+	        </property>
+        </component>
+        <component name="nestedDebits" class="nl.strohalm.cyclos.services.transactions.TransactionSummaryVO">
+	        <property name="count" type="integer">
+	        	<column name="nested_debits_count" not-null="true" default="0"/>
+	        </property>
+	        <property name="amount" type="big_decimal">
+	        	<column name="nested_debits_amount" precision="21" scale="6" not-null="true" default="0"/>
+	        </property>
+        </component>
+        <component name="pendingDebits" class="nl.strohalm.cyclos.services.transactions.TransactionSummaryVO">
+	        <property name="count" type="integer">
+	        	<column name="pending_debits_count" not-null="true" default="0"/>
+	        </property>
+	        <property name="amount" type="big_decimal">
+	        	<column name="pending_debits_amount" precision="15" scale="6" not-null="true" default="0"/>
+	        </property>
+        </component>
+        <component name="reservedScheduledPayments" class="nl.strohalm.cyclos.services.transactions.TransactionSummaryVO">
+	        <property name="count" type="integer">
+	        	<column name="reserved_scheduled_payments_count" not-null="true" default="0"/>
+	        </property>
+	        <property name="amount" type="big_decimal">
+	        	<column name="reserved_scheduled_payments_amount" precision="21" scale="6" not-null="true" default="0"/>
+	        </property>
+        </component>
+        <property name="creditLimit" update="false" column="credit_limit" type="big_decimal" precision="15" scale="6"/>
+        <property name="upperCreditLimit" update="false" column="upper_credit_limit" type="big_decimal" precision="15" scale="6"/>
+        
+		<many-to-one name="transfer" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.Transfer">
+		    <column name="transfer_id" sql-type="bigint"/>
+		</many-to-one>
+		<many-to-one name="scheduledPayment" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.ScheduledPayment">
+		    <column name="scheduled_payment_id" sql-type="integer"/>
+		</many-to-one>
+		<many-to-one name="transferAuthorization" update="false" class="nl.strohalm.cyclos.entities.accounts.transactions.TransferAuthorization">
+		    <column name="transfer_authorization_id" sql-type="bigint"/>
+		</many-to-one>
+		<many-to-one name="creditLimitChangedBy" update="false" class="nl.strohalm.cyclos.entities.members.Element">
+		    <column name="credit_limit_by_id" sql-type="integer"/>
+		</many-to-one>
+        <property name="dRate" update="false" column="d_rate" type="big_decimal" precision="15" scale="6"/>
+        <property name="lastDRateUpdate" update="false" column="last_d_rate_update" type="calendar" />
+        <property name="emissionDate" update="false" column="emission_date" type="calendar" />
+        <property name="rateBalanceCorrection" update="false" column="rate_balance_correction" type="big_decimal" precision="15" scale="6"/>
+    </class>
+    
+</hibernate-mapping>

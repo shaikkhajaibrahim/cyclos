@@ -1,0 +1,50 @@
+body, td, th, input, select, .tdHeaderTable, a {
+	font-size: 11pt;
+}
+
+table.poswebLoginTable {
+	width: 		400px;
+	float:		none;
+}
+
+table.poswebTopTable {
+	margin:			0px;
+	float:			none;
+}
+
+input.button, input.buttonDisabled, button {
+	font-size: 		10pt !important;
+	height: 		26px;
+	padding-left: 	10px;
+	padding-right: 	10px;
+	float: 			right;
+	margin-left: 	10px;
+}
+
+input.poswebAction {
+	margin: 		6px;
+}
+
+input.date {
+	width: 			115px !important;
+}
+
+table.poswebRoot {
+	height: 		100%;
+	width: 			100%;
+}
+table.poswebRoot>tr>td, table.poswebRoot>tbody>tr>td {
+	text-align: 	center;
+	vertical-align: center;
+}
+
+select {
+	height: auto;
+}
+
+.tdHeaderTable {
+    font-size: 12pt;
+    height: 30px;
+    padding-left: 10px;
+    padding-top: 5px;
+}

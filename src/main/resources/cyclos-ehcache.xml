@@ -1,0 +1,9 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
+    <defaultCache
+        maxElementsInMemory="2000"
+		eternal="false"
+		timeToLiveSeconds="3600"
+        overflowToDisk="false"
+        />
+    <!-- The diskStore will be automatically set by Cyclos -->
+</ehcache>
