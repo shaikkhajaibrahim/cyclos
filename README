@@ -1,3 +1,8 @@
 This is fork of cyclos project (version 3.6_RC1).
 As there are no downloadable build scripts, maven build was prepared.
 Some libraries were not available, they are added as binaries in miscLibs folder, so that the build should not require any additional steps.
+
+Main goals:
+- voucher management for non-member usage
+- scheduled payments on ws
+- ws enhancements
