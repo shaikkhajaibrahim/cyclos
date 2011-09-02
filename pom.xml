@@ -77,6 +77,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
+            <artifactId>struts-extras</artifactId>
+            <version>${struts.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
             <artifactId>struts-tiles</artifactId>
             <version>${struts.version}</version>
         </dependency>
