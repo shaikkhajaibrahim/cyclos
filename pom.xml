@@ -309,6 +309,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/miscLibs/WEB-INF/lib/toggletag.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -129,5 +129,7 @@
     <bean id= "posLogDao" class="nl.strohalm.cyclos.dao.accounts.pos.PosLogDAOImpl" />
     
     <bean id= "infoTextDao" class="nl.strohalm.cyclos.dao.infotexts.InfoTextDAOImpl" />
+    <bean id= "tokenDao" class="nl.strohalm.cyclos.dao.tokens.TokenDAOImpl" />
+
 
 </beans>

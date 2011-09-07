@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class dynamic-insert="true" dynamic-update="true" name="nl.strohalm.cyclos.entities.tokens.Token" table="tokens">
+        <id name="id" type="long">
+		    <column name="id" sql-type="bigint"/>
+            <generator class="native"/>
+        </id>
+		<many-to-one name="transferFrom" class="nl.strohalm.cyclos.entities.accounts.transactions.Transfer">
+			<column name="transfer_from_id" not-null="true" sql-type="integer" />
+		</many-to-one>
+		<many-to-one name="transferTo" class="nl.strohalm.cyclos.entities.accounts.transactions.Transfer">
+		    <column name="transfer_to_id" not-null="false" sql-type="integer"/>
+		</many-to-one>
+
+		<property name="status" column="status" length="10" not-null="true">
+            <type name="nl.strohalm.cyclos.utils.hibernate.StringValuedEnumType">
+                <param name="enumClassName">nl.strohalm.cyclos.entities.tokens.Status</param>
+            </type>
+		</property>
+        <property name="amount" column="amount" type="big_decimal" precision="15" scale="6" not-null="true"/>
+        <property name="pin" column="pin" type="string" not-null="false" length="5"/>
+        <property name="tokenId" column="token_id" type="string" not-null="false" length="5"/>
+        <property name="senderMobilePhone" column="sender_mobile_phone" type="string" length="11" not-null="true"/>
+
+    </class>
+
+</hibernate-mapping>

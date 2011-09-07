@@ -195,4 +195,18 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 		</jaxws:outFaultInterceptors>
 	</jaxws:endpoint>
 
+    <bean id="tokenWebServiceImpl" class="nl.strohalm.cyclos.webservices.tokens.TokenWebServiceImpl" />
+	<jaxws:endpoint id="tokenWebService" address="/tokens" implementor="#tokenWebServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />
+		</jaxws:inInterceptors>
+		<jaxws:outInterceptors>
+			<ref bean="cleanupInterceptor" />
+		</jaxws:outInterceptors>
+		<jaxws:outFaultInterceptors>
+			<ref bean="faultInterceptor" />
+			<ref bean="cleanupInterceptor" />
+		</jaxws:outFaultInterceptors>
+	</jaxws:endpoint>
+
 </beans>

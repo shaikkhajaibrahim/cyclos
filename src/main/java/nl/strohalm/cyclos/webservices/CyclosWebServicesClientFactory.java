@@ -36,6 +36,7 @@ import nl.strohalm.cyclos.webservices.members.MemberWebService;
 import nl.strohalm.cyclos.webservices.payments.PaymentWebService;
 import nl.strohalm.cyclos.webservices.pos.PosWebService;
 import nl.strohalm.cyclos.webservices.sms.SmsWebService;
+import nl.strohalm.cyclos.webservices.tokens.TokenWebService;
 import nl.strohalm.cyclos.webservices.webshop.WebShopWebService;
 
 import org.apache.commons.lang.StringUtils;
@@ -68,6 +69,8 @@ public class CyclosWebServicesClientFactory implements Serializable {
         services.put(PosWebService.class, "pos");
         services.put(SmsWebService.class, "sms");
         services.put(InfoTextWebService.class, "infoTexts");
+        services.put(TokenWebService.class, "tokens");
+
         SERVICES = Collections.unmodifiableMap(services);
     }
 

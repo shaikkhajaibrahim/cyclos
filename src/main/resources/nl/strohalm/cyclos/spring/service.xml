@@ -137,4 +137,6 @@
 	<bean id="mailHandler" class="nl.strohalm.cyclos.utils.MailHandler">
 		<property name="maxThreads" value="#{cyclosProperties['cyclos.maxMailSenderThreads']}" />
 	</bean>
+
+    <bean id="tokenService" class="nl.strohalm.cyclos.services.tokens.TokenServiceImpl" />
 </beans>	
