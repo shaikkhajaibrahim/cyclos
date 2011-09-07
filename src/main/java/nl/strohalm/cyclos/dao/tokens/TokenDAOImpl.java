@@ -23,9 +23,10 @@ package nl.strohalm.cyclos.dao.tokens;
 
 import nl.strohalm.cyclos.dao.BaseDAOImpl;
 import nl.strohalm.cyclos.dao.tokens.TokenDAO;
+import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
 
-import java.util.Collections;
+import java.util.*;
 
 public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
 
@@ -36,5 +37,19 @@ public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
     @Override
     public Token loadByTokenId(String tokenId) {
         return uniqueResult("from Token t where t.tokenId = :tokenId", Collections.singletonMap("tokenId", tokenId));
+    }
+
+    @Override
+    public List<Token> getTokensToExpire(Calendar time) {
+                final StringBuilder hql = new StringBuilder();
+        hql.append(" from Token t ");
+        hql.append("   where t.transferFrom.date <= :date ");
+        hql.append("   and t.status = :status ");
+
+        final Map<String, Object> namedParameters = new HashMap<String, Object>();
+        namedParameters.put("date", time);
+        namedParameters.put("status", Status.ISSUED);
+
+        return list(hql.toString(), namedParameters);
     }
 }

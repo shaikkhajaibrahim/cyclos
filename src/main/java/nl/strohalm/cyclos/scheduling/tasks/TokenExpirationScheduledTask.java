@@ -19,20 +19,26 @@
  *
  */
 
-package nl.strohalm.cyclos.dao.tokens;
+package nl.strohalm.cyclos.scheduling.tasks;
 
-import nl.strohalm.cyclos.dao.BaseDAO;
-import nl.strohalm.cyclos.dao.DeletableDAO;
-import nl.strohalm.cyclos.dao.InsertableDAO;
-import nl.strohalm.cyclos.dao.UpdatableDAO;
-import nl.strohalm.cyclos.entities.tokens.Token;
+import nl.strohalm.cyclos.services.tokens.TokenService;
 
 import java.util.Calendar;
-import java.util.List;
 
-public interface TokenDAO extends BaseDAO<Token>, InsertableDAO<Token>, UpdatableDAO<Token>, DeletableDAO<Token> {
+public class TokenExpirationScheduledTask extends BaseScheduledTask {
 
-    Token loadByTokenId(String tokenId);
+    private TokenService tokenService;
 
-    List<Token> getTokensToExpire(Calendar time);
+    public TokenExpirationScheduledTask() {
+        super("Token expiration", false);
+    }
+
+    @Override
+    protected void doRun(Calendar time) {
+        tokenService.processExpiredTokens(time);
+    }
+
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 }

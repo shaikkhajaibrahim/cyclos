@@ -24,6 +24,8 @@ import nl.strohalm.cyclos.utils.access.AdminAction;
 import nl.strohalm.cyclos.utils.access.BrokerAction;
 import nl.strohalm.cyclos.utils.access.Permission;
 
+import java.util.Calendar;
+
 public interface TokenService extends Service {
 
     String generateToken(GenerateTokenDTO generateTokenDTO);
@@ -36,4 +38,5 @@ public interface TokenService extends Service {
     void generatePin(String tokenId);
 
 
+    void processExpiredTokens(Calendar time);
 }

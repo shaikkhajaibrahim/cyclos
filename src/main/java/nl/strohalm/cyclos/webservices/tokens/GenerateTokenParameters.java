@@ -74,4 +74,5 @@ public class GenerateTokenParameters {
     public void setCredentials(String credentials) {
         this.credentials = credentials;
     }
+
 }

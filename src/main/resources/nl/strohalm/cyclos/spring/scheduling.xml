@@ -36,6 +36,8 @@
 				<bean class="nl.strohalm.cyclos.scheduling.tasks.PaymentObligationScheduledTask" />
 				<bean class="nl.strohalm.cyclos.scheduling.tasks.GuaranteeLoanScheduledTask" />
 				<bean class="nl.strohalm.cyclos.scheduling.tasks.CardScheduledTask" />
+                <bean class="nl.strohalm.cyclos.scheduling.tasks.TokenExpirationScheduledTask" />
+
 			</list>
 		</property>
 	</bean>

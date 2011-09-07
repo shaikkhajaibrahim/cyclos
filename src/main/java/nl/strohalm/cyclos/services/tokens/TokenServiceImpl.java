@@ -23,45 +23,26 @@ package nl.strohalm.cyclos.services.tokens;
 
 import nl.strohalm.cyclos.dao.tokens.TokenDAO;
 import nl.strohalm.cyclos.entities.access.Channel;
-import nl.strohalm.cyclos.entities.access.MemberUser;
 import nl.strohalm.cyclos.entities.access.PrincipalType;
-import nl.strohalm.cyclos.entities.access.User;
-import nl.strohalm.cyclos.entities.accounts.Account;
-import nl.strohalm.cyclos.entities.accounts.AccountType;
 import nl.strohalm.cyclos.entities.accounts.SystemAccountOwner;
-import nl.strohalm.cyclos.entities.accounts.SystemAccountType;
-import nl.strohalm.cyclos.entities.accounts.transactions.Payment;
 import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferTypeQuery;
-import nl.strohalm.cyclos.entities.customization.fields.MemberCustomFieldValue;
-import nl.strohalm.cyclos.entities.groups.Group;
-import nl.strohalm.cyclos.entities.groups.GroupFilter;
-import nl.strohalm.cyclos.entities.groups.GroupQuery;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
-import nl.strohalm.cyclos.services.access.AccessService;
-import nl.strohalm.cyclos.services.accounts.AccountDTO;
-import nl.strohalm.cyclos.services.accounts.AccountService;
-import nl.strohalm.cyclos.services.customization.CustomFieldService;
 import nl.strohalm.cyclos.services.elements.ElementService;
-import nl.strohalm.cyclos.services.elements.MemberService;
-import nl.strohalm.cyclos.services.fetch.FetchService;
-import nl.strohalm.cyclos.services.groups.GroupService;
 import nl.strohalm.cyclos.services.transactions.*;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
-import nl.strohalm.cyclos.utils.sms.SmsSender;
-import nl.strohalm.cyclos.webservices.sms.SendSmsParameters;
-import nl.strohalm.cyclos.webservices.sms.SmsWebService;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.util.*;
 
 public class TokenServiceImpl implements TokenService {
 
-    public final static String CREATE_VOUCHER_TRANSACTION_TYPE_NAME = "voucherCreation";
+    public final static String CREATE_TOKEN_TRANSACTION_TYPE_NAME = "tokenCreation";
 
-    public final static String REDEEM_VOUCHER_TRANSACTION_TYPE_NAME = "voucherRedemption";
+    public final static String REDEEM_TOKEN_TRANSACTION_TYPE_NAME = "tokenRedemption";
 
     private TokenDAO tokenDao;
 
@@ -99,10 +80,10 @@ public class TokenServiceImpl implements TokenService {
         doPaymentDTO.setFrom(from);
 
         TransferTypeQuery ttq = new TransferTypeQuery();
-        ttq.setName(CREATE_VOUCHER_TRANSACTION_TYPE_NAME);
+        ttq.setName(CREATE_TOKEN_TRANSACTION_TYPE_NAME);
         List<TransferType> tts = transferTypeService.search(ttq);
         if (tts.isEmpty()) {
-            throw new RuntimeException("No transaction type "+CREATE_VOUCHER_TRANSACTION_TYPE_NAME);
+            throw new RuntimeException("No transaction type "+ CREATE_TOKEN_TRANSACTION_TYPE_NAME);
         }
         doPaymentDTO.setTransferType(tts.get(0));
 
@@ -142,10 +123,10 @@ public class TokenServiceImpl implements TokenService {
         doPaymentDTO.setFrom(SystemAccountOwner.instance());
 
         TransferTypeQuery ttq = new TransferTypeQuery();
-        ttq.setName(REDEEM_VOUCHER_TRANSACTION_TYPE_NAME);
+        ttq.setName(REDEEM_TOKEN_TRANSACTION_TYPE_NAME);
         List<TransferType> tts = transferTypeService.search(ttq);
         if (tts.isEmpty()) {
-            throw new RuntimeException("No transaction type "+REDEEM_VOUCHER_TRANSACTION_TYPE_NAME);
+            throw new RuntimeException("No transaction type "+ REDEEM_TOKEN_TRANSACTION_TYPE_NAME);
         }
         doPaymentDTO.setTransferType(tts.get(0));
 
@@ -170,6 +151,17 @@ public class TokenServiceImpl implements TokenService {
         sendPinBySms(voucher, pin);
     }
 
+    @Override
+    public void processExpiredTokens(Calendar time) {
+        Calendar timeToExpire = Calendar.getInstance();
+        timeToExpire.setTime(DateUtils.addDays(time.getTime(), -1));
+        for (Token token : tokenDao.getTokensToExpire(timeToExpire)) {
+            token.setStatus(Status.EXPIRED);
+            tokenDao.update(token);
+            //TODO handle chargeback
+        };
+    }
+
     String generateTokenID() {
         return UUID.randomUUID().toString().replaceAll("-","").substring(0,10);
     }
@@ -177,7 +169,6 @@ public class TokenServiceImpl implements TokenService {
     private void sendPinBySms(Token voucher, String pin) {
         //FIXME
     }
-
 
     private String createPin() {
         String pin = (""+(int)(Math.random()*10000)).substring(0, 4);
@@ -204,4 +195,7 @@ public class TokenServiceImpl implements TokenService {
     public void setTransferTypeService(TransferTypeService transferTypeService) {
         this.transferTypeService = transferTypeService;
     }
+
+
+
 }

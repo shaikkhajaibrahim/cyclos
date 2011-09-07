@@ -32,7 +32,6 @@ public class GenerateTokenDTO {
     private String tokenSender;
     private String to;
 
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -64,4 +63,5 @@ public class GenerateTokenDTO {
     public void setTo(String to) {
         this.to = to;
     }
+
 }
