@@ -56,7 +56,12 @@ public class TokenWebServiceImpl implements TokenWebService {
 
     @Override
     public void senderRedeemToken(RedeemTokenParameters redeemTokenParameters) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //FIXME:
+        //authorization...
+        Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), redeemTokenParameters.getUsername());
+
+        tokenService.senderRedeemToken(member, redeemTokenParameters.getTokenId());
+
     }
 
     @Override

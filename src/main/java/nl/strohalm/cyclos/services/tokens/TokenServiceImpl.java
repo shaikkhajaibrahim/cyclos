@@ -24,6 +24,7 @@ package nl.strohalm.cyclos.services.tokens;
 import nl.strohalm.cyclos.dao.tokens.TokenDAO;
 import nl.strohalm.cyclos.entities.access.Channel;
 import nl.strohalm.cyclos.entities.access.PrincipalType;
+import nl.strohalm.cyclos.entities.accounts.AccountOwner;
 import nl.strohalm.cyclos.entities.accounts.SystemAccountOwner;
 import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
@@ -43,6 +44,10 @@ public class TokenServiceImpl implements TokenService {
     public final static String CREATE_TOKEN_TRANSACTION_TYPE_NAME = "tokenCreation";
 
     public final static String REDEEM_TOKEN_TRANSACTION_TYPE_NAME = "tokenRedemption";
+
+    public final static String SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME = "senderTokenRedemption";
+
+    public final static String TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME = "tokenExpiration";
 
     private TokenDAO tokenDao;
 
@@ -103,7 +108,7 @@ public class TokenServiceImpl implements TokenService {
     public void redeemToken(Member broker, String tokenId, String pin) {
         Token voucher = tokenDao.loadByTokenId(tokenId);
         validatePin(voucher, pin);
-        Transfer transfer = transferFromSuspenseAccount(broker, voucher);
+        Transfer transfer = redeemToken(voucher, REDEEM_TOKEN_TRANSACTION_TYPE_NAME, broker);
         voucher.setTransferTo(transfer);
         voucher.setStatus(Status.REMITTED);
         tokenDao.update(voucher);
@@ -115,31 +120,33 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
-    private Transfer transferFromSuspenseAccount(Member broker, Token voucher) {
+    @Override
+    public void senderRedeemToken(Member member, String tokenId) {
+        Token token = tokenDao.loadByTokenId(tokenId);
+        redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member);
+    }
+
+    private Transfer redeemToken(Token token, String transactionType, AccountOwner to) {
+
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
 
-        doPaymentDTO.setAmount(voucher.getAmount());
+        doPaymentDTO.setAmount(token.getAmount());
 
         doPaymentDTO.setFrom(SystemAccountOwner.instance());
 
         TransferTypeQuery ttq = new TransferTypeQuery();
-        ttq.setName(REDEEM_TOKEN_TRANSACTION_TYPE_NAME);
+        ttq.setName(transactionType);
         List<TransferType> tts = transferTypeService.search(ttq);
         if (tts.isEmpty()) {
-            throw new RuntimeException("No transaction type "+ REDEEM_TOKEN_TRANSACTION_TYPE_NAME);
+            throw new RuntimeException("No transaction type "+ transactionType);
         }
         doPaymentDTO.setTransferType(tts.get(0));
 
-        doPaymentDTO.setTo(broker);
-        doPaymentDTO.setDescription("Redemption of voucher "+voucher.getTokenId());
+        doPaymentDTO.setTo(to);
+        //FIXME
+        doPaymentDTO.setDescription("Redemption of voucher "+token.getTokenId());
         doPaymentDTO.setContext(TransactionContext.PAYMENT);
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
-
-    }
-
-    @Override
-    public void senderRedeemToken(Member member, String tokenId) {
-        //TODO
     }
 
     @Override
@@ -157,8 +164,8 @@ public class TokenServiceImpl implements TokenService {
         timeToExpire.setTime(DateUtils.addDays(time.getTime(), -1));
         for (Token token : tokenDao.getTokensToExpire(timeToExpire)) {
             token.setStatus(Status.EXPIRED);
+            token.setTransferTo(redeemToken(token, TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME, SystemAccountOwner.instance()));
             tokenDao.update(token);
-            //TODO handle chargeback
         };
     }
 
