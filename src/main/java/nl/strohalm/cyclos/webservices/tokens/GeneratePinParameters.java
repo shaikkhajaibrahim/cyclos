@@ -21,15 +21,13 @@
 
 package nl.strohalm.cyclos.webservices.tokens;
 
-public class RedeemTokenParameters {
+public class GeneratePinParameters {
 
     private String tokenId;
 
     private String username;
 
     private String credentials;
-
-    private String tokenPin;
 
     public String getTokenId() {
         return tokenId;
@@ -53,13 +51,5 @@ public class RedeemTokenParameters {
 
     public void setCredentials(String credentials) {
         this.credentials = credentials;
-    }
-
-    public String getTokenPin() {
-        return tokenPin;
-    }
-
-    public void setTokenPin(String tokenPin) {
-        this.tokenPin = tokenPin;
     }
 }

@@ -21,6 +21,10 @@
 
 package nl.strohalm.cyclos.webservices.tokens;
 
+import nl.strohalm.cyclos.entities.access.Channel;
+import nl.strohalm.cyclos.entities.access.PrincipalType;
+import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 
@@ -30,6 +34,8 @@ import javax.jws.WebService;
 public class TokenWebServiceImpl implements TokenWebService {
 
     private TokenService tokenService;
+
+    private ElementService elementService;
 
     @Override
     public String generateToken(GenerateTokenParameters generateTokenParameters) {
@@ -44,7 +50,8 @@ public class TokenWebServiceImpl implements TokenWebService {
 
     @Override
     public void redeemToken(RedeemTokenParameters redeemTokenParameters) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), redeemTokenParameters.getUsername());
+        tokenService.redeemToken(member, redeemTokenParameters.getTokenId(),redeemTokenParameters.getTokenPin());
     }
 
     @Override
@@ -53,12 +60,16 @@ public class TokenWebServiceImpl implements TokenWebService {
     }
 
     @Override
-    public void generatePin(String tokenId) {
+    public void generatePin(GeneratePinParameters generatePinParameters) {
         //FIXME credentials??
-        tokenService.generatePin(tokenId);
+        tokenService.generatePin(generatePinParameters.getTokenId());
     }
 
     public void setTokenService(TokenService tokenService) {
         this.tokenService = tokenService;
+    }
+
+    public void setElementService(ElementService elementService) {
+        this.elementService = elementService;
     }
 }

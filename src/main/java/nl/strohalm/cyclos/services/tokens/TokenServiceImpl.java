@@ -72,16 +72,17 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String generateToken(GenerateTokenDTO generateTokenDTO) {
-        Transfer transfer = transferToSuspenseAccount(generateTokenDTO);
-        Token voucher = createVoucherAccount(generateTokenDTO, transfer);
+        String voucherId =generateTokenID();
+        Transfer transfer = transferToSuspenseAccount(generateTokenDTO, voucherId);
+        Token voucher = createVoucherAccount(generateTokenDTO, transfer, voucherId);
         sendConfirmationSms(voucher);
         return voucher.getTokenId();
     }
 
 
-    private Token createVoucherAccount(GenerateTokenDTO generateTokenDTO, Transfer transfer) {
+    private Token createVoucherAccount(GenerateTokenDTO generateTokenDTO, Transfer transfer, String voucherId) {
         Token token = new Token();
-        token.setTokenId(generateTokenID());
+        token.setTokenId(voucherId);
         token.setTransferFrom(transfer);
         token.setAmount(generateTokenDTO.getAmount());
         token.setStatus(Status.ISSUED);
@@ -89,7 +90,7 @@ public class TokenServiceImpl implements TokenService {
         return tokenDao.insert(token);
     }
 
-    private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO) {
+    private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO, String voucherId) {
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
 
         doPaymentDTO.setAmount(generateTokenDTO.getAmount());
@@ -106,8 +107,9 @@ public class TokenServiceImpl implements TokenService {
         doPaymentDTO.setTransferType(tts.get(0));
 
         doPaymentDTO.setTo(SystemAccountOwner.instance());
-
         doPaymentDTO.setContext(TransactionContext.PAYMENT);
+        doPaymentDTO.setDescription("Creation of voucher "+voucherId);
+
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
     }
 
@@ -118,26 +120,45 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public void redeemToken(Member broker, String tokenId, String pin) {
-        Member voucher = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), tokenId);
-        validatePin(tokenId, pin);
-        transferFromSuspenseAccount(broker, voucher);
-
+        Token voucher = tokenDao.loadByTokenId(tokenId);
+        validatePin(voucher, pin);
+        Transfer transfer = transferFromSuspenseAccount(broker, voucher);
+        voucher.setTransferTo(transfer);
+        voucher.setStatus(Status.REMITTED);
+        tokenDao.update(voucher);
     }
 
-    private void validatePin(String tokenId, String pin) {
-        Member voucher = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), tokenId);
-        if (!voucher.getMemberUser().getPin().equals(pin)) {
+    private void validatePin(Token token, String pin) {
+        if (!token.getPin().equals(pin)) {
            throw new RuntimeException("Invalid PIN");
         }
     }
 
-    private void transferFromSuspenseAccount(Member broker, Member voucher) {
-        //To change body of created methods use File | Settings | File Templates.
+    private Transfer transferFromSuspenseAccount(Member broker, Token voucher) {
+        DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
+
+        doPaymentDTO.setAmount(voucher.getAmount());
+
+        doPaymentDTO.setFrom(SystemAccountOwner.instance());
+
+        TransferTypeQuery ttq = new TransferTypeQuery();
+        ttq.setName(REDEEM_VOUCHER_TRANSACTION_TYPE_NAME);
+        List<TransferType> tts = transferTypeService.search(ttq);
+        if (tts.isEmpty()) {
+            throw new RuntimeException("No transaction type "+REDEEM_VOUCHER_TRANSACTION_TYPE_NAME);
+        }
+        doPaymentDTO.setTransferType(tts.get(0));
+
+        doPaymentDTO.setTo(broker);
+        doPaymentDTO.setDescription("Redemption of voucher "+voucher.getTokenId());
+        doPaymentDTO.setContext(TransactionContext.PAYMENT);
+        return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
+
     }
 
     @Override
     public void senderRedeemToken(Member member, String tokenId) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO
     }
 
     @Override
