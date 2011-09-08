@@ -12,16 +12,16 @@
 
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
-        <td class="tdHeaderTable"><bean:message key="tokens.title.list"/></td>
+        <td class="tdHeaderTable"><bean:message key="tokens.list.title"/></td>
         <cyclos:help page="settings#tokens"/>
     </tr>
 	<tr>
         <td colspan="2" align="left" class="tdContentTableLists">
             <table class="defaultTable">
                 <tr>
-                    <th class="tdHeaderContents"><bean:message key='token.tokenId'/></th>
-                    <th class="tdHeaderContents"><bean:message key='token.tokenId'/></th>
-                    <th class="tdHeaderContents"><bean:message key='token.tokenId'/></th>
+                    <th class="tdHeaderContents"><bean:message key='tokens.tokenId'/></th>
+                    <th class="tdHeaderContents"><bean:message key='tokens.status'/></th>
+                    <th class="tdHeaderContents"><bean:message key='tokens.amount'/></th>
                     <th class="tdHeaderContents" width="10%">&nbsp;</th>
                 </tr>
 				<c:forEach items="${tokens}" var="token">
@@ -41,7 +41,7 @@
 		<tr>
 			<td align="right">
 	        	<span class="label">
-	        		<bean:message key="token.action.new" />
+	        		<bean:message key="tokens.action.generate" />
 	        	</span>
 	        	<input type="button" class="button" value="<bean:message key="global.submit" />" id="newButton">
 			</td>

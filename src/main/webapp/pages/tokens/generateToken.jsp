@@ -12,7 +12,7 @@
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable">
-        	<bean:message key="generateToken.title}"/>
+        	<bean:message key="tokens.generateToken.title}"/>
         </td>
 		<cyclos:help page="tokens#generate"/>
     </tr>
@@ -20,14 +20,14 @@
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
                 <tr>
-                    <td class="label" width="25%"><bean:message key="generateToken.amount"/></td>
+                    <td class="label" width="25%"><bean:message key="tokens.generateToken.amount"/></td>
                     <td>
 	                    <html:text property="token(amount)"/>
 
                     </td>
                 </tr>
                 <tr>
-                    <td class="label" valign="top"><bean:message key="generateToken.tokenSender"/></td>
+                    <td class="label" valign="top"><bean:message key="tokens.generateToken.tokenSender"/></td>
                     <td><html:textarea rows="6" property="token(tokenSender)" /></td>
                 </tr>
                     <tr>

@@ -64,11 +64,11 @@
 		<cyclos:menu url="/do/member/simulateConversion" key="menu.member.account.simulateConversion" module="memberAccount" operation="simulateConversion" />
 	</cyclos:menu>
 
-	<cyclos:menu key="menu.member.token">
-		<cyclos:menu url="/do/member/listTokens" key="menu.member.token.tokens" />
+	<cyclos:menu key="menu.member.tokens">
+		<cyclos:menu url="/do/member/listTokens" key="menu.member.tokens.list" />
 		<c:if test="${isBroker}">
-			<cyclos:menu url="/do/member/redeemToken" key="menu.member.token.redeemToken" />
-            <cyclos:menu url="/do/member/refundToken" key="menu.member.token.refundToken" />
+			<cyclos:menu url="/do/member/redeemToken" key="menu.member.tokens.redeem" />
+            <cyclos:menu url="/do/member/refundToken" key="menu.member.tokens.refund" />
 		</c:if>
 	</cyclos:menu>
 

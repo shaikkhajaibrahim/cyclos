@@ -13,7 +13,7 @@
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable">
-        	<bean:message key="redeemToken.title}"/>
+        	<bean:message key="tokens.redeemToken.title}"/>
         </td>
 		<cyclos:help page="tokens#redeem"/>
     </tr>
@@ -21,7 +21,7 @@
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
                 <tr>
-                    <td class="label" width="25%"><bean:message key="redeemToken.pin"/></td>
+                    <td class="label" width="25%"><bean:message key="tokens.redeemToken.pin"/></td>
                     <td>
 	                    <html:text property="token(pin)"/>
 
