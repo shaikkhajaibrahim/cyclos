@@ -216,7 +216,8 @@
 				/WEB-INF/struts-configs/struts-config_guarantees.xml,
 				/WEB-INF/struts-configs/struts-config_cards.xml,
 				/WEB-INF/struts-configs/struts-config_cardTypes.xml,
-				/WEB-INF/struts-configs/struts-config_pos.xml				
+				/WEB-INF/struts-configs/struts-config_pos.xml,
+                /WEB-INF/struts-configs/struts-config_tokens.xml
 			</param-value>
 		</init-param>
 		<init-param>

@@ -35,4 +35,6 @@ public interface TokenDAO extends BaseDAO<Token>, InsertableDAO<Token>, Updatabl
     Token loadByTokenId(String tokenId);
 
     List<Token> getTokensToExpire(Calendar time);
+
+    List<Token> getUserTokens(String userName);
 }

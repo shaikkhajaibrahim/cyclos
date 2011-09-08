@@ -63,7 +63,8 @@
 			/WEB-INF/tiles-defs/tiles-defs_guarantees.xml,
 			/WEB-INF/tiles-defs/tiles-defs_cards.xml,
 			/WEB-INF/tiles-defs/tiles-defs_cardTypes.xml,
-			/WEB-INF/tiles-defs/tiles-defs_pos.xml
+			/WEB-INF/tiles-defs/tiles-defs_pos.xml,
+            /WEB-INF/tiles-defs/tiles-defs_tokens.xml
 		" />
 		<set-property property="definitions-parser-validate" value="true" />
 		<set-property property="moduleAware" value="true" />

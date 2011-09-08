@@ -18,13 +18,16 @@
  */
 package nl.strohalm.cyclos.services.tokens;
 
+import nl.strohalm.cyclos.entities.access.User;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.Service;
 import nl.strohalm.cyclos.utils.access.AdminAction;
 import nl.strohalm.cyclos.utils.access.BrokerAction;
 import nl.strohalm.cyclos.utils.access.Permission;
 
 import java.util.Calendar;
+import java.util.List;
 
 public interface TokenService extends Service {
 
@@ -37,6 +40,10 @@ public interface TokenService extends Service {
     //@BrokerAction( {@Permission(module = "systemGroups", operation = "generatePin") })
     void generatePin(String tokenId);
 
-
     void processExpiredTokens(Calendar time);
+
+    List<Token> getUserTokens(User user);
+
+    Token loadTokenById(String tokenId);
+
 }

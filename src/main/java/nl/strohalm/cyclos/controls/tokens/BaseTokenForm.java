@@ -19,40 +19,30 @@
  *
  */
 
-package nl.strohalm.cyclos.services.tokens;
+package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.entities.accounts.AccountOwner;
+import nl.strohalm.cyclos.controls.BaseBindingForm;
 
-import java.math.BigDecimal;
+import java.util.Map;
 
-public class GenerateTokenDTO {
+public class BaseTokenForm extends BaseBindingForm {
 
-    private BigDecimal amount;
-    private String from;
-    private String tokenSender;
-
-    public BigDecimal getAmount() {
-        return amount;
+    public Map<String, Object> getToken() {
+        return values;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public Object getToken(final String key) {
+        return values.get(key);
     }
 
-    public String getFrom() {
-        return from;
+
+    public void setToken(final Map<String, Object> map) {
+        values = map;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setToken(final String key, final Object value) {
+        values.put(key, value);
     }
 
-    public String getTokenSender() {
-        return tokenSender;
-    }
-
-    public void setTokenSender(String tokenSender) {
-        this.tokenSender = tokenSender;
-    }
 
 }

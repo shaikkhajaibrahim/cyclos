@@ -19,40 +19,9 @@
  *
  */
 
-package nl.strohalm.cyclos.services.tokens;
+package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.entities.accounts.AccountOwner;
+import org.apache.struts.action.ActionForm;
 
-import java.math.BigDecimal;
-
-public class GenerateTokenDTO {
-
-    private BigDecimal amount;
-    private String from;
-    private String tokenSender;
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getTokenSender() {
-        return tokenSender;
-    }
-
-    public void setTokenSender(String tokenSender) {
-        this.tokenSender = tokenSender;
-    }
-
+public class ListTokensForm extends ActionForm {
 }

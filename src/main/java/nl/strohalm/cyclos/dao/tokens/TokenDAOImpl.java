@@ -52,4 +52,15 @@ public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
 
         return list(hql.toString(), namedParameters);
     }
+
+    @Override
+    public List<Token> getUserTokens(String userName) {
+        final StringBuilder hql = new StringBuilder();
+        hql.append(" from Token t where t.transferFrom.from.ownerName <= :username ");
+
+        final Map<String, Object> namedParameters = new HashMap<String, Object>();
+        namedParameters.put("username", userName);
+
+        return list(hql.toString(), namedParameters);
+    }
 }

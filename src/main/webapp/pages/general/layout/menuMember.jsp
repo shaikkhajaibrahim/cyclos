@@ -63,6 +63,15 @@
 		<cyclos:menu url="/do/member/sendInvoice?toSystem=true" key="menu.member.account.systemInvoice" module="memberInvoices" operation="sendToSystem" />
 		<cyclos:menu url="/do/member/simulateConversion" key="menu.member.account.simulateConversion" module="memberAccount" operation="simulateConversion" />
 	</cyclos:menu>
+
+	<cyclos:menu key="menu.member.token">
+		<cyclos:menu url="/do/member/listTokens" key="menu.member.token.tokens" />
+		<c:if test="${isBroker}">
+			<cyclos:menu url="/do/member/redeemToken" key="menu.member.token.redeemToken" />
+            <cyclos:menu url="/do/member/refundToken" key="menu.member.token.refundToken" />
+		</c:if>
+	</cyclos:menu>
+
 </c:if>
 <cyclos:menu key="menu.member.operators" module="memberOperators" operation="manage">
 	<cyclos:menu url="/do/member/searchOperators" key="menu.member.operators"/>
