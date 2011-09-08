@@ -60,14 +60,18 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String generateToken(GenerateTokenDTO generateTokenDTO) {
         String voucherId = generateTokenID();
+        if (generateTokenDTO.getTokenSender() == null) {
+            //FIXME what if username != mobile
+            generateTokenDTO.setTokenSender(generateTokenDTO.getFrom());
+        }
         Transfer transfer = transferToSuspenseAccount(generateTokenDTO, voucherId);
-        Token voucher = createVoucherAccount(generateTokenDTO, transfer, voucherId);
+        Token voucher = createToken(generateTokenDTO, transfer, voucherId);
         sendConfirmationSms(voucher);
         return voucher.getTokenId();
     }
 
 
-    private Token createVoucherAccount(GenerateTokenDTO generateTokenDTO, Transfer transfer, String voucherId) {
+    private Token createToken(GenerateTokenDTO generateTokenDTO, Transfer transfer, String voucherId) {
         Token token = new Token();
         token.setTokenId(voucherId);
         token.setTransferFrom(transfer);

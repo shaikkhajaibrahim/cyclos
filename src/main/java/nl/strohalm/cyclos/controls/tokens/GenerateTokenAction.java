@@ -60,6 +60,10 @@ public class GenerateTokenAction extends BaseFormAction implements LocalSettings
 
         User user = context.getUser();
         generateTokenDTO.setFrom(user.getUsername());
+        if (!context.isBroker()) {
+            generateTokenDTO.setTokenSender(null);
+        }
+
 
         tokenService.generateToken(generateTokenDTO);
     }

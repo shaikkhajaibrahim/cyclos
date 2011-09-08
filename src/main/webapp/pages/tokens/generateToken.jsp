@@ -12,7 +12,7 @@
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable">
-        	<bean:message key="tokens.generateToken.title}"/>
+        	<bean:message key="tokens.generateToken.title"/>
         </td>
 		<cyclos:help page="tokens#generate"/>
     </tr>
@@ -26,10 +26,12 @@
 
                     </td>
                 </tr>
+                <c:if test="${isBroker}">
                 <tr>
                     <td class="label" valign="top"><bean:message key="tokens.generateToken.tokenSender"/></td>
-                    <td><html:textarea rows="6" property="token(tokenSender)" /></td>
+                    <td><html:text property="token(tokenSender)" /></td>
                 </tr>
+                </c:if>
                     <tr>
 						<td align="right" colspan="2">
 							<input type="submit" id="generateButton" class="button" value="<bean:message key="global.submit"/>">&nbsp;
