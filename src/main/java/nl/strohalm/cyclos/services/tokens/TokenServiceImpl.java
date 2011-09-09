@@ -36,6 +36,7 @@ import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.transactions.*;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
+import nl.strohalm.cyclos.utils.sms.SmsSender;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.util.*;
@@ -54,7 +55,7 @@ public class TokenServiceImpl implements TokenService {
 
     private PaymentService paymentService;
     private ElementService elementService;
-    // private SmsWebService smsWebService;
+    private SmsSender smsSender;
     private TransferTypeService transferTypeService;
 
     @Override
@@ -86,7 +87,7 @@ public class TokenServiceImpl implements TokenService {
 
         doPaymentDTO.setAmount(generateTokenDTO.getAmount());
 
-        Member from = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), generateTokenDTO.getFrom());
+        Member from = loadUser(generateTokenDTO.getFrom());
         doPaymentDTO.setFrom(from);
 
         TransferTypeQuery ttq = new TransferTypeQuery();
@@ -102,6 +103,10 @@ public class TokenServiceImpl implements TokenService {
         doPaymentDTO.setDescription("Creation of voucher " + voucherId);
 
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
+    }
+
+    private Member loadUser(String userName) {
+        return elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), userName);
     }
 
     private void sendConfirmationSms(Token voucher) {
@@ -191,7 +196,9 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void sendPinBySms(Token voucher) {
-        //FIXME
+        //FIXME: also to nonmember!!
+        Member user = loadUser(voucher.getTransferFrom().getActualFrom().getOwnerName());
+        smsSender.send(user, "PIN "+voucher.getPin()+" was generated for token: "+voucher.getTokenId());
     }
 
     private String createPin() {
@@ -207,10 +214,9 @@ public class TokenServiceImpl implements TokenService {
         this.elementService = elementService;
     }
 
-
-    //   public void setSmsWebService(SmsWebService smsWebService) {
-    //       this.smsWebService = smsWebService;
-    //   }
+    public void setSmsSender(SmsSender smsSender) {
+        this.smsSender = smsSender;
+    }
 
     public void setTokenDao(TokenDAO tokenDao) {
         this.tokenDao = tokenDao;

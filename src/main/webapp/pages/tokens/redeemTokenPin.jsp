@@ -13,7 +13,7 @@
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable">
-        	<bean:message key="tokens.redeemToken.title}"/>
+        	<bean:message key="tokens.redeemToken.title"/>
         </td>
 		<cyclos:help page="tokens#redeem"/>
     </tr>
