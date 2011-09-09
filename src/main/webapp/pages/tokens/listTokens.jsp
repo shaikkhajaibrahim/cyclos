@@ -23,12 +23,19 @@
                     <th class="tdHeaderContents"><bean:message key='tokens.status'/></th>
                     <th class="tdHeaderContents"><bean:message key='tokens.amount'/></th>
                     <th class="tdHeaderContents" width="10%">&nbsp;</th>
+
                 </tr>
 				<c:forEach items="${tokens}" var="token">
 	                <tr class="<t:toggle>ClassColor1|ClassColor2</t:toggle>">
 	                    <td align="left">${token.tokenId}</td>
-                        <td align="left">${token.status}</td>
-	                    <td align="left" nowrap="nowrap">${token.amount}</td>
+                        <td align="left"><bean:message key='tokens.status.${token.status}'/></td>
+	                    <td align="right" nowrap="nowrap">${token.amount}</td>
+						<td align="center">
+						<c:if test="${token.status == 'ISSUED'}">
+						    <img tokenId="${token.tokenId}" class="senderTokenRedemption" src="<c:url value="/pages/images/delete.gif"/>">
+                        </c:if>
+						</td>
+
 
 	                 </tr>
 				</c:forEach>

@@ -34,12 +34,16 @@ import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.elements.ElementService;
-import nl.strohalm.cyclos.services.transactions.*;
+import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
+import nl.strohalm.cyclos.services.transactions.PaymentService;
+import nl.strohalm.cyclos.services.transactions.TransactionContext;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
 import nl.strohalm.cyclos.utils.sms.SmsSender;
 import org.apache.commons.lang.time.DateUtils;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
 public class TokenServiceImpl implements TokenService {
 
@@ -133,11 +137,15 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void senderRedeemToken(Member member, String tokenId) {
         Token token = tokenDao.loadByTokenId(tokenId);
-        redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member);
+        token.setStatus(Status.SENDER_REMITTED);
+        token.setTransferTo(redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member));
+        tokenDao.update(token);
     }
 
     private Transfer redeemToken(Token token, String transactionType, AccountOwner to) {
-
+        if (token.getStatus() != Status.ISSUED) {
+            throw new RuntimeException("Bad status");
+        }
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
 
         doPaymentDTO.setAmount(token.getAmount());
@@ -198,7 +206,7 @@ public class TokenServiceImpl implements TokenService {
     private void sendPinBySms(Token voucher) {
         //FIXME: also to nonmember!!
         Member user = loadUser(voucher.getTransferFrom().getActualFrom().getOwnerName());
-        smsSender.send(user, "PIN "+voucher.getPin()+" was generated for token: "+voucher.getTokenId());
+        smsSender.send(user, "PIN " + voucher.getPin() + " was generated for token: " + voucher.getTokenId());
     }
 
     private String createPin() {

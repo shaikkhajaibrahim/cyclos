@@ -1,18 +1,9 @@
 Behaviour.register({
 
-	'img.channelDetails': function(img) {
+	'img.senderTokenRedemption': function(img) {
 		setPointer(img);
 		img.onclick = function() {
-			self.location = pathPrefix + "/editChannel?channelId=" + img.getAttribute("channelId");
-		}
-	},
-
-	'img.remove': function(img) {
-		setPointer(img);
-		img.onclick = function() {
-			if (confirm(removeConfirmationMessage)) {
-				self.location = pathPrefix + "/removeChannel?channelId=" + img.getAttribute("channelId");
-			}
+			self.location = pathPrefix + "/senderTokenRedemption?token(tokenId)=" + img.getAttribute("tokenId");
 		}
 	},
 
@@ -21,4 +12,6 @@ Behaviour.register({
 			self.location = pathPrefix + "/generateToken"
 		}
 	}
+
+
 });
