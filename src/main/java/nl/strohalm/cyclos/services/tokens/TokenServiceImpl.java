@@ -59,7 +59,7 @@ public class TokenServiceImpl implements TokenService {
 
     public final static String TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME = "tokenExpiration";
 
-    public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME = "tokenExpiration";
+    public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME = "tokenRefund";
 
     private TokenDAO tokenDao;
 
