@@ -19,6 +19,7 @@ package nl.strohalm.cyclos.webservices;
 
 import nl.strohalm.cyclos.webservices.payments.WebServiceFault;
 import nl.strohalm.cyclos.webservices.utils.WebServiceHelper;
+import org.apache.cxf.binding.soap.SoapFault;
 
 /**
  * All faults throws by the web services operations
@@ -47,6 +48,8 @@ public enum WebServiceFaultsEnum implements WebServiceFault {
     MEMBER_NOT_FOUND("member-not-found"),
 
     CURRENTLY_UNAVAILABLE("currently-unavailable"),
+
+    NOT_ENOUGH_CREDITS("not-enough-credtis"),
 
     INACTIVE_POS("inactive-pos");
 
@@ -80,4 +83,8 @@ public enum WebServiceFaultsEnum implements WebServiceFault {
     public void throwFault(final Throwable cause) {
         throw WebServiceHelper.fault(this, cause);
     }
+
+    public SoapFault getFault(final String serverDetailsMessage) {
+        return WebServiceHelper.fault(this, new Exception(serverDetailsMessage));
+    };
 }

@@ -191,7 +191,13 @@ public class WebServiceHelper {
      * Returns a SOAP fault
      */
     private static SoapFault fault(final String code, final Throwable th) throws SoapFault {
-        return new SoapFault("Server error: " + code, th, faultCode(code));
+        SoapFault sf = new SoapFault("Server error: " + code, th, faultCode(code));
+        if (th != null) {
+            org.w3c.dom.Element el = sf.getOrCreateDetail();
+            el.setTextContent(th.getMessage());
+            sf.setDetail(el);
+        }
+        return sf;
     }
 
     /**

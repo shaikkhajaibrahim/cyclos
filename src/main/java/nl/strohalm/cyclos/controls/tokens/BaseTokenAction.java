@@ -35,6 +35,7 @@ import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
 import nl.strohalm.cyclos.services.tokens.exceptions.NoTransactionTypeException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
+import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
 import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
 
@@ -73,6 +74,8 @@ public abstract class BaseTokenAction extends BaseFormAction {
             errorKey = "tokens.error.noTransactionType";
         } catch (RefundNonExpiredToken e) {
             errorKey = "tokens.error.refundNotExpired";
+        } catch (NotEnoughCreditsException e) {
+            errorKey = "tokens.error.notEnoughCredits";
         } catch (InvalidPinException e) {
             errorKey = "tokens.error.invalidPin";
         }
