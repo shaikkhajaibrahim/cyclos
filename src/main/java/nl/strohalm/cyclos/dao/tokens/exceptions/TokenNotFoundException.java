@@ -19,17 +19,12 @@
  *
  */
 
-package nl.strohalm.cyclos.entities.tokens;
+package nl.strohalm.cyclos.dao.tokens.exceptions;
 
-import nl.strohalm.cyclos.utils.StringValuedEnum;
+import nl.strohalm.cyclos.exceptions.ApplicationException;
 
-public enum Status implements StringValuedEnum {
-
-    ISSUED, EXPIRED, REMITTED, SENDER_REMITTED, REFUNDED;
-
-
-    @Override
-    public String getValue() {
-        return toString();
+public class TokenNotFoundException extends ApplicationException {
+    public TokenNotFoundException(String tokenId) {
+        super(tokenId);
     }
 }

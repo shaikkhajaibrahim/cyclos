@@ -29,32 +29,17 @@ import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.tokens.TokenService;
+import org.apache.struts.action.ActionForward;
 
-public class RedeemTokenPinAction extends BaseFormAction {
-
-    private TokenService tokenService;
-
-    @Inject
-    public void setTokenService(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
-
-    private ElementService elementService;
-
-    @Inject
-    public void setElementService(ElementService elementService) {
-        this.elementService = elementService;
-    }
-
+public class RedeemTokenPinAction extends BaseTokenAction {
 
     @Override
-    protected void formAction(ActionContext context) throws Exception {
+    ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) {
+        String pin = (String) token.getToken("pin");
+        tokenService.redeemToken(loggedMember, token.getTokenId(), pin );
+        context.sendMessage("tokens.tokenRedeemed", token.getTokenId());
+        return context.getSuccessForward();
 
-        Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), context.getUser().getUsername());
-        BaseTokenForm baseTokenForm = context.getForm();
-        String tokenId = (String) baseTokenForm.getToken("tokenId");
-        String pin = (String) baseTokenForm.getToken("pin");
-        tokenService.redeemToken(member, tokenId, pin );
     }
 
 

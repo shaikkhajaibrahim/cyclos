@@ -23,6 +23,7 @@ package nl.strohalm.cyclos.dao.tokens;
 
 import nl.strohalm.cyclos.dao.BaseDAOImpl;
 import nl.strohalm.cyclos.dao.tokens.TokenDAO;
+import nl.strohalm.cyclos.dao.tokens.exceptions.TokenNotFoundException;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
 
@@ -36,7 +37,11 @@ public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
 
     @Override
     public Token loadByTokenId(String tokenId) {
-        return uniqueResult("from Token t where t.tokenId = :tokenId", Collections.singletonMap("tokenId", tokenId));
+        List<Token> token = list("from Token t where t.tokenId = :tokenId", Collections.singletonMap("tokenId", tokenId));
+        if (token.isEmpty()) {
+            throw new TokenNotFoundException(tokenId);
+        }
+        return token.get(0);
     }
 
     @Override

@@ -7,27 +7,23 @@
 
 
 <ssl:form method="post" action="${formAction}">
+<html:hidden property="token(tokenId)"/>
 
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable">
-        	<bean:message key="tokens.redeemToken.title"/>
+        	<bean:message key="tokens.refundToken.title"/>
         </td>
-		<cyclos:help page="tokens#redeem"/>
+		<cyclos:help page="tokens#refundToken"/>
     </tr>
     <tr>
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
-                <tr>
-                    <td class="label" width="25%"><bean:message key="tokens.redeemToken.tokenId"/></td>
-                    <td>
-	                    <html:text property="token(tokenId)"/>
+                    <tr>
+                        <td class="label" valign="top"><bean:message key="tokens.refundToken.confirm"/></td>
 
-                    </td>
-                </tr>
-                 <tr>
 						<td align="right" colspan="2">
-							<input type="submit" id="redeemButton" class="button" value="<bean:message key="global.submit"/>">&nbsp;
+							<input type="submit" id="refundToken" class="button" value="<bean:message key="global.submit"/>">&nbsp;
 						</td>
 	                </tr>
             </table>

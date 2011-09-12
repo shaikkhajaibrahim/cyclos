@@ -11,15 +11,15 @@
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable">
-        	<bean:message key="tokens.redeemToken.title"/>
+        	<bean:message key="tokens.senderTokenRedemptionByBroker.title"/>
         </td>
-		<cyclos:help page="tokens#redeem"/>
+		<cyclos:help page="tokens#senderTokenRedemptionByBroker"/>
     </tr>
     <tr>
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
                 <tr>
-                    <td class="label" width="25%"><bean:message key="tokens.redeemToken.tokenId"/></td>
+                    <td class="label" width="25%"><bean:message key="tokens.senderTokenRedemptionByBroker.tokenId"/></td>
                     <td>
 	                    <html:text property="token(tokenId)"/>
 

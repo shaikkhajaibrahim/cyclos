@@ -21,22 +21,22 @@
 
 package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
-import nl.strohalm.cyclos.controls.BaseFormAction;
-import nl.strohalm.cyclos.entities.access.User;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
-import nl.strohalm.cyclos.services.tokens.TokenService;
+import nl.strohalm.cyclos.entities.tokens.Status;
+import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
 
-public class RedeemTokenAction extends BaseTokenAction {
+public class RefundTokenAction extends BaseTokenAction {
 
     @Override
-    ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) {
-        tokenService.generatePin(token.getTokenId());
-        return ActionHelper.redirectWithParam(context.getRequest(), context.getSuccessForward(), "token(tokenId)", token.getTokenId());
-    }
+    ActionForward tokenSubmit(BaseTokenForm tokenForm, Member loggedMember, ActionContext context) {
 
+        Token token = tokenService.loadTokenById(tokenForm.getTokenId());
+        if (token.getStatus() != Status.EXPIRED) {
+            //FIXME
+        }
+        return ActionHelper.redirectWithParam(context.getRequest(), context.getSuccessForward(), "token(tokenId)", tokenForm.getTokenId());
+    }
 }

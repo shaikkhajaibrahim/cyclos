@@ -44,5 +44,8 @@ public class BaseTokenForm extends BaseBindingForm {
         values.put(key, value);
     }
 
+    String getTokenId() {
+        return (String) values.get("tokenId");
+    }
 
 }

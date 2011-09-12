@@ -29,28 +29,14 @@ import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.tokens.TokenService;
+import org.apache.struts.action.ActionForward;
 
-public class SenderTokenRedemptionAction extends BaseFormAction {
+public class SenderTokenRedemptionAction extends BaseTokenAction {
 
-    private TokenService tokenService;
-
-    @Inject
-    public void setTokenService(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
-
-    private ElementService elementService;
-
-    @Inject
-    public void setElementService(ElementService elementService) {
-        this.elementService = elementService;
-    }
 
     @Override
-    protected void formAction(ActionContext context) throws Exception {
-        Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), context.getUser().getUsername());
-        BaseTokenForm baseTokenForm = context.getForm();
-        String tokenId = (String) baseTokenForm.getToken("tokenId");
-        tokenService.senderRedeemToken(member, tokenId);
+    ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext actionContext) {
+        tokenService.senderRedeemToken(loggedMember, token.getTokenId());
+        return actionContext.getSuccessForward();
     }
 }

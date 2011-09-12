@@ -25,47 +25,41 @@ import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.controls.BaseFormAction;
 import nl.strohalm.cyclos.entities.access.User;
+import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsEvent;
 import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
 import nl.strohalm.cyclos.services.tokens.TokenService;
+import nl.strohalm.cyclos.utils.ActionHelper;
 import nl.strohalm.cyclos.utils.SettingsHelper;
 import nl.strohalm.cyclos.utils.binding.BeanBinder;
 import nl.strohalm.cyclos.utils.binding.DataBinder;
 import nl.strohalm.cyclos.utils.binding.PropertyBinder;
+import org.apache.struts.action.ActionForward;
 
 import java.math.BigDecimal;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class GenerateTokenAction extends BaseFormAction implements LocalSettingsChangeListener {
+public class GenerateTokenAction extends BaseTokenAction implements LocalSettingsChangeListener {
 
-    private TokenService tokenService;
 
     private DataBinder<GenerateTokenDTO> dataBinder;
 
     private ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
-    @Inject
-    public void setTokenService(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
 
-    @Override
-    protected void formAction(ActionContext context) throws Exception {
-
-        final BaseTokenForm form = context.getForm();
+    ActionForward tokenSubmit(BaseTokenForm form, Member loggedMember, ActionContext context) {
         final GenerateTokenDTO generateTokenDTO = getDataBinder().readFromString(form.getValues());
 
-        User user = context.getUser();
-        generateTokenDTO.setFrom(user.getUsername());
+        generateTokenDTO.setFrom(loggedMember.getUsername());
         if (!context.isBroker()) {
             generateTokenDTO.setTokenSender(null);
         }
-
-
-        tokenService.generateToken(generateTokenDTO);
+        String tokenId =  tokenService.generateToken(generateTokenDTO);
+        context.sendMessage("tokens.tokenGenerated", tokenId);
+        return context.getSuccessForward();
     }
 
     @Override

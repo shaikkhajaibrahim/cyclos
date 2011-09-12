@@ -34,6 +34,10 @@ import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.elements.ElementService;
+import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
+import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
+import nl.strohalm.cyclos.services.tokens.exceptions.NoTransactionTypeException;
+import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
 import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
 import nl.strohalm.cyclos.services.transactions.PaymentService;
 import nl.strohalm.cyclos.services.transactions.TransactionContext;
@@ -55,6 +59,8 @@ public class TokenServiceImpl implements TokenService {
 
     public final static String TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME = "tokenExpiration";
 
+    public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME = "tokenExpiration";
+
     private TokenDAO tokenDao;
 
     private PaymentService paymentService;
@@ -64,21 +70,21 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String generateToken(GenerateTokenDTO generateTokenDTO) {
-        String voucherId = generateTokenID();
+        String tokenId = generateTokenID();
         if (generateTokenDTO.getTokenSender() == null) {
             //FIXME what if username != mobile
             generateTokenDTO.setTokenSender(generateTokenDTO.getFrom());
         }
-        Transfer transfer = transferToSuspenseAccount(generateTokenDTO, voucherId);
-        Token voucher = createToken(generateTokenDTO, transfer, voucherId);
-        sendConfirmationSms(voucher);
-        return voucher.getTokenId();
+        Transfer transfer = transferToSuspenseAccount(generateTokenDTO, tokenId);
+        Token token = createToken(generateTokenDTO, transfer, tokenId);
+        sendConfirmationSms(token);
+        return token.getTokenId();
     }
 
 
-    private Token createToken(GenerateTokenDTO generateTokenDTO, Transfer transfer, String voucherId) {
+    private Token createToken(GenerateTokenDTO generateTokenDTO, Transfer transfer, String tokenId) {
         Token token = new Token();
-        token.setTokenId(voucherId);
+        token.setTokenId(tokenId);
         token.setTransferFrom(transfer);
         token.setAmount(generateTokenDTO.getAmount());
         token.setStatus(Status.ISSUED);
@@ -86,7 +92,7 @@ public class TokenServiceImpl implements TokenService {
         return tokenDao.insert(token);
     }
 
-    private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO, String voucherId) {
+    private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO, String tokenId) {
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
 
         doPaymentDTO.setAmount(generateTokenDTO.getAmount());
@@ -98,13 +104,13 @@ public class TokenServiceImpl implements TokenService {
         ttq.setName(CREATE_TOKEN_TRANSACTION_TYPE_NAME);
         List<TransferType> tts = transferTypeService.search(ttq);
         if (tts.isEmpty()) {
-            throw new RuntimeException("No transaction type " + CREATE_TOKEN_TRANSACTION_TYPE_NAME);
+            throw new NoTransactionTypeException("No transaction type " + CREATE_TOKEN_TRANSACTION_TYPE_NAME);
         }
         doPaymentDTO.setTransferType(tts.get(0));
 
         doPaymentDTO.setTo(SystemAccountOwner.instance());
         doPaymentDTO.setContext(TransactionContext.PAYMENT);
-        doPaymentDTO.setDescription("Creation of voucher " + voucherId);
+        doPaymentDTO.setDescription("Creation of token " + tokenId);
 
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
     }
@@ -113,50 +119,52 @@ public class TokenServiceImpl implements TokenService {
         return elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), userName);
     }
 
-    private void sendConfirmationSms(Token voucher) {
-        System.out.println("Generated: " + voucher.getTokenId() + " ");
+    private void sendConfirmationSms(Token token) {
+        Member user = loadUser(token.getTransferFrom().getActualFrom().getOwnerName());
+        smsSender.send(user, "Token: " + token.getTokenId()+" was generated");
     }
 
 
     @Override
     public void redeemToken(Member broker, String tokenId, String pin) {
-        Token voucher = tokenDao.loadByTokenId(tokenId);
-        validatePin(voucher, pin);
-        Transfer transfer = redeemToken(voucher, REDEEM_TOKEN_TRANSACTION_TYPE_NAME, broker);
-        voucher.setTransferTo(transfer);
-        voucher.setStatus(Status.REMITTED);
-        tokenDao.update(voucher);
+        Token token = tokenDao.loadByTokenId(tokenId);
+        validatePin(token, pin);
+        Transfer transfer = redeemToken(token, REDEEM_TOKEN_TRANSACTION_TYPE_NAME, broker, Status.ISSUED, Status.REMITTED);
+        token.setTransferTo(transfer);
+        token.setStatus(Status.REMITTED);
+        tokenDao.update(token);
     }
 
     private void validatePin(Token token, String pin) {
         if (!token.getPin().equals(pin)) {
-            throw new RuntimeException("Invalid PIN");
+            throw new InvalidPinException();
         }
     }
 
     @Override
     public void senderRedeemToken(Member member, String tokenId) {
         Token token = tokenDao.loadByTokenId(tokenId);
+        token.setTransferTo(redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member, Status.ISSUED, Status.SENDER_REMITTED));
         token.setStatus(Status.SENDER_REMITTED);
-        token.setTransferTo(redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member));
         tokenDao.update(token);
     }
 
-    private Transfer redeemToken(Token token, String transactionType, AccountOwner to) {
-        if (token.getStatus() != Status.ISSUED) {
-            throw new RuntimeException("Bad status");
+    private Transfer redeemToken(Token token, String transactionType, AccountOwner to, Status neededOldStatus, Status newStatus) {
+        if (token.getStatus() != neededOldStatus) {
+            throw new BadStatusForRedeem();
         }
+        token.setStatus(newStatus);
+        tokenDao.update(token);
+
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
-
         doPaymentDTO.setAmount(token.getAmount());
-
         doPaymentDTO.setFrom(SystemAccountOwner.instance());
 
         TransferTypeQuery ttq = new TransferTypeQuery();
         ttq.setName(transactionType);
         List<TransferType> tts = transferTypeService.search(ttq);
         if (tts.isEmpty()) {
-            throw new RuntimeException("No transaction type " + transactionType);
+            throw new NoTransactionTypeException("No transaction type " + transactionType);
         }
         doPaymentDTO.setTransferType(tts.get(0));
 
@@ -169,16 +177,16 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public void generatePin(String tokenId) {
-        Token voucher = tokenDao.loadByTokenId(tokenId);
-        if (voucher.getStatus() != Status.ISSUED) {
-            throw new RuntimeException("Bad status");
+        Token token = tokenDao.loadByTokenId(tokenId);
+        if (token.getStatus() != Status.ISSUED) {
+            throw new BadStatusForRedeem();
         }
-        if (voucher.getPin() == null) {
+        if (token.getPin() == null) {
             String pin = createPin();
-            voucher.setPin(pin);
-            tokenDao.update(voucher);
+            token.setPin(pin);
+            tokenDao.update(token);
         }
-        sendPinBySms(voucher);
+        sendPinBySms(token);
 
     }
 
@@ -188,12 +196,23 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    public void refundToken(Member member, String tokenId) {
+        Token token = tokenDao.loadByTokenId(tokenId);
+        if (token.getStatus() != Status.EXPIRED) {
+            throw new RefundNonExpiredToken();
+        }
+        redeemToken(token, TOKEN_REFUND_TRANSACTION_TYPE_NAME, member, Status.EXPIRED, Status.REFUNDED);
+        token.setStatus(Status.REFUNDED);
+        tokenDao.update(token);
+    }
+
+    @Override
     public void processExpiredTokens(Calendar time) {
         Calendar timeToExpire = Calendar.getInstance();
         timeToExpire.setTime(DateUtils.addDays(time.getTime(), -1));
         for (Token token : tokenDao.getTokensToExpire(timeToExpire)) {
             token.setStatus(Status.EXPIRED);
-            token.setTransferTo(redeemToken(token, TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME, SystemAccountOwner.instance()));
+            token.setTransferTo(redeemToken(token, TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME, SystemAccountOwner.instance(), Status.ISSUED, Status.EXPIRED));
             tokenDao.update(token);
         }
         ;
@@ -203,10 +222,10 @@ public class TokenServiceImpl implements TokenService {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
     }
 
-    private void sendPinBySms(Token voucher) {
+    private void sendPinBySms(Token token) {
         //FIXME: also to nonmember!!
-        Member user = loadUser(voucher.getTransferFrom().getActualFrom().getOwnerName());
-        smsSender.send(user, "PIN " + voucher.getPin() + " was generated for token: " + voucher.getTokenId());
+        Member user = loadUser(token.getTransferFrom().getActualFrom().getOwnerName());
+        smsSender.send(user, "PIN " + token.getPin() + " was generated for token: " + token.getTokenId());
     }
 
     private String createPin() {

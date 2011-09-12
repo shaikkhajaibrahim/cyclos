@@ -25,6 +25,7 @@ import nl.strohalm.cyclos.services.Service;
 import nl.strohalm.cyclos.utils.access.AdminAction;
 import nl.strohalm.cyclos.utils.access.BrokerAction;
 import nl.strohalm.cyclos.utils.access.Permission;
+import nl.strohalm.cyclos.utils.access.SystemAction;
 
 import java.util.Calendar;
 import java.util.List;
@@ -33,17 +34,21 @@ public interface TokenService extends Service {
 
     String generateToken(GenerateTokenDTO generateTokenDTO);
 
+    //@BrokerAction
     void redeemToken(Member broker, String tokenId, String pin);
 
     void senderRedeemToken(Member member, String tokenId);
 
-    //@BrokerAction( {@Permission(module = "systemGroups", operation = "generatePin") })
+    //@BrokerAction
     void generatePin(String tokenId);
 
+   // @SystemAction
     void processExpiredTokens(Calendar time);
 
     List<Token> getUserTokens(User user);
 
     Token loadTokenById(String tokenId);
 
+   // @BrokerAction
+    void refundToken(Member member, String tokenId);
 }
