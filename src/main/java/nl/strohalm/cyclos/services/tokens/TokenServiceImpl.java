@@ -120,8 +120,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void sendConfirmationSms(Token token) {
-        Member user = loadUser(token.getTransferFrom().getActualFrom().getOwnerName());
-        smsSender.send(user, "Token: " + token.getTokenId()+" was generated");
+        smsSender.send(token.getSenderMobilePhone(), "Token: " + token.getTokenId()+" was generated");
     }
 
 
@@ -223,9 +222,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void sendPinBySms(Token token) {
-        //FIXME: also to nonmember!!
-        Member user = loadUser(token.getTransferFrom().getActualFrom().getOwnerName());
-        smsSender.send(user, "PIN " + token.getPin() + " was generated for token: " + token.getTokenId());
+        smsSender.send(token.getSenderMobilePhone(), "PIN " + token.getPin() + " was generated for token: " + token.getTokenId());
     }
 
     private String createPin() {

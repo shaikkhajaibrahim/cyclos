@@ -31,4 +31,6 @@ public interface SmsSender {
      */
     boolean send(Member member, String text);
 
+    boolean send(String mobileNumber, String text);
+
 }

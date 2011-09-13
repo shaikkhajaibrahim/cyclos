@@ -36,4 +36,7 @@ public interface SmsSenderWebService {
      */
     @WebMethod
     boolean send(@WebParam(name = "cyclosId") String cyclosId, @WebParam(name = "member") MemberVO member, @WebParam(name = "text") String text);
+
+    @WebMethod
+    boolean sendToNonMember(@WebParam(name = "cyclosId") String cyclosId, @WebParam(name = "mobileNumber") String mobileNumber, @WebParam(name = "text") String text);
 }

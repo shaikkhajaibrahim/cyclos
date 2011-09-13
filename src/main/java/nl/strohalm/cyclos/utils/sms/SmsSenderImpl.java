@@ -50,6 +50,7 @@ import org.springframework.web.context.ServletContextAware;
 
 /**
  * Send SMS using a Web Service, whose URL is set in the local settings
+ *
  * @author Jefferson Magno
  */
 public class SmsSenderImpl implements SmsSender, LocalSettingsChangeListener, ServletContextAware {
@@ -58,17 +59,22 @@ public class SmsSenderImpl implements SmsSender, LocalSettingsChangeListener, Se
         public boolean send(final String cyclosId, final MemberVO member, final String text) {
             return false;
         }
+
+        @Override
+        public boolean sendToNonMember(String cyclosId, String mobileNumber, String text) {
+            return false;
+        }
     }
 
-    private boolean             initialized;
-    private ServletContext      servletContext;
+    private boolean initialized;
+    private ServletContext servletContext;
     private SmsSenderWebService smsWebService;
 
-    private ErrorLogService     errorLogService;
-    private CustomFieldService  customFieldService;
-    private FetchService        fetchService;
-    private MemberHelper        memberHelper;
-    private SettingsService     settingsService;
+    private ErrorLogService errorLogService;
+    private CustomFieldService customFieldService;
+    private FetchService fetchService;
+    private MemberHelper memberHelper;
+    private SettingsService settingsService;
 
     public void onLocalSettingsUpdate(final LocalSettingsEvent event) {
         smsWebService = null;
@@ -98,6 +104,30 @@ public class SmsSenderImpl implements SmsSender, LocalSettingsChangeListener, Se
             final Map<String, String> params = new HashMap<String, String>();
             params.put("username", member.getUsername());
             params.put("name", member.getName());
+            params.put("sms", text);
+            errorLogService.insert(e, settingsService.getLocalSettings().getSendSmsWebServiceUrl(), params);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean send(String mobileNumber, String text) {
+        maybeInitialize();
+        final LocalSettings localSettings = settingsService.getLocalSettings();
+        final String cyclosId = localSettings.getCyclosId();
+
+        final MessageSettings messageSettings = settingsService.getMessageSettings();
+        String prefix = messageSettings.getSmsMessagePrefix();
+        final Map<String, String> variables = new HashMap<String, String>();
+        variables.put("system_name", localSettings.getApplicationName());
+        prefix = StringUtils.trimToEmpty(MessageProcessingHelper.processVariables(prefix, variables));
+
+        text = StringUtils.trimToEmpty(prefix + " " + text);
+        try {
+            return getSmsWebService().sendToNonMember(cyclosId, mobileNumber, text);
+        } catch (final Exception e) {
+            final Map<String, String> params = new HashMap<String, String>();
+            params.put("mobileNumber", mobileNumber);
             params.put("sms", text);
             errorLogService.insert(e, settingsService.getLocalSettings().getSendSmsWebServiceUrl(), params);
             return false;
