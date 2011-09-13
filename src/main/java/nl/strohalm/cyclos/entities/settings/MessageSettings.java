@@ -355,7 +355,13 @@ public class MessageSettings extends DataObject {
                 "<span style='font-size:smaller;color:SlateGray;'>Please, do not reply to this mail directly. Login to your #system_name# account to reply your messages</span>"),
 
         SMS_MESSAGE_PREFIX(MessageSettingsCategoryEnum.GENERAL,
-                "#system_name#: ");
+                "#system_name#: "),
+
+        TOKEN_GENERATED_SMS(MessageSettingsCategoryEnum.GENERAL, "Token with id #token_id# was generated"),
+
+        TOKEN_PIN_GENERATED_SMS(MessageSettingsCategoryEnum.GENERAL, "PIN #pin# was generated for token #token_id#"),
+
+        ;
 
         private String                      defaultSubject;
         private String                      defaultMessage;
@@ -702,6 +708,10 @@ public class MessageSettings extends DataObject {
     private String            messageMailSuffixHtml                               = MessageSettingsEnum.MESSAGE_MAIL_SUFFIX_HTML.defaultMessage();
 
     private String            smsMessagePrefix                                    = MessageSettingsEnum.SMS_MESSAGE_PREFIX.defaultMessage();
+
+    private String            tokenGeneratedSms                                   = MessageSettingsEnum.TOKEN_GENERATED_SMS.defaultMessage();
+
+    private String            tokenPinGeneratedSms                                = MessageSettingsEnum.TOKEN_PIN_GENERATED_SMS.defaultMessage();
 
     public String getAccountFeeReceivedMessage() {
         return accountFeeReceivedMessage;
@@ -2175,4 +2185,19 @@ public class MessageSettings extends DataObject {
         this.transactionFeedbackRequestSubject = transactionFeedbackRequestSubject;
     }
 
+    public String getTokenGeneratedSms() {
+        return tokenGeneratedSms;
+    }
+
+    public void setTokenGeneratedSms(String tokenGeneratedSms) {
+        this.tokenGeneratedSms = tokenGeneratedSms;
+    }
+
+    public String getTokenPinGeneratedSms() {
+        return tokenPinGeneratedSms;
+    }
+
+    public void setTokenPinGeneratedSms(String tokenPinGeneratedSms) {
+        this.tokenPinGeneratedSms = tokenPinGeneratedSms;
+    }
 }

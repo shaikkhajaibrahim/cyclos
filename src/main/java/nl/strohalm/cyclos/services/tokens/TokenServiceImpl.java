@@ -31,9 +31,12 @@ import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferTypeQuery;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.settings.LocalSettings;
+import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.elements.ElementService;
+import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
 import nl.strohalm.cyclos.services.tokens.exceptions.NoTransactionTypeException;
@@ -42,12 +45,11 @@ import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
 import nl.strohalm.cyclos.services.transactions.PaymentService;
 import nl.strohalm.cyclos.services.transactions.TransactionContext;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
+import nl.strohalm.cyclos.utils.MessageProcessingHelper;
 import nl.strohalm.cyclos.utils.sms.SmsSender;
 import org.apache.commons.lang.time.DateUtils;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TokenServiceImpl implements TokenService {
 
@@ -67,6 +69,7 @@ public class TokenServiceImpl implements TokenService {
     private ElementService elementService;
     private SmsSender smsSender;
     private TransferTypeService transferTypeService;
+    private SettingsService settingsService;
 
     @Override
     public String generateToken(GenerateTokenDTO generateTokenDTO) {
@@ -117,10 +120,6 @@ public class TokenServiceImpl implements TokenService {
 
     private Member loadUser(String userName) {
         return elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), userName);
-    }
-
-    private void sendConfirmationSms(Token token) {
-        smsSender.send(token.getSenderMobilePhone(), "Token: " + token.getTokenId()+" was generated");
     }
 
 
@@ -222,7 +221,24 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void sendPinBySms(Token token) {
-        smsSender.send(token.getSenderMobilePhone(), "PIN " + token.getPin() + " was generated for token: " + token.getTokenId());
+        sendSms(token, getMessageSettings().getTokenPinGeneratedSms());
+    }
+
+
+    private void sendConfirmationSms(Token token) {
+        sendSms(token, getMessageSettings().getTokenGeneratedSms());
+    }
+
+    private void sendSms(Token token, String smsTemplate) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("tokenId", token.getTokenId());
+        params.put("pin", token.getPin());
+        final String sms = MessageProcessingHelper.processVariables(smsTemplate, params);
+        smsSender.send(token.getSenderMobilePhone(), sms);
+    }
+
+    private MessageSettings getMessageSettings() {
+        return settingsService.getMessageSettings();
     }
 
     private String createPin() {
@@ -248,6 +264,10 @@ public class TokenServiceImpl implements TokenService {
 
     public void setTransferTypeService(TransferTypeService transferTypeService) {
         this.transferTypeService = transferTypeService;
+    }
+
+    public void setSettingsService(SettingsService settingsService) {
+        this.settingsService = settingsService;
     }
 
     @Override
