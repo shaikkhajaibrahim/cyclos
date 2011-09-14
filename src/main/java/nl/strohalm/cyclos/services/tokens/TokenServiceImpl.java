@@ -47,6 +47,7 @@ import nl.strohalm.cyclos.services.transactions.TransactionContext;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
 import nl.strohalm.cyclos.utils.MessageProcessingHelper;
 import nl.strohalm.cyclos.utils.sms.SmsSender;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.util.*;
@@ -217,7 +218,12 @@ public class TokenServiceImpl implements TokenService {
     }
 
     String generateTokenID() {
-        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+        return randomNumber(12);
+    }
+
+    private String randomNumber(int length) {
+        return StringUtils.leftPad(("" +
+                (long) (Math.random() * Math.pow(10,length+1))).substring(1, length+1), length);
     }
 
     private void sendPinBySms(Token token) {
@@ -242,8 +248,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private String createPin() {
-        String pin = ("" + (int) (Math.random() * 10000)).substring(0, 4);
-        return pin;
+        return randomNumber(4);
     }
 
     public void setPaymentService(PaymentService paymentService) {

@@ -23,11 +23,16 @@ package nl.strohalm.cyclos.services.tokens;
 
 import org.junit.Test;
 
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertTrue;
+
 public class TokenServiceImplTest {
 
     @Test
     public void shouldGenerateUserName() {
-        System.out.println(new TokenServiceImpl().generateTokenID());
+        String tokenId = new TokenServiceImpl().generateTokenID();
+        assertTrue(Pattern.matches("\\d{12}", tokenId));
     }
 
 }
