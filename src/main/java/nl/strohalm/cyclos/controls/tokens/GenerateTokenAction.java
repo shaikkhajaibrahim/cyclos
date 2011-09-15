@@ -74,7 +74,6 @@ public class GenerateTokenAction extends BaseTokenAction implements LocalSetting
                 binder.registerBinder("amount", PropertyBinder.instance(BigDecimal.class, "amount", localSettings.getNumberConverter()));
                 binder.registerBinder("senderMobilePhone", PropertyBinder.instance(String.class, "senderMobilePhone"));
                 binder.registerBinder("recipientMobilePhone", PropertyBinder.instance(String.class, "recipientMobilePhone"));
-                binder.registerBinder("from", PropertyBinder.instance(String.class, "from"));
 
                 dataBinder = binder;
             }

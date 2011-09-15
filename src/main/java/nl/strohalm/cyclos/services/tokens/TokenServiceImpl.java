@@ -228,8 +228,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private String randomNumber(int length) {
-        return StringUtils.leftPad(("" +
-                (long) (Math.random() * Math.pow(10,length+1))).substring(1, length+1), length);
+        return StringUtils.rightPad("" +
+                (long) (Math.random() * Math.pow(10,length+1)), length, "0").substring(1, length+1);
     }
 
     private void sendPinBySms(Token token) {

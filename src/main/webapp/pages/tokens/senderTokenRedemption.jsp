@@ -19,11 +19,10 @@
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
 
-                <c:if test="${not asBroker}">
                 <tr>
                     <td class="label" width="25%"><bean:message key="tokens.redeemToken.transactionId"/></td>
                     <td>
-	                    <html:text property="token(transactionId)"/>
+	                    <html:text property="token(transactionId)" disabled="${not asBroker}"/>
 
                     </td>
                     </tr>
@@ -35,10 +34,6 @@
 
                     </td>
                 </tr>
-                </c:if>
-                <c:if test="${asBroker}">
-                    <html:hidden property="token(transactionId)"/>
-                </c:if>
                     <tr>
                         <td class="label" valign="top"><bean:message key="tokens.senderTokenRedemption.confirm"/></td>
 

@@ -33,9 +33,14 @@
                 <c:if test="${isBroker}">
                 <tr>
                     <td class="label" valign="top"><bean:message key="tokens.generateToken.tokenSender"/></td>
-                    <td><html:text property="token(tokenSender)" /></td>
+                    <td><html:text property="token(senderMobilePhone)" /></td>
                 </tr>
                 </c:if>
+                <tr>
+                    <td class="label" valign="top"><bean:message key="tokens.generateToken.tokenRecipient"/></td>
+                    <td><html:text property="token(recipientMobilePhone)" /></td>
+                </tr>
+
                     <tr>
 						<td align="right" colspan="2">
 							<input type="submit" id="generateButton" class="button" value="<bean:message key="global.submit"/>">&nbsp;
