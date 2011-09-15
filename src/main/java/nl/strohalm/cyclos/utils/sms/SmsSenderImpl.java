@@ -40,10 +40,10 @@ import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.utils.CustomFieldHelper;
 import nl.strohalm.cyclos.utils.MessageProcessingHelper;
 import nl.strohalm.cyclos.utils.SpringHelper;
-import nl.strohalm.cyclos.webservices.external.ExternalWebServiceHelper;
-import nl.strohalm.cyclos.webservices.external.sms.SmsSenderWebService;
-import nl.strohalm.cyclos.webservices.model.MemberVO;
-import nl.strohalm.cyclos.webservices.utils.server.MemberHelper;
+import mp.platform.cyclone.webservices.external.ExternalWebServiceHelper;
+import mp.platform.cyclone.webservices.external.sms.SmsSenderWebService;
+import mp.platform.cyclone.webservices.model.MemberVO;
+import mp.platform.cyclone.webservices.utils.server.MemberHelper;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.ServletContextAware;

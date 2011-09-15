@@ -244,7 +244,7 @@ public class MessageAspect {
             boolean skipSms = false;
             try {
                 // Try to get the current channel from the web services context, which will only return something when running on web services
-                final Channel currentChannel = (Channel) Class.forName("nl.strohalm.cyclos.webservices.WebServiceContext").getMethod("getChannel").invoke(null);
+                final Channel currentChannel = (Channel) Class.forName("mp.platform.cyclone.webservices.WebServiceContext").getMethod("getChannel").invoke(null);
                 if (currentChannel != null) {
                     // Ok, we are running on a web service. skip if this is the SMS channel, as it has it's own notification
                     final Channel smsChannel = channelService.getSmsChannel();

@@ -38,10 +38,10 @@ import nl.strohalm.cyclos.utils.CurrentTransactionData;
 import nl.strohalm.cyclos.utils.SpringHelper;
 import nl.strohalm.cyclos.utils.WorkerThreads;
 import nl.strohalm.cyclos.utils.CurrentTransactionData.TransactionCommitListener;
-import nl.strohalm.cyclos.webservices.external.ExternalWebServiceHelper;
-import nl.strohalm.cyclos.webservices.external.paymentrequest.PaymentRequestWebService;
-import nl.strohalm.cyclos.webservices.model.PaymentRequestTicketVO;
-import nl.strohalm.cyclos.webservices.utils.server.TicketHelper;
+import mp.platform.cyclone.webservices.external.ExternalWebServiceHelper;
+import mp.platform.cyclone.webservices.external.paymentrequest.PaymentRequestWebService;
+import mp.platform.cyclone.webservices.model.PaymentRequestTicketVO;
+import mp.platform.cyclone.webservices.utils.server.TicketHelper;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
