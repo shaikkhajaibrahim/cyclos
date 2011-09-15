@@ -7,7 +7,8 @@
 
 
 <ssl:form method="post" action="${formAction}">
-<html:hidden property="token(tokenId)"/>
+<html:hidden property="token(transactionId)"/>
+<html:hidden property="token(pin)"/>
 
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>

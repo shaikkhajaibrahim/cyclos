@@ -24,6 +24,14 @@
 	                    <html:text property="token(tokenId)"/>
 
                     </td>
+                    </tr>
+                    <tr>
+
+                    <td class="label" width="25%"><bean:message key="tokens.redeemToken.pin"/></td>
+                    <td>
+	                    <html:text property="token(pin)"/>
+
+                    </td>
                 </tr>
                  <tr>
 						<td align="right" colspan="2">

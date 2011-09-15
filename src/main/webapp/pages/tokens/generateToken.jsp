@@ -19,6 +19,10 @@
     <tr>
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
+
+
+
+
                 <tr>
                     <td class="label" width="25%"><bean:message key="tokens.generateToken.amount"/></td>
                     <td>

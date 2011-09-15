@@ -32,6 +32,8 @@ public class Token extends Entity {
 
     private String senderMobilePhone;
 
+    private String recipientMobilePhone;
+
     private String pin;
 
     private BigDecimal amount;
@@ -101,5 +103,13 @@ public class Token extends Entity {
 
     public void setPin(String pin) {
         this.pin = pin;
+    }
+
+    public String getRecipientMobilePhone() {
+        return recipientMobilePhone;
+    }
+
+    public void setRecipientMobilePhone(String recipientMobilePhone) {
+        this.recipientMobilePhone = recipientMobilePhone;
     }
 }

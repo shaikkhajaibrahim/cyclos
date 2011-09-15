@@ -26,9 +26,7 @@
         <form-bean name="listTokensForm" type="nl.strohalm.cyclos.controls.tokens.ListTokensForm" />
         <form-bean name="generateTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
         <form-bean name="redeemTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
-        <form-bean name="redeemTokenPinForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
         <form-bean name="senderTokenRedemptionForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
-        <form-bean name="senderTokenRedemptionByBrokerForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
         <form-bean name="refundTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
         <form-bean name="refundTokenConfirmForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
 
@@ -68,16 +66,6 @@
             <forward name="success" path="/do/member/redeemTokenPin" redirect="true" />
         </action>
         <action
-            path="/member/redeemTokenPin"
-            type="nl.strohalm.cyclos.controls.tokens.RedeemTokenPinAction"
-            name="redeemTokenPinForm"
-            scope="request"
-            input="member/_redeemTokenPin">
-
-            <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/listTokens" redirect="true" />
-        </action>
-        <action
             path="/member/senderTokenRedemption"
             type="nl.strohalm.cyclos.controls.tokens.SenderTokenRedemptionAction"
             name="senderTokenRedemptionForm"
@@ -87,16 +75,7 @@
             <set-property property="secure" value="true" />
             <forward name="success" path="/do/member/listTokens" redirect="true" />
         </action>
-        <action
-            path="/member/senderTokenRedemptionByBroker"
-            type="nl.strohalm.cyclos.controls.tokens.SenderTokenRedemptionByBrokerAction"
-            name="senderTokenRedemptionByBrokerForm"
-            scope="request"
-            input="member/_senderTokenRedemptionByBroker">
 
-            <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/senderTokenRedemption" redirect="true" />
-        </action>
 
          <action
             path="/member/refundToken"

@@ -27,6 +27,7 @@ import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
+import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.NoTransactionTypeException;
@@ -49,7 +50,7 @@ public class TokenWebServiceImpl implements TokenWebService {
             GenerateTokenDTO generateTokenDTO = new GenerateTokenDTO();
             generateTokenDTO.setAmount(generateTokenParameters.getAmount());
             generateTokenDTO.setFrom(generateTokenParameters.getUsername());
-            generateTokenDTO.setTokenSender(generateTokenParameters.getSenderMobile());
+            generateTokenDTO.setSenderMobilePhone(generateTokenParameters.getSenderMobile());
             return tokenService.generateToken(generateTokenDTO);
         } catch (NotEnoughCreditsException e) {
             throw WebServiceFaultsEnum.NOT_ENOUGH_CREDITS.getFault("Not enough credits for token generation");
@@ -63,7 +64,7 @@ public class TokenWebServiceImpl implements TokenWebService {
     public void redeemToken(RedeemTokenParameters redeemTokenParameters) {
         try {
             Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), redeemTokenParameters.getUsername());
-            tokenService.redeemToken(member, redeemTokenParameters.getTokenId(), redeemTokenParameters.getTokenPin());
+            tokenService.redeemToken(member, redeemTokenParameters.getTokenId(), redeemTokenParameters.getPin());
         } catch (BadStatusForRedeem e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");
         } catch (TokenNotFoundException e) {
@@ -74,30 +75,21 @@ public class TokenWebServiceImpl implements TokenWebService {
     }
 
     @Override
-    public void senderRedeemToken(RedeemTokenParameters redeemTokenParameters) {
+    public void senderRedeemToken(SenderRedeemTokenParameters redeemTokenParameters) {
         //FIXME:
         //authorization...
         try {
             Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), redeemTokenParameters.getUsername());
-            tokenService.senderRedeemToken(member, redeemTokenParameters.getTokenId());
+            SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
+            senderRedeemTokenData.setPin(redeemTokenParameters.getPin());
+            senderRedeemTokenData.setTransactionId(redeemTokenParameters.getReferenceNumber());
+            tokenService.senderRedeemToken(member, senderRedeemTokenData);
         } catch (BadStatusForRedeem e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");
         } catch (TokenNotFoundException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token not found");
         } catch (NoTransactionTypeException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Cannot perform operation");
-        }
-    }
-
-    @Override
-    public void generatePin(GeneratePinParameters generatePinParameters) {
-        try {
-            tokenService.generatePin(generatePinParameters.getTokenId());
-            //FIXME credentials??
-        } catch (BadStatusForRedeem e) {
-            throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");
-        } catch (TokenNotFoundException e) {
-            throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token not found");
         }
     }
 

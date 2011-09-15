@@ -21,21 +21,11 @@
 
 package nl.strohalm.cyclos.webservices.tokens;
 
-public class GeneratePinParameters {
-
-    private String tokenId;
+public class BaseRequest {
 
     private String username;
 
     private String credentials;
-
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
 
     public String getUsername() {
         return username;

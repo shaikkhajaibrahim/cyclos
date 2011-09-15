@@ -31,7 +31,6 @@ import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferTypeQuery;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
@@ -75,13 +74,14 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String generateToken(GenerateTokenDTO generateTokenDTO) {
         String tokenId = generateTokenID();
-        if (generateTokenDTO.getTokenSender() == null) {
+        if (generateTokenDTO.getSenderMobilePhone() == null) {
             //FIXME what if username != mobile
-            generateTokenDTO.setTokenSender(generateTokenDTO.getFrom());
+            generateTokenDTO.setSenderMobilePhone(generateTokenDTO.getFrom());
         }
         Transfer transfer = transferToSuspenseAccount(generateTokenDTO, tokenId);
         Token token = createToken(generateTokenDTO, transfer, tokenId);
-        sendConfirmationSms(token);
+        sendTokenIdBySms(token);
+        generatePin(tokenId);
         return token.getTokenId();
     }
 
@@ -92,7 +92,7 @@ public class TokenServiceImpl implements TokenService {
         token.setTransferFrom(transfer);
         token.setAmount(generateTokenDTO.getAmount());
         token.setStatus(Status.ISSUED);
-        token.setSenderMobilePhone(generateTokenDTO.getTokenSender());
+        token.setSenderMobilePhone(generateTokenDTO.getSenderMobilePhone());
         return tokenDao.insert(token);
     }
 
@@ -141,8 +141,9 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void senderRedeemToken(Member member, String tokenId) {
-        Token token = tokenDao.loadByTokenId(tokenId);
+    public void senderRedeemToken(Member member, SenderRedeemTokenData senderRedeemTokenData) {
+        Token token = tokenDao.loadByTransactionId(senderRedeemTokenData.getTransactionId());
+        validatePin(token, senderRedeemTokenData.getPin());
         token.setTransferTo(redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member, Status.ISSUED, Status.SENDER_REMITTED));
         token.setStatus(Status.SENDER_REMITTED);
         tokenDao.update(token);
@@ -174,8 +175,7 @@ public class TokenServiceImpl implements TokenService {
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
     }
 
-    @Override
-    public void generatePin(String tokenId) {
+    private void generatePin(String tokenId) {
         Token token = tokenDao.loadByTokenId(tokenId);
         if (token.getStatus() != Status.ISSUED) {
             throw new BadStatusForRedeem();
@@ -195,8 +195,9 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void refundToken(Member member, String tokenId) {
-        Token token = tokenDao.loadByTokenId(tokenId);
+    public void refundToken(Member member, SenderRedeemTokenData senderRedeemTokenData) {
+        Token token = tokenDao.loadByTransactionId(senderRedeemTokenData.getTransactionId());
+        validatePin(token, senderRedeemTokenData.getPin());
         if (token.getStatus() != Status.EXPIRED) {
             throw new RefundNonExpiredToken();
         }
@@ -221,26 +222,31 @@ public class TokenServiceImpl implements TokenService {
         return randomNumber(12);
     }
 
+    @Override
+    public Token loadTokenByTransactionId(String tokenId) {
+        return tokenDao.loadByTransactionId(tokenId);
+    }
+
     private String randomNumber(int length) {
         return StringUtils.leftPad(("" +
                 (long) (Math.random() * Math.pow(10,length+1))).substring(1, length+1), length);
     }
 
     private void sendPinBySms(Token token) {
-        sendSms(token, getMessageSettings().getTokenPinGeneratedSms());
+        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getTokenPinGeneratedSms());
     }
 
-
-    private void sendConfirmationSms(Token token) {
-        sendSms(token, getMessageSettings().getTokenGeneratedSms());
+    private void sendTokenIdBySms(Token token) {
+        sendSms(token.getRecipientMobilePhone(), token, getMessageSettings().getTokenGeneratedSms());
     }
 
-    private void sendSms(Token token, String smsTemplate) {
+    private void sendSms(String smsRecipient, Token token, String smsTemplate) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("tokenId", token.getTokenId());
         params.put("pin", token.getPin());
+        params.put("transactionId", token.getTransferFrom().getTransactionNumber());
         final String sms = MessageProcessingHelper.processVariables(smsTemplate, params);
-        smsSender.send(token.getSenderMobilePhone(), sms);
+        smsSender.send(smsRecipient, sms);
     }
 
     private MessageSettings getMessageSettings() {

@@ -27,6 +27,7 @@ import nl.strohalm.cyclos.controls.BaseFormAction;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
+import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
@@ -35,9 +36,11 @@ public class RefundTokenConfirmAction extends BaseTokenAction {
 
     @Override
     ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) {
-        String tokenId = token.getTokenId();
-        tokenService.refundToken(loggedMember, tokenId);
-        context.sendMessage("tokens.tokenRefunded", tokenId);
+        SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
+        senderRedeemTokenData.setPin(token.getPin());
+        senderRedeemTokenData.setTransactionId(token.getTransactionId());
+        tokenService.refundToken(loggedMember, senderRedeemTokenData);
+        context.sendMessage("tokens.tokenRefunded", token.getTransactionId());
         return context.getSuccessForward();
     }
 }

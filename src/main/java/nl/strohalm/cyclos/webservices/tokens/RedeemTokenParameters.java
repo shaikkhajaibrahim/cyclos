@@ -21,15 +21,11 @@
 
 package nl.strohalm.cyclos.webservices.tokens;
 
-public class RedeemTokenParameters {
+public class RedeemTokenParameters extends BaseRequest {
 
     private String tokenId;
 
-    private String username;
-
-    private String credentials;
-
-    private String tokenPin;
+    private String pin;
 
     public String getTokenId() {
         return tokenId;
@@ -39,27 +35,11 @@ public class RedeemTokenParameters {
         this.tokenId = tokenId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPin() {
+        return pin;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getCredentials() {
-        return credentials;
-    }
-
-    public void setCredentials(String credentials) {
-        this.credentials = credentials;
-    }
-
-    public String getTokenPin() {
-        return tokenPin;
-    }
-
-    public void setTokenPin(String tokenPin) {
-        this.tokenPin = tokenPin;
+    public void setPin(String tokenPin) {
+        this.pin = tokenPin;
     }
 }

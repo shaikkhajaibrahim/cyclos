@@ -41,10 +41,6 @@ public interface TokenWebService {
 
     @Permission( { ServiceOperation.DO_PAYMENT, ServiceOperation.RECEIVE_PAYMENT })
     @WebMethod
-    void senderRedeemToken(@WebParam(name = "params") RedeemTokenParameters redeemTokenParameters);
-
-    @Permission( { ServiceOperation.DO_PAYMENT, ServiceOperation.RECEIVE_PAYMENT })
-    @WebMethod
-    void generatePin(@WebParam(name = "params") GeneratePinParameters generatePinParameters);
+    void senderRedeemToken(@WebParam(name = "params") SenderRedeemTokenParameters redeemTokenParameters);
 
 }

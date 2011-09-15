@@ -33,7 +33,7 @@ public class RefundTokenAction extends BaseTokenAction {
     @Override
     ActionForward tokenSubmit(BaseTokenForm tokenForm, Member loggedMember, ActionContext context) {
 
-        Token token = tokenService.loadTokenById(tokenForm.getTokenId());
+        Token token = tokenService.loadTokenById(tokenForm.getTransactionId());
         if (token.getStatus() != Status.EXPIRED) {
             //FIXME
         }

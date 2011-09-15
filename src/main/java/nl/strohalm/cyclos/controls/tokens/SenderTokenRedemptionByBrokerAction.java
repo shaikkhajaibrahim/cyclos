@@ -33,9 +33,8 @@ public class SenderTokenRedemptionByBrokerAction extends BaseTokenAction {
 
     @Override
     ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext actionContext) {
-        String tokenId = token.getTokenId();
-        tokenService.generatePin(tokenId);
-        actionContext.sendMessage("tokens.tokenRedeemedBySender", tokenId);
-        return ActionHelper.redirectWithParam(actionContext.getRequest(), actionContext.getSuccessForward(), "token(tokenId)", tokenId);
+        String transactionId = token.getTransactionId();
+        actionContext.sendMessage("tokens.tokenRedeemedBySender", transactionId);
+        return ActionHelper.redirectWithParam(actionContext.getRequest(), actionContext.getSuccessForward(), "token(transactionId)", transactionId);
     }
 }

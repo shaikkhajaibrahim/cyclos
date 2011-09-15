@@ -21,39 +21,26 @@
 
 package nl.strohalm.cyclos.webservices.tokens;
 
-import java.math.BigDecimal;
+public class SenderRedeemTokenParameters extends BaseRequest {
 
-public class GenerateTokenParameters extends BaseRequest{
+    private String referenceNumber;
 
-    private String recipientMobile;
+    private String pin;
 
-    private String senderMobile;
-
-    private BigDecimal amount;
-
-    public String getRecipientMobile() {
-        return recipientMobile;
+    public String getReferenceNumber() {
+        return referenceNumber;
     }
 
-    public void setRecipientMobile(String recipientMobile) {
-        this.recipientMobile = recipientMobile;
+    public void setReferenceNumber(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
     }
 
-    public String getSenderMobile() {
-        return senderMobile;
+    public String getPin() {
+        return pin;
     }
 
-    public void setSenderMobile(String senderMobile) {
-        this.senderMobile = senderMobile;
+    public void setPin(String tokenPin) {
+        this.pin = tokenPin;
     }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
 
 }

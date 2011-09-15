@@ -35,8 +35,10 @@ public class RedeemTokenAction extends BaseTokenAction {
 
     @Override
     ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) {
-        tokenService.generatePin(token.getTokenId());
-        return ActionHelper.redirectWithParam(context.getRequest(), context.getSuccessForward(), "token(tokenId)", token.getTokenId());
+        String pin = (String) token.getToken("pin");
+        tokenService.redeemToken(loggedMember, token.getTokenId(), pin );
+        context.sendMessage("tokens.tokenRedeemed", token.getTokenId());
+        return context.getSuccessForward();
     }
 
 }

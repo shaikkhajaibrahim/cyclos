@@ -37,10 +37,7 @@ public interface TokenService extends Service {
     //@BrokerAction
     void redeemToken(Member broker, String tokenId, String pin);
 
-    void senderRedeemToken(Member member, String tokenId);
-
-    //@BrokerAction
-    void generatePin(String tokenId);
+    void senderRedeemToken(Member member, SenderRedeemTokenData senderRedeemTokenData);
 
    // @SystemAction
     void processExpiredTokens(Calendar time);
@@ -49,6 +46,8 @@ public interface TokenService extends Service {
 
     Token loadTokenById(String tokenId);
 
+    Token loadTokenByTransactionId(String tokenId);
+
    // @BrokerAction
-    void refundToken(Member member, String tokenId);
+    void refundToken(Member member, SenderRedeemTokenData senderRedeemTokenData);
 }

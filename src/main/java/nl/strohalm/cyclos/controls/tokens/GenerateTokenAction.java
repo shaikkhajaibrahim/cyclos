@@ -21,17 +21,12 @@
 
 package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
-import nl.strohalm.cyclos.controls.BaseFormAction;
-import nl.strohalm.cyclos.entities.access.User;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsEvent;
 import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
-import nl.strohalm.cyclos.services.tokens.TokenService;
-import nl.strohalm.cyclos.utils.ActionHelper;
 import nl.strohalm.cyclos.utils.SettingsHelper;
 import nl.strohalm.cyclos.utils.binding.BeanBinder;
 import nl.strohalm.cyclos.utils.binding.DataBinder;
@@ -55,7 +50,7 @@ public class GenerateTokenAction extends BaseTokenAction implements LocalSetting
 
         generateTokenDTO.setFrom(loggedMember.getUsername());
         if (!context.isBroker()) {
-            generateTokenDTO.setTokenSender(null);
+            generateTokenDTO.setSenderMobilePhone(null);
         }
         String tokenId =  tokenService.generateToken(generateTokenDTO);
         context.sendMessage("tokens.tokenGenerated", tokenId);
@@ -77,7 +72,9 @@ public class GenerateTokenAction extends BaseTokenAction implements LocalSetting
 
                 final BeanBinder<GenerateTokenDTO> binder = BeanBinder.instance(GenerateTokenDTO.class);
                 binder.registerBinder("amount", PropertyBinder.instance(BigDecimal.class, "amount", localSettings.getNumberConverter()));
-                binder.registerBinder("tokenSender", PropertyBinder.instance(String.class, "tokenSender"));
+                binder.registerBinder("senderMobilePhone", PropertyBinder.instance(String.class, "senderMobilePhone"));
+                binder.registerBinder("recipientMobilePhone", PropertyBinder.instance(String.class, "recipientMobilePhone"));
+                binder.registerBinder("from", PropertyBinder.instance(String.class, "from"));
 
                 dataBinder = binder;
             }

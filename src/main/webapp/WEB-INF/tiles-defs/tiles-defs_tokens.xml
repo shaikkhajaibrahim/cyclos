@@ -36,14 +36,8 @@
     <definition name="member/_redeemToken" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/redeemToken.jsp"/>
 	</definition>
-    <definition name="member/_redeemTokenPin" extends=".memberLayout">
-		<put name="body" value="/pages/tokens/redeemTokenPin.jsp"/>
-	</definition>
     <definition name="member/_senderTokenRedemption" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/senderTokenRedemption.jsp"/>
-	</definition>
-    <definition name="member/_senderTokenRedemptionByBroker" extends=".memberLayout">
-		<put name="body" value="/pages/tokens/senderTokenRedemptionByBroker.jsp"/>
 	</definition>
     <definition name="member/_refundToken" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/refundToken.jsp"/>

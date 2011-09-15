@@ -7,7 +7,6 @@
 
 
 <ssl:form method="post" action="${formAction}">
-<html:hidden property="token(tokenId)"/>
 
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
@@ -19,6 +18,27 @@
     <tr>
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
+
+                <c:if test="${not asBroker}">
+                <tr>
+                    <td class="label" width="25%"><bean:message key="tokens.redeemToken.transactionId"/></td>
+                    <td>
+	                    <html:text property="token(transactionId)"/>
+
+                    </td>
+                    </tr>
+                    <tr>
+
+                    <td class="label" width="25%"><bean:message key="tokens.redeemToken.pin"/></td>
+                    <td>
+	                    <html:text property="token(pin)"/>
+
+                    </td>
+                </tr>
+                </c:if>
+                <c:if test="${asBroker}">
+                    <html:hidden property="token(transactionId)"/>
+                </c:if>
                     <tr>
                         <td class="label" valign="top"><bean:message key="tokens.senderTokenRedemption.confirm"/></td>
 

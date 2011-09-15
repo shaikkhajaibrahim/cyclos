@@ -19,41 +19,27 @@
  *
  */
 
-package nl.strohalm.cyclos.webservices.tokens;
+package nl.strohalm.cyclos.services.tokens;
 
-import java.math.BigDecimal;
+public class SenderRedeemTokenData {
 
-public class GenerateTokenParameters extends BaseRequest{
+    private String transactionId;
 
-    private String recipientMobile;
+    private String pin;
 
-    private String senderMobile;
-
-    private BigDecimal amount;
-
-    public String getRecipientMobile() {
-        return recipientMobile;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setRecipientMobile(String recipientMobile) {
-        this.recipientMobile = recipientMobile;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public String getSenderMobile() {
-        return senderMobile;
+    public String getPin() {
+        return pin;
     }
 
-    public void setSenderMobile(String senderMobile) {
-        this.senderMobile = senderMobile;
+    public void setPin(String pin) {
+        this.pin = pin;
     }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-
 }

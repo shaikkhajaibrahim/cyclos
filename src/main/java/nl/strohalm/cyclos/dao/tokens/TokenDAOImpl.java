@@ -45,6 +45,16 @@ public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
     }
 
     @Override
+    public Token loadByTransactionId(String transactionId) {
+        List<Token> token = list("from Token t where t.transferFrom.transactionNumber = :transactionId", Collections.singletonMap("transactionId", transactionId));
+        if (token.isEmpty()) {
+            throw new TokenNotFoundException(transactionId);
+        }
+        return token.get(0);
+    }
+
+
+    @Override
     public List<Token> getTokensToExpire(Calendar time) {
                 final StringBuilder hql = new StringBuilder();
         hql.append(" from Token t ");
@@ -61,11 +71,13 @@ public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
     @Override
     public List<Token> getUserTokens(String userName) {
         final StringBuilder hql = new StringBuilder();
-        hql.append(" from Token t where t.transferFrom.from.ownerName <= :username ");
+        hql.append(" from Token t where t.transferFrom.from.ownerName = :username ");
 
         final Map<String, Object> namedParameters = new HashMap<String, Object>();
         namedParameters.put("username", userName);
 
         return list(hql.toString(), namedParameters);
     }
+
 }
+

@@ -19,17 +19,31 @@
         <td colspan="2" align="left" class="tdContentTableForms">
             <table class="defaultTable">
                 <tr>
-                    <td class="label" width="25%"><bean:message key="tokens.refundToken.tokenId"/></td>
+                    <td class="label" width="25%"><bean:message key="tokens.refundToken.transactionId"/></td>
                     <td>
-	                    <html:text property="token(tokenId)"/>
+	                    <html:text property="token(transactionId)"/>
 
                     </td>
                 </tr>
+
+
+
+
+
+                <tr>
+                    <td class="label" width="25%"><bean:message key="tokens.refundToken.pin"/></td>
+                    <td>
+	                    <html:text property="token(pin)"/>
+
+                    </td>
+                </tr>
+
                  <tr>
 						<td align="right" colspan="2">
 							<input type="submit" id="redeemButton" class="button" value="<bean:message key="global.submit"/>">&nbsp;
 						</td>
 	                </tr>
+
             </table>
 		</td>
     </tr>

@@ -21,15 +21,14 @@
 
 package nl.strohalm.cyclos.services.tokens;
 
-import nl.strohalm.cyclos.entities.accounts.AccountOwner;
-
 import java.math.BigDecimal;
 
 public class GenerateTokenDTO {
 
     private BigDecimal amount;
     private String from;
-    private String tokenSender;
+    private String senderMobilePhone;
+    private String recipientMobilePhone;
 
     public BigDecimal getAmount() {
         return amount;
@@ -47,12 +46,19 @@ public class GenerateTokenDTO {
         this.from = from;
     }
 
-    public String getTokenSender() {
-        return tokenSender;
+    public String getSenderMobilePhone() {
+        return senderMobilePhone;
     }
 
-    public void setTokenSender(String tokenSender) {
-        this.tokenSender = tokenSender;
+    public void setSenderMobilePhone(String senderMobilePhone) {
+        this.senderMobilePhone = senderMobilePhone;
     }
 
+    public String getRecipientMobilePhone() {
+        return recipientMobilePhone;
+    }
+
+    public void setRecipientMobilePhone(String recipientMobilePhone) {
+        this.recipientMobilePhone = recipientMobilePhone;
+    }
 }

@@ -21,14 +21,9 @@
 
 package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
-import nl.strohalm.cyclos.controls.BaseFormAction;
-import nl.strohalm.cyclos.entities.access.Channel;
-import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.services.elements.ElementService;
-import nl.strohalm.cyclos.services.tokens.TokenService;
+import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
 import org.apache.struts.action.ActionForward;
 
 public class SenderTokenRedemptionAction extends BaseTokenAction {
@@ -36,7 +31,18 @@ public class SenderTokenRedemptionAction extends BaseTokenAction {
 
     @Override
     ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext actionContext) {
-        tokenService.senderRedeemToken(loggedMember, token.getTokenId());
+        SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
+        senderRedeemTokenData.setPin(token.getPin());
+        senderRedeemTokenData.setTransactionId(token.getTransactionId());
+        tokenService.senderRedeemToken(loggedMember, senderRedeemTokenData);
         return actionContext.getSuccessForward();
+    }
+
+    @Override
+    protected void prepareForm(ActionContext context) throws Exception {
+        super.prepareForm(context);    //To change body of overridden methods use File | Settings | File Templates.
+        String transactionId = context.getRequest().getParameter("token(transactionId)");
+        context.getRequest().setAttribute("asBroker", transactionId ==null);
+
     }
 }

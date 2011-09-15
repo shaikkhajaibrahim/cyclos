@@ -43,8 +43,6 @@ public class ListTokensAction extends BaseAction {
     @Override
     protected ActionForward executeAction(final ActionContext context) throws Exception {
         final HttpServletRequest request = context.getRequest();
-        final ListTokensForm form = context.getForm();
-
         List<Token> tokens = tokenService.getUserTokens(context.getUser());
         request.setAttribute("tokens", tokens);
         return context.getInputForward();

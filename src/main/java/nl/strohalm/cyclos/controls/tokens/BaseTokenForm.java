@@ -48,4 +48,12 @@ public class BaseTokenForm extends BaseBindingForm {
         return (String) values.get("tokenId");
     }
 
+    String getTransactionId() {
+        return (String) values.get("transactionId");
+    }
+
+    String getPin() {
+        return (String) values.get("pin");
+    }
+
 }
