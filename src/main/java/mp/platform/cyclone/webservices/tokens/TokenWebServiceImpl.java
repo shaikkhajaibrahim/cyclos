@@ -51,6 +51,7 @@ public class TokenWebServiceImpl implements TokenWebService {
             generateTokenDTO.setAmount(generateTokenParameters.getAmount());
             generateTokenDTO.setFrom(generateTokenParameters.getUsername());
             generateTokenDTO.setSenderMobilePhone(generateTokenParameters.getSenderMobile());
+            generateTokenDTO.setRecipientMobilePhone(generateTokenParameters.getRecipientMobile());
             return tokenService.generateToken(generateTokenDTO);
         } catch (NotEnoughCreditsException e) {
             throw WebServiceFaultsEnum.NOT_ENOUGH_CREDITS.getFault("Not enough credits for token generation");
