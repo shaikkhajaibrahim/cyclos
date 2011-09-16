@@ -28,15 +28,21 @@ import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RefundTokenAction extends BaseTokenAction {
 
     @Override
     ActionForward tokenSubmit(BaseTokenForm tokenForm, Member loggedMember, ActionContext context) {
 
-        Token token = tokenService.loadTokenById(tokenForm.getTransactionId());
+        Token token = tokenService.loadTokenByTransactionId(tokenForm.getTransactionId());
         if (token.getStatus() != Status.EXPIRED) {
             //FIXME
         }
-        return ActionHelper.redirectWithParam(context.getRequest(), context.getSuccessForward(), "token(tokenId)", tokenForm.getTokenId());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("token(transactionId)", tokenForm.getTransactionId());
+        params.put("token(pin)", tokenForm.getPin());
+        return ActionHelper.redirectWithParams(context.getRequest(), context.getSuccessForward(), params);
     }
 }

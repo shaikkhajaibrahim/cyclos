@@ -63,7 +63,7 @@
             input="member/_redeemToken">
 
             <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/redeemTokenPin" redirect="true" />
+            <forward name="success" path="/do/member/listTokens" redirect="true" />
         </action>
         <action
             path="/member/senderTokenRedemption"
