@@ -83,7 +83,7 @@ public class TokenServiceImpl implements TokenService {
         Token token = createToken(generateTokenDTO, transfer, tokenId);
         sendTokenIdBySms(token);
         generatePin(tokenId);
-        return token.getTokenId();
+        return token.getTransferFrom().getTransactionNumber();
     }
 
 
