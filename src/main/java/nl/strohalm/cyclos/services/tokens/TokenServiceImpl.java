@@ -78,7 +78,7 @@ public class TokenServiceImpl implements TokenService {
             //FIXME what if username != mobile
             generateTokenDTO.setSenderMobilePhone(generateTokenDTO.getFrom());
         }
-        Transfer transfer = transferToSuspenseAccount(generateTokenDTO, tokenId);
+        Transfer transfer = transferToSuspenseAccount(generateTokenDTO, generateTokenDTO.getRecipientMobilePhone());
         Token token = createToken(generateTokenDTO, transfer, tokenId);
         sendTokenIdBySms(token);
         generatePin(tokenId);
@@ -96,7 +96,7 @@ public class TokenServiceImpl implements TokenService {
         return tokenDao.insert(token);
     }
 
-    private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO, String tokenId) {
+    private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO, String recipient) {
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
 
         doPaymentDTO.setAmount(generateTokenDTO.getAmount());
@@ -114,7 +114,7 @@ public class TokenServiceImpl implements TokenService {
 
         doPaymentDTO.setTo(SystemAccountOwner.instance());
         doPaymentDTO.setContext(TransactionContext.PAYMENT);
-        doPaymentDTO.setDescription("Creation of token " + tokenId);
+        doPaymentDTO.setDescription("Creation of token for recipient "+recipient);
 
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
     }
@@ -229,7 +229,7 @@ public class TokenServiceImpl implements TokenService {
 
     private String randomNumber(int length) {
         return StringUtils.rightPad("" +
-                (long) (Math.random() * Math.pow(10,length+1)), length, "0").substring(1, length+1);
+                (long) (Math.random() * Math.pow(10,length+1)), length+1, "0").substring(1, length+1);
     }
 
     private void sendPinBySms(Token token) {
