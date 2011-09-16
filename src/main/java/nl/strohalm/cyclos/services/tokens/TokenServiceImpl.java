@@ -63,6 +63,7 @@ public class TokenServiceImpl implements TokenService {
 
     public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME = "tokenRefund";
 
+
     private TokenDAO tokenDao;
 
     private PaymentService paymentService;
@@ -101,7 +102,7 @@ public class TokenServiceImpl implements TokenService {
         DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
 
         doPaymentDTO.setAmount(generateTokenDTO.getAmount());
-
+        doPaymentDTO.setChannel("");
         Member from = loadUser(generateTokenDTO.getFrom());
         doPaymentDTO.setFrom(from);
 
@@ -116,6 +117,8 @@ public class TokenServiceImpl implements TokenService {
         doPaymentDTO.setTo(SystemAccountOwner.instance());
         doPaymentDTO.setContext(TransactionContext.AUTOMATIC);
         doPaymentDTO.setDescription("Creation of token for recipient "+recipient);
+        //FIXME: some better channel? cannot be web, since we don't want to be accessible through normal payment page
+        doPaymentDTO.setChannel(Channel.POSWEB);
 
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
     }
