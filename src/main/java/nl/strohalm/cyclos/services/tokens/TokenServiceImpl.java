@@ -93,6 +93,7 @@ public class TokenServiceImpl implements TokenService {
         token.setAmount(generateTokenDTO.getAmount());
         token.setStatus(Status.ISSUED);
         token.setSenderMobilePhone(generateTokenDTO.getSenderMobilePhone());
+        token.setRecipientMobilePhone(generateTokenDTO.getRecipientMobilePhone());
         return tokenDao.insert(token);
     }
 
@@ -113,7 +114,7 @@ public class TokenServiceImpl implements TokenService {
         doPaymentDTO.setTransferType(tts.get(0));
 
         doPaymentDTO.setTo(SystemAccountOwner.instance());
-        doPaymentDTO.setContext(TransactionContext.PAYMENT);
+        doPaymentDTO.setContext(TransactionContext.AUTOMATIC);
         doPaymentDTO.setDescription("Creation of token for recipient "+recipient);
 
         return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
