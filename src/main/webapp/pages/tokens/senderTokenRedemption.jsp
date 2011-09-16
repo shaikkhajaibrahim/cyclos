@@ -22,7 +22,7 @@
                 <tr>
                     <td class="label" width="25%"><bean:message key="tokens.redeemToken.transactionId"/></td>
                     <td>
-	                    <html:text property="token(transactionId)" disabled="${not asBroker}"/>
+	                    <html:text property="token(transactionId)" readonly="${not asBroker}"/>
 
                     </td>
                     </tr>
