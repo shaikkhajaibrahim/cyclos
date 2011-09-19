@@ -2128,12 +2128,12 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
     }
 
     private void validateMaxAmount(final Account account, final BigDecimal amount) {
-        final Member member = LoggedUser.element();
-
-        MemberGroup group = member.getMemberGroup();
-        final BigDecimal maxAmount = group.getMemberSettings().getMaxTransferAmount();
-        if (maxAmount != null && maxAmount.floatValue() > PRECISION_DELTA && amount.compareTo(maxAmount) ==1 ) {
-            throw new MaxAmountExceededException(account, amount);
+        if (account.getOwner() instanceof Member) {
+            MemberGroup group = ((Member) account.getOwner()).getMemberGroup();
+            final BigDecimal maxAmount = group.getMemberSettings().getMaxTransferAmount();
+            if (maxAmount != null && maxAmount.floatValue() > PRECISION_DELTA && amount.compareTo(maxAmount) == 1) {
+                throw new MaxAmountExceededException(account, amount);
+            }
         }
 
     }
