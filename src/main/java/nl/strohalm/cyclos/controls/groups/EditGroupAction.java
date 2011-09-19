@@ -565,6 +565,8 @@ public class EditGroupAction extends BaseFormAction {
         memberSettingsBinder.registerBinder("maxSchedulingPeriod", DataBinderHelper.timePeriodBinder("maxSchedulingPeriod"));
         memberSettingsBinder.registerBinder("expireMembersAfter", DataBinderHelper.timePeriodBinder("expireMembersAfter"));
         memberSettingsBinder.registerBinder("groupAfterExpiration", PropertyBinder.instance(MemberGroup.class, "groupAfterExpiration"));
+        memberSettingsBinder.registerBinder("maxTransferAmount", PropertyBinder.instance(BigDecimal.class, "maxTransferAmount"));
+
     }
 
     private void initOperator(final BeanBinder<? extends OperatorGroup> operatorGroupBinder) {

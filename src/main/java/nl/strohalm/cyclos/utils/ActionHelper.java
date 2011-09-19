@@ -42,11 +42,7 @@ import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.members.Operator;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.services.alerts.ErrorLogService;
-import nl.strohalm.cyclos.services.transactions.exceptions.CreditsException;
-import nl.strohalm.cyclos.services.transactions.exceptions.MaxAmountPerDayExceededException;
-import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
-import nl.strohalm.cyclos.services.transactions.exceptions.TransferMinimumPaymentException;
-import nl.strohalm.cyclos.services.transactions.exceptions.UpperCreditLimitReachedException;
+import nl.strohalm.cyclos.services.transactions.exceptions.*;
 import nl.strohalm.cyclos.utils.validation.ValidationError;
 import nl.strohalm.cyclos.utils.validation.ValidationException;
 
@@ -243,6 +239,8 @@ public final class ActionHelper {
             return "payment.error.transferMinimum";
         } else if (exception instanceof UpperCreditLimitReachedException) {
             return "payment.error.upperCreditLimit";
+        } else if (exception instanceof MaxAmountExceededException) {
+            return "payment.error.maxAmountExceeded";
         } else {
             return "error.general";
         }

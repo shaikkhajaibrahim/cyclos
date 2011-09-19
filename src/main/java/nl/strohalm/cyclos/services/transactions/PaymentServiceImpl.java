@@ -100,11 +100,7 @@ import nl.strohalm.cyclos.services.preferences.MessageChannel;
 import nl.strohalm.cyclos.services.preferences.PreferenceService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.stats.StatisticalResultDTO;
-import nl.strohalm.cyclos.services.transactions.exceptions.AuthorizedPaymentInPastException;
-import nl.strohalm.cyclos.services.transactions.exceptions.MaxAmountPerDayExceededException;
-import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
-import nl.strohalm.cyclos.services.transactions.exceptions.TransferMinimumPaymentException;
-import nl.strohalm.cyclos.services.transactions.exceptions.UpperCreditLimitReachedException;
+import nl.strohalm.cyclos.services.transactions.exceptions.*;
 import nl.strohalm.cyclos.services.transfertypes.BuildTransferWithFeesDTO;
 import nl.strohalm.cyclos.services.transfertypes.TransactionFeePreviewDTO;
 import nl.strohalm.cyclos.services.transfertypes.TransactionFeePreviewForRatesDTO;
@@ -152,6 +148,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Implementation for payment service
+ *
  * @author luis
  * @author rinke (rates stuff)
  */
@@ -159,12 +156,13 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
 
     /**
      * A key to monitor which fees have been charged, in order to detect loops
+     *
      * @author luis
      */
     private static class ChargedFee {
         private TransactionFee fee;
-        private Account        from;
-        private Account        to;
+        private Account from;
+        private Account to;
 
         private ChargedFee(final TransactionFee fee, final Account from, final Account to) {
             this.fee = fee;
@@ -189,6 +187,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
 
     /**
      * validator always returning a validationError. To be called if the final amount of a payment (after applying all fees) is negative
+     *
      * @author rinke
      */
     private final class FinalAmountValidator implements GeneralValidation {
@@ -201,8 +200,8 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
 
     private class InsertReverseThread extends Thread {
         private String traceNumber;
-        private Long   clientId;
-        Throwable      error;
+        private Long clientId;
+        Throwable error;
 
         private InsertReverseThread(final String traceNumber, final Long clientId) {
             super(InsertReverseThread.class.getName());
@@ -246,8 +245,8 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
 
     /**
      * validator which always returns a validationError. To be called if a past date on a transfer is combined with rates.
+     *
      * @author Rinke
-     * 
      */
     private static final class NoPastDateWithRatesValidator implements GeneralValidation {
 
@@ -403,12 +402,13 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
 
     /**
      * Class used to simulate a payment. It actually performs the payment in a new transaction an runs a rollback
+     *
      * @author luis
      */
     private class SimulatePaymentThread extends Thread {
         private DoExternalPaymentDTO dto;
-        private Payment              payment;
-        private Throwable            error;
+        private Payment payment;
+        private Throwable error;
 
         public SimulatePaymentThread(final DoExternalPaymentDTO dto) {
             this.dto = dto;
@@ -463,40 +463,46 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
         }
     }
 
-    private static final float                     PRECISION_DELTA            = 0.0001F;
+    private static final float PRECISION_DELTA = 0.0001F;
 
-    private static final Relationship[]            CONCILIATION_FETCH         = { Transfer.Relationships.EXTERNAL_TRANSFER, RelationshipHelper.nested(Transfer.Relationships.FROM, MemberAccount.Relationships.MEMBER) };
+    private static final Relationship[] CONCILIATION_FETCH = {Transfer.Relationships.EXTERNAL_TRANSFER, RelationshipHelper.nested(Transfer.Relationships.FROM, MemberAccount.Relationships.MEMBER)};
 
-    /** Contains the last payment's date. Used to clear the MAX_AMOUNT_MAP when the day has changed */
-    private Calendar                               lastPaymentDate            = Calendar.getInstance();
+    /**
+     * Contains the last payment's date. Used to clear the MAX_AMOUNT_MAP when the day has changed
+     */
+    private Calendar lastPaymentDate = Calendar.getInstance();
 
-    /** The key is the account id. The value is another Map where the key is the transfer type id and the value is the accumulated amount on the day */
-    private final Map<Long, Map<Long, BigDecimal>> maxAmountPerDayMap         = Collections.synchronizedMap(new HashMap<Long, Map<Long, BigDecimal>>());
-    /** The key is the operator id. The value is another Map where the key is the transfer type id and the value is the accumulated amount on the day */
+    /**
+     * The key is the account id. The value is another Map where the key is the transfer type id and the value is the accumulated amount on the day
+     */
+    private final Map<Long, Map<Long, BigDecimal>> maxAmountPerDayMap = Collections.synchronizedMap(new HashMap<Long, Map<Long, BigDecimal>>());
+    /**
+     * The key is the operator id. The value is another Map where the key is the transfer type id and the value is the accumulated amount on the day
+     */
     private final Map<Long, Map<Long, BigDecimal>> operatorMaxAmountPerDayMap = Collections.synchronizedMap(new HashMap<Long, Map<Long, BigDecimal>>());
-    private AccountService                         accountService;
-    private CommissionService                      commissionService;
-    private SettingsService                        settingsService;
-    private TransferAuthorizationService           transferAuthorizationService;
-    private TicketDAO                              ticketDao;
-    private TransactionFeeService                  transactionFeeService;
-    private TransferDAO                            transferDao;
-    private ReverseDAO                             reverseDao;
-    private ScheduledPaymentDAO                    scheduledPaymentDao;
-    private TransferTypeService                    transferTypeService;
-    private FetchService                           fetchService;
-    private LoggingHandler                         loggingHandler;
-    private PermissionService                      permissionService;
-    private AlertService                           alertService;
-    private MessageResolver                        messageResolver;
-    private ApplicationContext                     applicationContext;
-    private TransactionTemplate                    transactionTemplate;
-    private CustomFieldService                     customFieldService;
-    private AccountStatusHandler                   accountStatusHandler;
-    private ARateService                           aRateService;
-    private DRateService                           dRateService;
+    private AccountService accountService;
+    private CommissionService commissionService;
+    private SettingsService settingsService;
+    private TransferAuthorizationService transferAuthorizationService;
+    private TicketDAO ticketDao;
+    private TransactionFeeService transactionFeeService;
+    private TransferDAO transferDao;
+    private ReverseDAO reverseDao;
+    private ScheduledPaymentDAO scheduledPaymentDao;
+    private TransferTypeService transferTypeService;
+    private FetchService fetchService;
+    private LoggingHandler loggingHandler;
+    private PermissionService permissionService;
+    private AlertService alertService;
+    private MessageResolver messageResolver;
+    private ApplicationContext applicationContext;
+    private TransactionTemplate transactionTemplate;
+    private CustomFieldService customFieldService;
+    private AccountStatusHandler accountStatusHandler;
+    private ARateService aRateService;
+    private DRateService dRateService;
 
-    private PreferenceService                      preferenceService;
+    private PreferenceService preferenceService;
 
     public List<ScheduledPaymentDTO> calculatePaymentProjection(final ProjectionDTO params) {
         getProjectionValidator().validate(params);
@@ -594,7 +600,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
     }
 
     public void checkView(Transfer transfer) throws PermissionDeniedException {
-        final Relationship[] fetch = { RelationshipHelper.nested(Transfer.Relationships.FROM, MemberAccount.Relationships.MEMBER, Element.Relationships.GROUP), RelationshipHelper.nested(Transfer.Relationships.FROM, Account.Relationships.TYPE), RelationshipHelper.nested(Transfer.Relationships.TO, MemberAccount.Relationships.MEMBER, Element.Relationships.GROUP), RelationshipHelper.nested(Transfer.Relationships.TO, Account.Relationships.TYPE) };
+        final Relationship[] fetch = {RelationshipHelper.nested(Transfer.Relationships.FROM, MemberAccount.Relationships.MEMBER, Element.Relationships.GROUP), RelationshipHelper.nested(Transfer.Relationships.FROM, Account.Relationships.TYPE), RelationshipHelper.nested(Transfer.Relationships.TO, MemberAccount.Relationships.MEMBER, Element.Relationships.GROUP), RelationshipHelper.nested(Transfer.Relationships.TO, Account.Relationships.TYPE)};
         transfer = fetchService.fetch(transfer, fetch);
         final AccountOwner fromAccountOwner = transfer.getFromOwner();
         final AccountOwner toAccountOwner = transfer.getToOwner();
@@ -943,7 +949,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
     }
 
     public Transfer load(final Long id, final Relationship... fetch) {
-        return transferDao.<Transfer> load(id, fetch);
+        return transferDao.<Transfer>load(id, fetch);
     }
 
     public Transfer loadTransferByTraceNumber(final String traceNumber, final Long clientId) {
@@ -1810,8 +1816,9 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
 
     /**
      * Insert a reverse for a transfer with the specified TN and clientId
+     *
      * @param traceNumber the traceNumber of the transfer to be reversed
-     * @param clientId the clientId of the transfer to be reversed
+     * @param clientId    the clientId of the transfer to be reversed
      */
     private void insertReverse(final String traceNumber, final Long clientId) {
         final InsertReverseThread thread = new InsertReverseThread(traceNumber, clientId);
@@ -1848,6 +1855,8 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
         // Insert the parent amount
         if (!forced) {
             validateAmount(transfer.getAmount(), fromAccount, toAccount, transfer);
+            validateMaxAmount(fromAccount, transfer.getAmount());
+            validateMaxAmountToday(fromAccount, transferType, transfer.getAmount());
         }
         transfer.setCustomValues(null);
         transfer = transferDao.insert(transfer);
@@ -1897,6 +1906,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
                 fromAccountToValidate = null;
             }
             validateAmount(amount, fromAccountToValidate, to, transfer);
+            validateMaxAmount(from, amount);
             validateMaxAmountToday(from, transferType, amount);
             final TransactionFeePreviewDTO preview = transactionFeeService.preview(from.getOwner(), to.getOwner(), transferType, amount);
             transfer.setAmount(preview.getFinalAmount());
@@ -1943,7 +1953,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
                 if (transfer.isFromSystem()) {
                     final Member member = (Member) transfer.getToOwner();
                     final LocalSettings settings = settingsService.getLocalSettings();
-                    final Object[] arguments = { settings.getUnitsConverter(transfer.getType().getFrom().getCurrency().getPattern()).toString(transfer.getAmount()), transfer.getType().getName() };
+                    final Object[] arguments = {settings.getUnitsConverter(transfer.getType().getFrom().getCurrency().getPattern()).toString(transfer.getAmount()), transfer.getType().getName()};
                     alertService.create(member, MemberAlert.Alerts.SCHEDULED_PAYMENT_FAILED, arguments);
                 }
             } else {
@@ -2115,6 +2125,17 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
                 }
             }
         }
+    }
+
+    private void validateMaxAmount(final Account account, final BigDecimal amount) {
+        final Member member = LoggedUser.element();
+
+        MemberGroup group = member.getMemberGroup();
+        final BigDecimal maxAmount = group.getMemberSettings().getMaxTransferAmount();
+        if (maxAmount != null && maxAmount.floatValue() > PRECISION_DELTA && amount.compareTo(maxAmount) ==1 ) {
+            throw new MaxAmountExceededException(account, amount);
+        }
+
     }
 
     /**
