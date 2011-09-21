@@ -246,6 +246,10 @@ public class TokenServiceImpl implements TokenService {
 
     private void sendSms(String smsRecipient, Token token, String smsTemplate) {
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("sender", token.getSenderMobilePhone());
+        params.put("amount", token.getAmount());
+        params.put("recipient", token.getRecipientMobilePhone());
+
         params.put("tokenId", token.getTokenId());
         params.put("pin", token.getPin());
         params.put("transactionId", token.getTransferFrom().getTransactionNumber());
