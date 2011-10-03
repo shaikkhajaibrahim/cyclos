@@ -368,50 +368,55 @@ public class MessageServiceImpl implements MessageService, DisposableBean {
             memberSmsStatus = memberService.getSmsStatus(charged);
             additionalChargedSms = smsContext.getAdditionalChargedSms(charged);
             final int freeSms = smsContext.getFreeSms(charged);
-            if (memberSmsStatus.getFreeSmsSent() < freeSms) {
-                // There are free messages left
+             // There are free messages left
                 memberSmsStatus.setFreeSmsSent(memberSmsStatus.getFreeSmsSent() + 1);
                 freeBaseUsed = true;
                 statusChanged = true;
-            } else if (memberSmsStatus.getPaidSmsLeft() > 0) {
-                // There are paid messages left
-                memberSmsStatus.setPaidSmsLeft(memberSmsStatus.getPaidSmsLeft() - 1);
-                statusChanged = true;
-            } else {
-                // Check if paid messages are enabled
-                if (additionalChargedSms > 0) {
-                    // Paid messages are enabled
-                    if (memberSmsStatus.isAllowChargingSms()) {
-                        // The member allows charge
-                        final TransferDTO chargeDTO = buildSmsChargeDto(charged, smsContext);
-                        try {
-                            if (chargeDTO == null) {
-                                throw new UnexpectedEntityException();
-                            }
-                            transfer = (Transfer) paymentService.insertWithoutNotification(chargeDTO);
-                            // The status will only be updated if the SMS sending is successful, to avoid updating the status and having to undo later
-                            boughtNewMessages = true;
-                        } catch (final NotEnoughCreditsException e) {
-                            errorType = ErrorType.NOT_ENOUGH_FUNDS;
-                        } catch (final MaxAmountPerDayExceededException e) {
-                            errorType = ErrorType.NOT_ENOUGH_FUNDS;
-                        } catch (final UpperCreditLimitReachedException e) {
-                            errorType = ErrorType.NOT_ENOUGH_FUNDS;
-                        } catch (final UnexpectedEntityException e) {
-                            throw new ValidationException("The SMS charging is not well configured. Please, check the charging transfer type.");
-                        }
-                    } else {
-                        // The member have disallowed charging
-                        errorType = ErrorType.ALLOW_CHARGING_DISABLED;
-                    }
-                } else {
-                    if (freeSms == 0) {
-                        throw new ValidationException("SMS cannot be sent as both free messages and aditional messages are zero");
-                    } else {
-                        errorType = ErrorType.NO_SMS_LEFT;
-                    }
-                }
-            }
+//                TODO: odkomentowac. Zrobione na szybko
+//            if (memberSmsStatus.getFreeSmsSent() < freeSms) {
+//                // There are free messages left
+//                memberSmsStatus.setFreeSmsSent(memberSmsStatus.getFreeSmsSent() + 1);
+//                freeBaseUsed = true;
+//                statusChanged = true;
+//            } else if (memberSmsStatus.getPaidSmsLeft() > 0) {
+//                // There are paid messages left
+//                memberSmsStatus.setPaidSmsLeft(memberSmsStatus.getPaidSmsLeft() - 1);
+//                statusChanged = true;
+//            } else {
+//                // Check if paid messages are enabled
+//                if (additionalChargedSms > 0) {
+//                    // Paid messages are enabled
+//                    if (memberSmsStatus.isAllowChargingSms()) {
+//                        // The member allows charge
+//                        final TransferDTO chargeDTO = buildSmsChargeDto(charged, smsContext);
+//                        try {
+//                            if (chargeDTO == null) {
+//                                throw new UnexpectedEntityException();
+//                            }
+//                            transfer = (Transfer) paymentService.insertWithoutNotification(chargeDTO);
+//                            // The status will only be updated if the SMS sending is successful, to avoid updating the status and having to undo later
+//                            boughtNewMessages = true;
+//                        } catch (final NotEnoughCreditsException e) {
+//                            errorType = ErrorType.NOT_ENOUGH_FUNDS;
+//                        } catch (final MaxAmountPerDayExceededException e) {
+//                            errorType = ErrorType.NOT_ENOUGH_FUNDS;
+//                        } catch (final UpperCreditLimitReachedException e) {
+//                            errorType = ErrorType.NOT_ENOUGH_FUNDS;
+//                        } catch (final UnexpectedEntityException e) {
+//                            throw new ValidationException("The SMS charging is not well configured. Please, check the charging transfer type.");
+//                        }
+//                    } else {
+//                        // The member have disallowed charging
+//                        errorType = ErrorType.ALLOW_CHARGING_DISABLED;
+//                    }
+//                } else {
+//                    if (freeSms == 0) {
+//                        throw new ValidationException("SMS cannot be sent as both free messages and aditional messages are zero");
+//                    } else {
+//                        errorType = ErrorType.NO_SMS_LEFT;
+//                    }
+//                }
+//            }
         }
         // Send the message itself if no error so far
         if (errorType == null) {
