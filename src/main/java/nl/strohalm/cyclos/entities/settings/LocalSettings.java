@@ -478,7 +478,8 @@ public class LocalSettings extends DataObject {
     private transient Dimensions                          maxImageDimensions;
     private transient Dimensions                          maxThumbnailDimensions;
     private transient List<Level>                         referenceLevelList;
-
+    private String                                        fullNameExpression;
+    
     public TextFormat getAdDescriptionFormat() {
         return adDescriptionFormat;
     }
@@ -1088,4 +1089,11 @@ public class LocalSettings extends DataObject {
         }
     }
 
+    public String getFullNameExpression() {
+        return fullNameExpression;
+    }
+
+    public void setFullNameExpression(String fullNameExpression) {
+        this.fullNameExpression = fullNameExpression;
+    }
 }

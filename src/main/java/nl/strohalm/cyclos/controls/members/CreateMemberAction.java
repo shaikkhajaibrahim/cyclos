@@ -18,6 +18,7 @@
  */
 package nl.strohalm.cyclos.controls.members;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,6 +43,7 @@ import nl.strohalm.cyclos.exceptions.MailSendingException;
 import nl.strohalm.cyclos.services.customization.CustomFieldService;
 import nl.strohalm.cyclos.services.elements.WhenSaving;
 import nl.strohalm.cyclos.services.groups.GroupService;
+import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.utils.ActionHelper;
 import nl.strohalm.cyclos.utils.CustomFieldHelper;
 import nl.strohalm.cyclos.utils.MailHandler;
@@ -51,6 +53,7 @@ import nl.strohalm.cyclos.utils.binding.PropertyBinder;
 import nl.strohalm.cyclos.utils.query.PageHelper;
 import nl.strohalm.cyclos.utils.validation.ValidationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 
 /**
@@ -60,6 +63,7 @@ import org.apache.struts.action.ActionForward;
 public class CreateMemberAction extends CreateElementAction<Member> {
 
     private CustomFieldService customFieldService;
+    private SettingsService settingsService;
     private GroupService       groupService;
 
     public CustomFieldService getCustomFieldService() {
@@ -86,6 +90,11 @@ public class CreateMemberAction extends CreateElementAction<Member> {
     }
 
     @Inject
+    public void setSettingsService(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
+
+    @Inject
     public void setGroupService(final GroupService groupService) {
         this.groupService = groupService;
     }
@@ -94,6 +103,8 @@ public class CreateMemberAction extends CreateElementAction<Member> {
     protected ActionForward create(final Element element, final ActionContext context) {
         final CreateElementForm form = context.getForm();
         final Member member = (Member) element;
+
+        setFullNameIfNeeded(member);
 
         final boolean sendPasswordByEmail = member.getMemberGroup().getMemberSettings().isSendPasswordByEmail();
         final boolean canChangePassword = getPermissionService().checkPermission(context.isAdmin() ? "adminMemberAccess" : "brokerMemberAccess", "changePassword");
@@ -164,6 +175,24 @@ public class CreateMemberAction extends CreateElementAction<Member> {
         return ActionHelper.redirectWithParam(context.getRequest(), forward, paramName, paramValue);
     }
 
+    protected void setFullNameIfNeeded(Member member) {
+        String fullNameExpression = settingsService.getLocalSettings().getFullNameExpression();
+        if (!StringUtils.isEmpty(fullNameExpression)) {
+            String fullName = prepareFullName(member.getCustomValues(), fullNameExpression);
+            member.setName(fullName);
+        }
+    }
+
+    private String prepareFullName(Collection<MemberCustomFieldValue> fields, String fullNameExpression) {
+        String fullName = fullNameExpression;
+        for (MemberCustomFieldValue value : fields) {
+            CustomField cf = customFieldService.load(value.getField().getId());
+            String fieldValue = value.getValue() == null ? "" : value.getValue();
+            fullName = fullName.replaceAll("#"+cf.getInternalName()+"#",fieldValue);
+        }
+        return fullName;
+    }
+
     @Override
     protected void formAction(final ActionContext context) throws Exception {
         super.formAction(context);
@@ -222,6 +251,9 @@ public class CreateMemberAction extends CreateElementAction<Member> {
         }
         request.setAttribute("customFields", customFields);
         request.setAttribute("group", group);
+
+        request.setAttribute("displayFullName", StringUtils.isEmpty(
+                settingsService.getLocalSettings().getFullNameExpression()));
 
         // Store the password control flags
         final boolean sendPasswordByEmail = group.getMemberSettings().isSendPasswordByEmail();

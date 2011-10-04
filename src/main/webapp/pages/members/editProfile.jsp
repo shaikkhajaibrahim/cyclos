@@ -30,6 +30,7 @@
 
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
+
         <td class="tdHeaderTable"><bean:message key="${titleKey}" arg0="${member.name}"/></td>
         <cyclos:help page="profiles#member_profile"/>
     </tr>

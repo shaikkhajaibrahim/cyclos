@@ -256,6 +256,11 @@
 	                    	</html:select>
 	                    </td>
 	                </tr>
+                    <tr>
+   	                    <td class="label"><bean:message key="settings.local.fullNameExpression"/></td>
+                        <td><html:text property="setting(fullNameExpression)" styleClass="full InputBoxDisabled" readonly="true"/></td>
+   	                </tr>
+
 	                <tr>
 	                    <td class="label" width="30%"><bean:message key="settings.local.showCountersInAdCategories"/></td>
 	                    <td><html:checkbox property="setting(showCountersInAdCategories)" value="true" styleClass="checkbox InputBoxDisabled" disabled="true"/></td>

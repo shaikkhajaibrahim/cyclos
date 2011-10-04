@@ -149,6 +149,8 @@ public class LocalSettingsHandler extends BaseSettingsHandler<LocalSettings> {
         localConverters.put("maxChargebackTime.field", CoercionConverter.instance(Field.class));
         localConverters.put("chargebackDescription", CoercionConverter.instance(String.class));
         localConverters.put("showCountersInAdCategories", CoercionConverter.instance(Boolean.TYPE));
+        localConverters.put("fullNameExpression", CoercionConverter.instance(String.class));
+
         return localConverters;
     }
 

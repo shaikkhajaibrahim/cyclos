@@ -54,11 +54,13 @@
 			<td valign="top" colspan="2"><html:text property="member(user).username" maxlength="${accessSettings.usernameLength.max}" styleClass="large InputBoxEnabled required"/></td>
 		</tr>
 	</c:if>
+    <c:if test="${displayFullName}">
 	<tr>
 		<td width="30%" class="label"><bean:message key="member.name"/></td>
 		<td><html:text property="member(name)" styleClass="large InputBoxEnabled required"/></td>
         <td valign="bottom" class="label" style="text-align:left" width="15%" nowrap="nowrap"><cyclos:escapeHTML><bean:message key="profile.member.hide"/></cyclos:escapeHTML></td>
 	</tr>
+    </c:if>
 	<tr>
 		<td class="label"><bean:message key="member.email"/></td>
 		<td><html:text property="member(email)" styleClass="large InputBoxEnabled ${localSettings.emailRequired ? 'required' : ''}"/></td>

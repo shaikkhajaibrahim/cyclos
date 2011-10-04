@@ -19,6 +19,7 @@
 package nl.strohalm.cyclos.controls.members;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -108,6 +109,24 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
         }
     }
 
+    protected void setFullNameIfNeeded(Member member, HttpServletRequest request) {
+        String fullNameExpression = SettingsHelper.getLocalSettings(request).getFullNameExpression();
+        if (!StringUtils.isEmpty(fullNameExpression)) {
+            String fullName = prepareFullName(member.getCustomValues(), fullNameExpression);
+            member.setName(fullName);
+        }
+    }
+
+    private String prepareFullName(Collection<MemberCustomFieldValue> fields, String fullNameExpression) {
+        String fullName = fullNameExpression;
+        for (MemberCustomFieldValue value : fields) {
+            CustomField cf = customFieldService.load(value.getField().getId());
+            String fieldValue = value.getValue() == null ? "" : value.getValue();
+            fullName = fullName.replaceAll("#"+cf.getInternalName()+"#",fieldValue);
+        }
+        return fullName;
+    }
+
     @Inject
     public void setCustomFieldService(final CustomFieldService customFieldService) {
         this.customFieldService = customFieldService;
@@ -151,6 +170,7 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
 
         // Save the member
         final Member member = getDataBinder().readFromString(form.getMember());
+        setFullNameIfNeeded(member, request);
         RegisteredMember registeredMember;
         try {
             registeredMember = elementService.publicRegisterMember(member, request.getRemoteAddr());

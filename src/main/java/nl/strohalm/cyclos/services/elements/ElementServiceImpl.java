@@ -1488,7 +1488,9 @@ public class ElementServiceImpl implements ElementService {
                 final LocalSettings localSettings = settingsService.getLocalSettings();
                 final Validator validator = new Validator(baseName);
                 validator.property("group").required();
-                validator.property("name").required().maxLength(100);
+                if (StringUtils.isEmpty(localSettings.getFullNameExpression())) {
+                    validator.property("name").required().maxLength(100);
+                }
                 final boolean isMember = nature == Element.Nature.MEMBER;
 
                 // Validate username

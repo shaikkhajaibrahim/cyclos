@@ -131,6 +131,8 @@ public class EditLocalSettingsAction extends BaseFormAction {
             binder.registerBinder("chargebackDescription", PropertyBinder.instance(String.class, "chargebackDescription"));
             binder.registerBinder("showCountersInAdCategories", PropertyBinder.instance(Boolean.TYPE, "showCountersInAdCategories"));
 
+            binder.registerBinder("fullNameExpression", PropertyBinder.instance(String.class, "fullNameExpression"));
+
             dataBinder = binder;
         }
         return dataBinder;
