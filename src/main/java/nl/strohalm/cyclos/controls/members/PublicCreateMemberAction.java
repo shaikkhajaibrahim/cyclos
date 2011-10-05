@@ -255,6 +255,7 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
 
         // Form validation
         final Member member = getDataBinder().readFromString(form.getMember());
+        setFullNameIfNeeded(member, request);
 
         ValidationException exc;
         try {
