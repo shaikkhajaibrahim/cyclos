@@ -14,7 +14,7 @@ function renderVirtualKeyboard(field) {
 		};
 		if (numericPassword) {
 			options.chars = shuffle("0123456789".split("")).join("");
-			options.showFull = true;
+			options.showFull = false; //why should we show full keyboard??
 		}
 		new VirtualKeyboard($('virtualKeyboard'), field, options);
 	}
