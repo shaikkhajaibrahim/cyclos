@@ -98,5 +98,5 @@ public interface PaymentWebService {
      */
     @Permission( { ServiceOperation.DO_PAYMENT, ServiceOperation.RECEIVE_PAYMENT })
     @WebMethod
-    PaymentStatus simulatePayment(@WebParam(name = "params") PaymentParameters params);
+    PaymentSimulationResult simulatePayment(@WebParam(name = "params") PaymentParameters params);
 }
