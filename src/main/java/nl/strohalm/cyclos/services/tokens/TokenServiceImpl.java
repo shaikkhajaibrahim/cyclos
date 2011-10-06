@@ -213,7 +213,8 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void processExpiredTokens(Calendar time) {
         Calendar timeToExpire = Calendar.getInstance();
-        timeToExpire.setTime(DateUtils.addDays(time.getTime(), -1));
+        int tokenExpirationInDays = -1*settingsService.getLocalSettings().getTokenExpirationInDays();
+        timeToExpire.setTime(DateUtils.addDays(time.getTime(), tokenExpirationInDays == 0 ? -30 : tokenExpirationInDays));
         for (Token token : tokenDao.getTokensToExpire(timeToExpire)) {
             token.setStatus(Status.EXPIRED);
             token.setTransferTo(redeemToken(token, TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME, SystemAccountOwner.instance(), Status.ISSUED, Status.EXPIRED));

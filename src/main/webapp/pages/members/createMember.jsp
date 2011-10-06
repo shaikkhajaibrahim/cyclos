@@ -68,8 +68,8 @@
 	</tr>
     <c:forEach var="field" items="${customFields}">
 		<tr>
-			<td valign="top" class="label">${field.name}</td>
-			<td>
+			<td valign="top" title="${field.description}" class="label">${field.name}</td>
+			<td title="${field.description}">
 				<c:if test="${field.memberCanHide}">
 					<input type="hidden" id="hidden_${field.id}" name="member(customValues).hidden" value="false">
 				</c:if>

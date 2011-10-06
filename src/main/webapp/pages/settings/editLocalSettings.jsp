@@ -393,6 +393,10 @@
 	                    <td class="label"><bean:message key="settings.local.schedulingMinute"/></td>
 	                    <td><html:text property="setting(schedulingMinute)" styleClass="tiny number InputBoxDisabled" readonly="true"/></td>
 	                </tr>
+                    <tr>
+   	                    <td class="label"><bean:message key="settings.local.tokenExpirationInDays"/></td>
+                        <td><html:text property="setting(tokenExpirationInDays)" styleClass="full InputBoxDisabled" readonly="true"/></td>
+   	                </tr>
 	            </table>
             </fieldset>
 			<c:if test="${cyclos:granted('systemSettings', 'manageLocal')}">

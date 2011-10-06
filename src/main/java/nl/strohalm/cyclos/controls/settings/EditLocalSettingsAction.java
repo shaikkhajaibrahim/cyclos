@@ -132,7 +132,8 @@ public class EditLocalSettingsAction extends BaseFormAction {
             binder.registerBinder("showCountersInAdCategories", PropertyBinder.instance(Boolean.TYPE, "showCountersInAdCategories"));
 
             binder.registerBinder("fullNameExpression", PropertyBinder.instance(String.class, "fullNameExpression"));
-
+            binder.registerBinder("tokenExpirationInDays", PropertyBinder.instance(Integer.TYPE, "tokenExpirationInDays"));
+            
             dataBinder = binder;
         }
         return dataBinder;
