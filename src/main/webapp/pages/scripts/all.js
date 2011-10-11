@@ -10064,11 +10064,11 @@ function applyNumberMask(numberMask, isBlur, isBackSpace) {
         isNegative = !isNegative;
     }
     //Format the integer part with decimal separators
-    if (!isEmpty(intPart)) {
-        while (intPart.charAt(0) == '0') {
-            intPart = intPart.substr(1);
-        }
-    }
+//    if (!isEmpty(intPart)) {
+//        while (intPart.charAt(0) == '0') {
+//            intPart = intPart.substr(1);
+//        }
+//    }
     if (isEmpty(intPart)) {
         intPart = "0";
     }

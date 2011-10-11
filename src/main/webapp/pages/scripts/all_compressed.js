@@ -6740,9 +6740,9 @@ var _637=typedCode(_636);
 var _638=(_637==8)&&JST_NUMBER_MASK_APPLY_ON_BACKSPACE;
 if(this.supportsCaret&&(this.toDecimal||(!this.ignore&&this.accepted)||_638)){
 if(_638&&this.mask.getAsNumber()==0){
-this.value="";
+//this.value="";
 }
-applyNumberMask(this.mask,false,_638);
+//applyNumberMask(this.mask,false,_638);
 }
 if(this.mask.keyUpFunction!=null){
 var ret=invokeAsMethod(this,this.mask.keyUpFunction,[_636,this.mask]);
@@ -7220,9 +7220,9 @@ _6a9=!_6a9;
 }
 }
 if(!isEmpty(_6a7)){
-while(_6a7.charAt(0)=="0"){
-_6a7=_6a7.substr(1);
-}
+//while(_6a7.charAt(0)=="0"){
+//_6a7=_6a7.substr(1);
+//}
 }
 if(isEmpty(_6a7)){
 _6a7="0";
