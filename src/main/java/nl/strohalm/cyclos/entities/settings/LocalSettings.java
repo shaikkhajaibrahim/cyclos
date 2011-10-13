@@ -479,6 +479,8 @@ public class LocalSettings extends DataObject {
     private transient Dimensions                          maxThumbnailDimensions;
     private transient List<Level>                         referenceLevelList;
     private String                                        fullNameExpression;
+    private int                                           tokenExpirationInDays;
+    
     
     public TextFormat getAdDescriptionFormat() {
         return adDescriptionFormat;
@@ -1095,5 +1097,13 @@ public class LocalSettings extends DataObject {
 
     public void setFullNameExpression(String fullNameExpression) {
         this.fullNameExpression = fullNameExpression;
+    }
+
+    public int getTokenExpirationInDays() {
+        return tokenExpirationInDays;
+    }
+
+    public void setTokenExpirationInDays(int tokenExpirationInDays) {
+        this.tokenExpirationInDays = tokenExpirationInDays;
     }
 }

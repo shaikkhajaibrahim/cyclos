@@ -1,0 +1,875 @@
+diff --git a/pom.xml b/pom.xml
+index 9b275cc..520e419 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -337,6 +337,57 @@
+                     </webResources>
+                 </configuration>
+             </plugin>
++            <plugin>
++                <groupId>org.apache.cxf</groupId>
++                <artifactId>cxf-codegen-plugin</artifactId>
++                <version>2.2.6</version>
++                <dependencies>
++                    <!--dependency>
++                        <groupId>net.java.dev.jaxb2-commons</groupId>
++                        <artifactId>jaxb-fluent-api</artifactId>
++                        <version>2.1.8</version>
++                    </dependency-->
++                    <dependency>
++                        <groupId>org.apache.cxf</groupId>
++                        <artifactId>cxf-xjc-dv</artifactId>
++                        <version>2.2.6</version>
++                    </dependency>
++                </dependencies>
++                <executions>
++                    <execution>
++                        <id>wsdl interfaces generation</id>
++                        <configuration>
++                            <defaultOptions>
++                                <extraargs>
++                                    <!--extraarg>-xjc-Xfluent-api</extraarg-->
++                                    <extraarg>-xjc-Xdv</extraarg>
++                                </extraargs>
++                            </defaultOptions>
++                            <wsdlOptions>
++                                <wsdlOption>
++                                    <wsdl>${basedir}/src/main/resources/nl/strohalm/cyclos/webservices/accessService.wsdl</wsdl>
++                                    <bindingFiles>
++                                        <bindingFile>${basedir}/src/main/bindings/access-bindings-jaxws.xml</bindingFile>
++                                        <bindingFile>${basedir}/src/main/bindings/bindings.xjb</bindingFile>
++                                    </bindingFiles>
++                                </wsdlOption>
++                                <wsdlOption>
++                                    <wsdl>${basedir}/src/main/resources/nl/strohalm/cyclos/webservices/accountService.wsdl</wsdl>
++                                    <bindingFiles>
++                                        <bindingFile>${basedir}/src/main/bindings/accounts-bindings-jaxws.xml</bindingFile>
++                                        <bindingFile>${basedir}/src/main/bindings/bindings.xjb</bindingFile>
++                                    </bindingFiles>
++                                </wsdlOption>
++                            </wsdlOptions>
++                        </configuration>
++                        <goals>
++                            <goal>wsdl2java</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++
+         </plugins>
+     </build>
+ 
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebService.java b/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebService.java
+deleted file mode 100644
+index f364c88..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebService.java
++++ /dev/null
+@@ -1,57 +0,0 @@
+-/*
+- This file is part of Cyclos.
+-
+- Cyclos is free software; you can redistribute it and/or modify
+- it under the terms of the GNU General Public License as published by
+- the Free Software Foundation; either version 2 of the License, or
+- (at your option) any later version.
+-
+- Cyclos is distributed in the hope that it will be useful,
+- but WITHOUT ANY WARRANTY; without even the implied warranty of
+- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+- GNU General Public License for more details.
+-
+- You should have received a copy of the GNU General Public License
+- along with Cyclos; if not, write to the Free Software
+- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.access;
+-
+-import javax.jws.WebMethod;
+-import javax.jws.WebParam;
+-import javax.jws.WebService;
+-
+-import nl.strohalm.cyclos.entities.services.ServiceOperation;
+-import nl.strohalm.cyclos.webservices.Permission;
+-import nl.strohalm.cyclos.webservices.PrincipalParameters;
+-
+-/**
+- * Web service interface for access
+- * @author luis
+- */
+-@WebService
+-public interface AccessWebService {
+-
+-    /**
+-     * Changes the credentials associated with the service's channel
+-     */
+-    @Permission(ServiceOperation.MANAGE_MEMBERS)
+-    @WebMethod
+-    public ChangeCredentialsStatus changeCredentials(@WebParam(name = "params") ChangeCredentialsParameters params);
+-
+-    /**
+-     * Checks whether the given credentials are valid for the channel related to the web service client
+-     */
+-    @Permission(ServiceOperation.ACCESS)
+-    @WebMethod
+-    public CredentialsStatus checkCredentials(@WebParam(name = "params") CheckCredentialsParameters params);
+-
+-    /**
+-     * Check whether the given member has access to the current service's channel
+-     */
+-    @Permission(ServiceOperation.ACCESS)
+-    @WebMethod
+-    public boolean isChannelEnabledForMember(@WebParam(name = "params") PrincipalParameters params);
+-
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebServiceImpl.java b/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebServiceImpl.java
+index fc82a9a..efc55f6 100644
+--- a/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebServiceImpl.java
++++ b/src/main/java/nl/strohalm/cyclos/webservices/access/AccessWebServiceImpl.java
+@@ -34,7 +34,6 @@ import nl.strohalm.cyclos.services.elements.ElementService;
+ import nl.strohalm.cyclos.services.settings.SettingsService;
+ import nl.strohalm.cyclos.utils.validation.ValidationError;
+ import nl.strohalm.cyclos.utils.validation.ValidationException;
+-import nl.strohalm.cyclos.webservices.PrincipalParameters;
+ import nl.strohalm.cyclos.webservices.WebServiceContext;
+ import nl.strohalm.cyclos.webservices.utils.server.ChannelHelper;
+ import nl.strohalm.cyclos.webservices.utils.server.MemberHelper;
+@@ -47,7 +46,7 @@ import org.apache.commons.lang.StringUtils;
+  * 
+  * @author luis
+  */
+-@WebService(name = "access", serviceName = "access")
++@WebService(name = "access", serviceName = "access", targetNamespace = "http://access.webservices.cyclone.platform.mp/")
+ public class AccessWebServiceImpl implements AccessWebService {
+ 
+     private SettingsService settingsService;
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/access/ChangeCredentialsParameters.java b/src/main/java/nl/strohalm/cyclos/webservices/access/ChangeCredentialsParameters.java
+deleted file mode 100644
+index 4d028e1..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/access/ChangeCredentialsParameters.java
++++ /dev/null
+@@ -1,50 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.access;
+-
+-import nl.strohalm.cyclos.webservices.PrincipalParameters;
+-
+-/**
+- * Parameters used to change the login password
+- * 
+- * @author luis
+- */
+-public class ChangeCredentialsParameters extends PrincipalParameters {
+-
+-    private static final long serialVersionUID = 2709950886565783705L;
+-
+-    private String            oldCredentials;
+-    private String            newCredentials;
+-
+-    public String getNewCredentials() {
+-        return newCredentials;
+-    }
+-
+-    public String getOldCredentials() {
+-        return oldCredentials;
+-    }
+-
+-    public void setNewCredentials(final String newCredentials) {
+-        this.newCredentials = newCredentials;
+-    }
+-
+-    public void setOldCredentials(final String oldCredentials) {
+-        this.oldCredentials = oldCredentials;
+-    }
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/access/ChangeCredentialsStatus.java b/src/main/java/nl/strohalm/cyclos/webservices/access/ChangeCredentialsStatus.java
+deleted file mode 100644
+index aaa0f71..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/access/ChangeCredentialsStatus.java
++++ /dev/null
+@@ -1,48 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.access;
+-
+-/**
+- * Possible statuses for changing credentials
+- * 
+- * @author luis
+- */
+-public enum ChangeCredentialsStatus {
+-
+-    /** The credentials were successfully changed */
+-    SUCCESS,
+-
+-    /** The member was not found */
+-    MEMBER_NOT_FOUND,
+-
+-    /** Invalid current credentials are invalid */
+-    INVALID_CREDENTIALS,
+-
+-    /** The credentials are blocked by exceeding attempts */
+-    BLOCKED_CREDENTIALS,
+-
+-    /** Thrown when the given credentials contains invalid characters, or when required passwords were not present */
+-    INVALID_CHARACTERS,
+-
+-    /** The given credentials are too simple */
+-    TOO_SIMPLE,
+-
+-    /** The given credentials were already used in past */
+-    CREDENTIALS_ALREADY_USED
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/access/CheckCredentialsParameters.java b/src/main/java/nl/strohalm/cyclos/webservices/access/CheckCredentialsParameters.java
+deleted file mode 100644
+index 528d38f..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/access/CheckCredentialsParameters.java
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.access;
+-
+-import nl.strohalm.cyclos.webservices.PrincipalParameters;
+-
+-/**
+- * Parameters for checking credentials
+- * 
+- * @author luis
+- */
+-public class CheckCredentialsParameters extends PrincipalParameters {
+-
+-    private static final long serialVersionUID = -4977573090221498474L;
+-    private String            credentials;
+-
+-    public String getCredentials() {
+-        return credentials;
+-    }
+-
+-    public void setCredentials(final String credentials) {
+-        this.credentials = credentials;
+-    }
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/access/CredentialsStatus.java b/src/main/java/nl/strohalm/cyclos/webservices/access/CredentialsStatus.java
+deleted file mode 100644
+index f69a7ba..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/access/CredentialsStatus.java
++++ /dev/null
+@@ -1,34 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.access;
+-
+-/**
+- * Result of a credentials check
+- * @author luis
+- */
+-public enum CredentialsStatus {
+-    /** The given credentials are valid */
+-    VALID,
+-
+-    /** The given credentials are invalid */
+-    INVALID,
+-
+-    /** The given credentials are blocked for exceeding the allowed tries */
+-    BLOCKED
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountHistoryResultPage.java b/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountHistoryResultPage.java
+deleted file mode 100644
+index 0a7c73d..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountHistoryResultPage.java
++++ /dev/null
+@@ -1,86 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.accounts;
+-
+-import java.util.Collections;
+-import java.util.Iterator;
+-import java.util.List;
+-
+-import nl.strohalm.cyclos.webservices.model.AccountHistoryTransferVO;
+-import nl.strohalm.cyclos.webservices.model.AccountStatusVO;
+-import nl.strohalm.cyclos.webservices.utils.ResultPage;
+-
+-/**
+- * Page results for account history transfers
+- * @author luis
+- */
+-public class AccountHistoryResultPage extends ResultPage<AccountHistoryTransferVO> {
+-    private static final long              serialVersionUID = -186613342878700230L;
+-    private AccountStatusVO                accountStatus;
+-    private List<AccountHistoryTransferVO> transfers;
+-
+-    public AccountHistoryResultPage() {
+-    }
+-
+-    public AccountHistoryResultPage(final int currentPage, final int totalCount, final List<AccountHistoryTransferVO> transfers) {
+-        super(currentPage, totalCount);
+-        this.transfers = transfers;
+-    }
+-
+-    public AccountStatusVO getAccountStatus() {
+-        return accountStatus;
+-    }
+-
+-    public List<AccountHistoryTransferVO> getTransfers() {
+-        return transfers;
+-    }
+-
+-    @Override
+-    public Iterator<AccountHistoryTransferVO> iterator() {
+-        if (transfers == null) {
+-            return Collections.<AccountHistoryTransferVO> emptyList().iterator();
+-        }
+-        return transfers.iterator();
+-    }
+-
+-    public void setAccountStatus(final AccountStatusVO accountStatus) {
+-        this.accountStatus = accountStatus;
+-    }
+-
+-    public void setTransfers(final List<AccountHistoryTransferVO> transfers) {
+-        this.transfers = transfers;
+-    }
+-
+-    @Override
+-    public String toString() {
+-        final StringBuilder buffer = new StringBuilder();
+-        buffer.append("AdResultPage[");
+-
+-        buffer.append(accountStatus.toString());
+-
+-        for (final AccountHistoryTransferVO vo : transfers) {
+-            buffer.append("," + vo.toString());
+-        }
+-
+-        buffer.append("]");
+-
+-        return buffer.toString();
+-    }
+-
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountHistorySearchParameters.java b/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountHistorySearchParameters.java
+deleted file mode 100644
+index d982c40..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountHistorySearchParameters.java
++++ /dev/null
+@@ -1,146 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.accounts;
+-
+-import java.util.Calendar;
+-import java.util.List;
+-
+-import nl.strohalm.cyclos.webservices.model.FieldValueVO;
+-import nl.strohalm.cyclos.webservices.utils.SearchParameters;
+-
+-/**
+- * Parameters for retrieving and account history
+- * @author luis
+- */
+-public class AccountHistorySearchParameters extends SearchParameters {
+-    private static final long  serialVersionUID = 3508395169859539803L;
+-    private String             principalType;
+-    private String             principal;
+-    private Long               accountTypeId;
+-    private String             currency;
+-    private String             relatedMemberPrincipalType;
+-    private String             relatedMember;
+-    private Calendar           beginDate;
+-    private Calendar           endDate;
+-    private List<FieldValueVO> fields;
+-    private boolean            reverseOrder;
+-    private String             credentials;
+-    private String             transactionNumber;
+-
+-    public Long getAccountTypeId() {
+-        return accountTypeId;
+-    }
+-
+-    public Calendar getBeginDate() {
+-        return beginDate;
+-    }
+-
+-    public String getCredentials() {
+-        return credentials;
+-    }
+-
+-    public String getCurrency() {
+-        return currency;
+-    }
+-
+-    public Calendar getEndDate() {
+-        return endDate;
+-    }
+-
+-    public List<FieldValueVO> getFields() {
+-        return fields;
+-    }
+-
+-    public String getPrincipal() {
+-        return principal;
+-    }
+-
+-    public String getPrincipalType() {
+-        return principalType;
+-    }
+-
+-    public String getRelatedMember() {
+-        return relatedMember;
+-    }
+-
+-    public String getRelatedMemberPrincipalType() {
+-        return relatedMemberPrincipalType;
+-    }
+-
+-    public boolean isReverseOrder() {
+-        return reverseOrder;
+-    }
+-
+-    public String getTransactionNumber() {
+-        return transactionNumber;
+-    }
+-
+-    public void setAccountTypeId(final Long accountTypeId) {
+-        this.accountTypeId = accountTypeId;
+-    }
+-
+-    public void setBeginDate(final Calendar beginDate) {
+-        this.beginDate = beginDate;
+-    }
+-
+-    public void setCredentials(final String credentials) {
+-        this.credentials = credentials;
+-    }
+-
+-    public void setCurrency(final String currency) {
+-        this.currency = currency;
+-    }
+-
+-    public void setEndDate(final Calendar endDate) {
+-        this.endDate = endDate;
+-    }
+-
+-    public void setFields(final List<FieldValueVO> fields) {
+-        this.fields = fields;
+-    }
+-
+-    public void setPrincipal(final String principal) {
+-        this.principal = principal;
+-    }
+-
+-    public void setPrincipalType(final String principalType) {
+-        this.principalType = principalType;
+-    }
+-
+-    public void setRelatedMember(final String relatedMember) {
+-        this.relatedMember = relatedMember;
+-    }
+-
+-    public void setRelatedMemberPrincipalType(final String relatedMemberPrincipalType) {
+-        this.relatedMemberPrincipalType = relatedMemberPrincipalType;
+-    }
+-
+-    public void setReverseOrder(final boolean reverseOrder) {
+-        this.reverseOrder = reverseOrder;
+-    }
+-
+-    public void setTransactionNumber(String transactionNumber) {
+-        this.transactionNumber = transactionNumber;
+-    }
+-
+-    @Override
+-    public String toString() {
+-        return "AccountHistorySearchParameters [accountTypeId=" + accountTypeId + ", beginDate=" + beginDate + ", credentials=****" + ", currency=" + currency + ", endDate=" + endDate + ", fields=" + fields + ", principal=" + principal + ", principalType=" + principalType + ", relatedMember=" + relatedMember + ", relatedMemberPrincipalType=" + relatedMemberPrincipalType + ", reverseOrder=" + reverseOrder + ", transactionNumber=" + transactionNumber + ", " + super.toString() + "]";
+-    }
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebService.java b/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebService.java
+deleted file mode 100644
+index 7bb808e..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebService.java
++++ /dev/null
+@@ -1,69 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.accounts;
+-
+-import java.util.List;
+-
+-import javax.jws.WebMethod;
+-import javax.jws.WebParam;
+-import javax.jws.WebService;
+-
+-import nl.strohalm.cyclos.entities.services.ServiceOperation;
+-import nl.strohalm.cyclos.webservices.Permission;
+-import nl.strohalm.cyclos.webservices.PrincipalParameters;
+-import nl.strohalm.cyclos.webservices.model.AccountHistoryTransferVO;
+-import nl.strohalm.cyclos.webservices.model.MemberAccountVO;
+-import nl.strohalm.cyclos.webservices.model.TransferTypeVO;
+-
+-/**
+- * Web service interface for accounts
+- * @author luis
+- */
+-@WebService
+-public interface AccountWebService {
+-
+-    /**
+-     * Returns the active accounts a member have
+-     */
+-    @Permission( { ServiceOperation.ACCOUNT_DETAILS, ServiceOperation.DO_PAYMENT, ServiceOperation.RECEIVE_PAYMENT })
+-    @WebMethod
+-    List<MemberAccountVO> getMemberAccounts(@WebParam(name = "params") PrincipalParameters params);
+-
+-    /**
+-     * Returns a single AccountHistoryTransferVO by id, or null when not found
+-     */
+-    @Permission(ServiceOperation.ACCOUNT_DETAILS)
+-    @WebMethod
+-    AccountHistoryTransferVO loadTransfer(@WebParam(name = "params") LoadTransferParameters params);
+-
+-    /**
+-     * Searches for transfers and return the status for a given member account
+-     */
+-    @Permission(ServiceOperation.ACCOUNT_DETAILS)
+-    @WebMethod
+-    AccountHistoryResultPage searchAccountHistory(@WebParam(name = "params") AccountHistorySearchParameters params);
+-
+-    /**
+-     * Returns a list of transfer types for the given parameters
+-     */
+-    @Permission( { ServiceOperation.DO_PAYMENT, ServiceOperation.RECEIVE_PAYMENT })
+-    @WebMethod
+-    List<TransferTypeVO> searchTransferTypes(@WebParam(name = "params") TransferTypeSearchParameters params);
+-
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebServiceImpl.java b/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebServiceImpl.java
+index 5d9201a..2e7d0d0 100644
+--- a/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebServiceImpl.java
++++ b/src/main/java/nl/strohalm/cyclos/webservices/accounts/AccountWebServiceImpl.java
+@@ -65,7 +65,7 @@ import org.apache.commons.lang.StringUtils;
+  * Implementation for account web service
+  * @author luis
+  */
+-@WebService(name = "accounts", serviceName = "accounts")
++@WebService(name = "accounts", serviceName = "accounts", targetNamespace = "http://access.webservices.cyclone.platform.mp/")
+ public class AccountWebServiceImpl implements AccountWebService {
+ 
+     private AccountService      accountService;
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/accounts/LoadTransferParameters.java b/src/main/java/nl/strohalm/cyclos/webservices/accounts/LoadTransferParameters.java
+deleted file mode 100644
+index 571dd6a..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/accounts/LoadTransferParameters.java
++++ /dev/null
+@@ -1,50 +0,0 @@
+-/*
+-   This file is part of Cyclos.
+-
+-   Cyclos is free software; you can redistribute it and/or modify
+-   it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 2 of the License, or
+-   (at your option) any later version.
+-
+-   Cyclos is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with Cyclos; if not, write to the Free Software
+-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.accounts;
+-
+-import nl.strohalm.cyclos.webservices.PrincipalParameters;
+-
+-public class LoadTransferParameters extends PrincipalParameters {
+-
+-    private static final long serialVersionUID = 3521471602244397136L;
+-    private String            credentials;
+-    private Long              transferId;
+-
+-    public String getCredentials() {
+-        return credentials;
+-    }
+-
+-    public Long getTransferId() {
+-        return transferId;
+-    }
+-
+-    public void setCredentials(final String credentials) {
+-        this.credentials = credentials;
+-    }
+-
+-    public void setTransferId(final Long transferId) {
+-        this.transferId = transferId;
+-    }
+-
+-    @Override
+-    public String toString() {
+-        return "LoadTransferParameters [credentials=****" + ", transferId=" + transferId + "]";
+-    }
+-
+-}
+diff --git a/src/main/java/nl/strohalm/cyclos/webservices/accounts/TransferTypeSearchParameters.java b/src/main/java/nl/strohalm/cyclos/webservices/accounts/TransferTypeSearchParameters.java
+deleted file mode 100644
+index 9af9618..0000000
+--- a/src/main/java/nl/strohalm/cyclos/webservices/accounts/TransferTypeSearchParameters.java
++++ /dev/null
+@@ -1,117 +0,0 @@
+-/*
+- This file is part of Cyclos.
+-
+- Cyclos is free software; you can redistribute it and/or modify
+- it under the terms of the GNU General Public License as published by
+- the Free Software Foundation; either version 2 of the License, or
+- (at your option) any later version.
+-
+- Cyclos is distributed in the hope that it will be useful,
+- but WITHOUT ANY WARRANTY; without even the implied warranty of
+- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+- GNU General Public License for more details.
+-
+- You should have received a copy of the GNU General Public License
+- along with Cyclos; if not, write to the Free Software
+- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+- */
+-package nl.strohalm.cyclos.webservices.accounts;
+-
+-import java.io.Serializable;
+-
+-import nl.strohalm.cyclos.utils.ObjectHelper;
+-
+-/**
+- * Parameters for searching transfer types via web services
+- * @author luis
+- */
+-public class TransferTypeSearchParameters implements Serializable {
+-    private static final long serialVersionUID = -2353662110535076676L;
+-    private String            currency;
+-    private String            fromMemberPrincipalType;
+-    private String            fromMember;
+-    private Long              fromAccountTypeId;
+-    private String            toMemberPrincipalType;
+-    private String            toMember;
+-    private Long              toAccountTypeId;
+-    private Boolean           toSystem;
+-    private Boolean           fromSystem;
+-
+-    public String getCurrency() {
+-        return currency;
+-    }
+-
+-    public Long getFromAccountTypeId() {
+-        return fromAccountTypeId;
+-    }
+-
+-    public String getFromMember() {
+-        return fromMember;
+-    }
+-
+-    public String getFromMemberPrincipalType() {
+-        return fromMemberPrincipalType;
+-    }
+-
+-    public Long getToAccountTypeId() {
+-        return toAccountTypeId;
+-    }
+-
+-    public String getToMember() {
+-        return toMember;
+-    }
+-
+-    public String getToMemberPrincipalType() {
+-        return toMemberPrincipalType;
+-    }
+-
+-    public boolean isFromSystem() {
+-        return ObjectHelper.valueOf(fromSystem);
+-    }
+-
+-    public boolean isToSystem() {
+-        return ObjectHelper.valueOf(toSystem);
+-    }
+-
+-    public void setCurrency(final String currency) {
+-        this.currency = currency;
+-    }
+-
+-    public void setFromAccountTypeId(final Long fromAccountTypeId) {
+-        this.fromAccountTypeId = fromAccountTypeId;
+-    }
+-
+-    public void setFromMember(final String fromMember) {
+-        this.fromMember = fromMember;
+-    }
+-
+-    public void setFromMemberPrincipalType(final String fromMemberPrincipalType) {
+-        this.fromMemberPrincipalType = fromMemberPrincipalType;
+-    }
+-
+-    public void setFromSystem(final boolean fromSystem) {
+-        this.fromSystem = fromSystem;
+-    }
+-
+-    public void setToAccountTypeId(final Long toAccountTypeId) {
+-        this.toAccountTypeId = toAccountTypeId;
+-    }
+-
+-    public void setToMember(final String toMember) {
+-        this.toMember = toMember;
+-    }
+-
+-    public void setToMemberPrincipalType(final String toMemberPrincipalType) {
+-        this.toMemberPrincipalType = toMemberPrincipalType;
+-    }
+-
+-    public void setToSystem(final boolean toSystem) {
+-        this.toSystem = toSystem;
+-    }
+-
+-    @Override
+-    public String toString() {
+-        return "TransferTypeSearchParameters [currency=" + currency + ", fromAccountTypeId=" + fromAccountTypeId + ", fromMember=" + fromMember + ", fromMemberPrincipalType=" + fromMemberPrincipalType + ", fromSystem=" + fromSystem + ", toAccountTypeId=" + toAccountTypeId + ", toMember=" + toMember + ", toMemberPrincipalType=" + toMemberPrincipalType + ", toSystem=" + toSystem + "]";
+-    }
+-}
+diff --git a/src/main/resources/nl/strohalm/cyclos/spring/web_beans.xml b/src/main/resources/nl/strohalm/cyclos/spring/web_beans.xml
+index b12c1bd..147f8b8 100644
+--- a/src/main/resources/nl/strohalm/cyclos/spring/web_beans.xml
++++ b/src/main/resources/nl/strohalm/cyclos/spring/web_beans.xml
+@@ -112,7 +112,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+ 	</jaxws:endpoint>
+ 
+ 	<bean id="accessWebServiceImpl" class="nl.strohalm.cyclos.webservices.access.AccessWebServiceImpl" />
+-	<jaxws:endpoint id="accessWebService" address="/access" implementor="#accessWebServiceImpl">
++	<jaxws:endpoint id="accessWebService" address="/access" implementor="#accessWebServiceImpl" wsdlLocation="classpath:/nl/strohalm/cyclos/webservices/accessService.wsdl">
+ 		<jaxws:inInterceptors>
+ 			<ref bean="authInterceptor" />
+ 		</jaxws:inInterceptors>
+@@ -126,7 +126,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+ 	</jaxws:endpoint>
+ 
+ 	<bean id="accountWebServiceImpl" class="nl.strohalm.cyclos.webservices.accounts.AccountWebServiceImpl" />
+-	<jaxws:endpoint id="accountWebService" address="/account" implementor="#accountWebServiceImpl">
++	<jaxws:endpoint id="accountWebService" address="/account" implementor="#accountWebServiceImpl" wsdlLocation="classpath:/nl/strohalm/cyclos/webservices/accountService.wsdl">
+ 		<jaxws:inInterceptors>
+ 			<ref bean="authInterceptor" />
+ 		</jaxws:inInterceptors>

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mp.platform.cyclone.webservices.utils.server.PaymentHelper;
 import nl.strohalm.cyclos.dao.accounts.transactions.ReverseDAO;
 import nl.strohalm.cyclos.dao.accounts.transactions.ScheduledPaymentDAO;
 import nl.strohalm.cyclos.dao.accounts.transactions.TicketDAO;
@@ -429,6 +430,14 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
                 protected void doInTransactionWithoutResult(final TransactionStatus status) {
                     try {
                         payment = doPayment(dto);
+                        //FIXME some better way of forcing initialization :/
+                        if (payment instanceof Transfer) {
+                            for (Transfer tr : ((Transfer) payment).getChildren()) {
+                                tr.getTo();
+                                tr.getActualAmount();
+                                tr.getAmount();
+                            }
+                        }
                     } catch (final Throwable t) {
                         error = t;
                     }
@@ -1084,7 +1093,8 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
         if (transferType.isHavingDratedFees()) {
             if (params.isUseActualRates()) {
                 final MemberAccount account = fetchService.fetch(params.getAccount(), Account.Relationships.TYPE);
-                status = (status == null) ? accountService.getStatus(new GetTransactionsDTO(account)) : status;
+                status = (status == null)
+                        ? accountService.getStatus(new GetTransactionsDTO(account)) : status;
                 usedDRate = dRateService.getActualRate(status, params.getDate());
             } else {
                 usedDRate = params.getDrate();

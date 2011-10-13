@@ -19,11 +19,7 @@
 package mp.platform.cyclone.webservices.model;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -61,6 +57,8 @@ public class AccountHistoryTransferVO extends WebServicesEntityVO {
     @XmlTransient
     private Map<String, String> fieldsMap;
     private List<FieldValueVO>  fields;
+    
+    private List<TransferFeeVO> transferFees = new ArrayList<TransferFeeVO>();
 
     public BigDecimal getAmount() {
         return amount;
@@ -194,6 +192,14 @@ public class AccountHistoryTransferVO extends WebServicesEntityVO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<TransferFeeVO> getTransferFees() {
+        return transferFees;
+    }
+
+    public void setTransferFees(List<TransferFeeVO> transferFees) {
+        this.transferFees = transferFees;
     }
 
     @Override

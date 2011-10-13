@@ -41,7 +41,18 @@ Behaviour.register({
 			}
 		}
 	},
-	
+
+    '#registrationAgreementCheck': function(check) {
+        disableField($('saveButton'));
+        check.onclick = function() {
+            if (check.checked) {
+                enableField($('saveButton'))
+            } else {
+                disableField($('saveButton'))
+            }
+        }
+    },
+
 	'#assignPasswordCheck': function(check) {
 		check.onclick = function() {
 			var isChecked = check.checked;

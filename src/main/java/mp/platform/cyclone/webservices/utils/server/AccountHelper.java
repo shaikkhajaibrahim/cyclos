@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mp.platform.cyclone.webservices.model.*;
 import nl.strohalm.cyclos.entities.accounts.Account;
 import nl.strohalm.cyclos.entities.accounts.AccountOwner;
 import nl.strohalm.cyclos.entities.accounts.AccountStatus;
@@ -60,14 +61,6 @@ import mp.platform.cyclone.webservices.WebServiceFaultsEnum;
 import mp.platform.cyclone.webservices.accounts.AccountHistoryResultPage;
 import mp.platform.cyclone.webservices.accounts.AccountHistorySearchParameters;
 import mp.platform.cyclone.webservices.accounts.TransferTypeSearchParameters;
-import mp.platform.cyclone.webservices.model.AccountHistoryTransferVO;
-import mp.platform.cyclone.webservices.model.AccountStatusVO;
-import mp.platform.cyclone.webservices.model.AccountTypeVO;
-import mp.platform.cyclone.webservices.model.CurrencyVO;
-import mp.platform.cyclone.webservices.model.DetailedAccountTypeVO;
-import mp.platform.cyclone.webservices.model.FieldValueVO;
-import mp.platform.cyclone.webservices.model.MemberAccountVO;
-import mp.platform.cyclone.webservices.model.TransferTypeVO;
 import mp.platform.cyclone.webservices.utils.WebServiceHelper;
 
 /**
@@ -297,6 +290,12 @@ public class AccountHelper {
         }
         vo.setTransferType(toVO(transfer.getType()));
 
+        for (Transfer tr : transfer.getChildren()) {
+            if (tr.getTransactionFee()!=null) {
+                vo.getTransferFees().add(toTransferFeeVO(tr));
+            }
+        }
+
         final Member restrictedMember = WebServiceContext.getMember();
         if (restrictedMember == null && viewingOwner == null) { // in this case is a nonsense have a viewing member
             vo.setAmount(amount);
@@ -314,6 +313,10 @@ public class AccountHelper {
         }
         vo.setFields(fieldHelper.toList(customFields, transfer.getCustomValues()));
         return vo;
+    }
+
+    private TransferFeeVO toTransferFeeVO(Transfer tr) {
+        return new TransferFeeVO(tr.getTransactionFee().getName(), tr.getId(), tr.getAmount(), tr.getTransactionNumber());
     }
 
     /**

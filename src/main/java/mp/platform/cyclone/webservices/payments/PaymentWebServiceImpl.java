@@ -480,9 +480,11 @@ public class PaymentWebServiceImpl implements PaymentWebService {
         this.webServiceHelper = webServiceHelper;
     }
 
-    public PaymentStatus simulatePayment(final PaymentParameters params) {
+    public PaymentSimulationResult simulatePayment(final PaymentParameters params) {
 
-        PaymentStatus status = null;
+        PaymentStatus status;
+        AccountHistoryTransferVO transferVO = null;
+
 
         try {
             final PrepareParametersResult result = prepareParameters(params);
@@ -492,22 +494,23 @@ public class PaymentWebServiceImpl implements PaymentWebService {
                 final DoExternalPaymentDTO dto = paymentHelper.toExternalPaymentDTO(params, result.getFrom(), result.getTo());
                 if (!validateTransferType(dto)) {
                     webServiceHelper.trace(PaymentStatus.INVALID_PARAMETERS + ". Reason: The service client doesn't have permission to the specified transfer type: " + dto.getTransferType());
-                    return PaymentStatus.INVALID_PARAMETERS;
+                    status = PaymentStatus.INVALID_PARAMETERS;
                 } else {
                     // Simulate the payment
                     final Transfer transfer = (Transfer) paymentService.simulatePayment(dto);
-                    return paymentHelper.toStatus(transfer);
+                    transferVO = accountHelper.toVO(WebServiceContext.getMember(), transfer, null);
+                    status = paymentHelper.toStatus(transfer);
                 }
             }
         } catch (final Exception e) {
             webServiceHelper.error(e);
-            return paymentHelper.toStatus(e);
+            status = paymentHelper.toStatus(e);
         }
 
         if (!status.isSuccessful()) {
             webServiceHelper.error("Simulate payment status: " + status);
         }
-        return status;
+        return new PaymentSimulationResult(status, transferVO);
     }
 
     private List<ChargebackResult> bulkReverse(final List<Transfer> transfers, final List<AccountDTO> accountsToLock) {
