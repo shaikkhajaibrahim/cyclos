@@ -29,6 +29,7 @@ public class GenerateTokenDTO {
     private String from;
     private String senderMobilePhone;
     private String recipientMobilePhone;
+    private String transactionTypeName;
 
     public BigDecimal getAmount() {
         return amount;
@@ -61,4 +62,13 @@ public class GenerateTokenDTO {
     public void setRecipientMobilePhone(String recipientMobilePhone) {
         this.recipientMobilePhone = recipientMobilePhone;
     }
+
+    public String getTransactionTypeName() {
+        return transactionTypeName;
+    }
+
+    public void setTransactionTypeName(String transactionTypeName) {
+        this.transactionTypeName = transactionTypeName;
+    }
+
 }

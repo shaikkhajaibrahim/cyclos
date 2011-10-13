@@ -52,6 +52,7 @@ public class TokenWebServiceImpl implements TokenWebService {
             generateTokenDTO.setFrom(generateTokenParameters.getUsername());
             generateTokenDTO.setSenderMobilePhone(generateTokenParameters.getSenderMobile());
             generateTokenDTO.setRecipientMobilePhone(generateTokenParameters.getRecipientMobile());
+            generateTokenDTO.setTransactionTypeName(generateTokenParameters.getTransactionTypeName());
             return tokenService.generateToken(generateTokenDTO);
         } catch (NotEnoughCreditsException e) {
             throw WebServiceFaultsEnum.NOT_ENOUGH_CREDITS.getFault("Not enough credits for token generation");
@@ -65,7 +66,7 @@ public class TokenWebServiceImpl implements TokenWebService {
     public void redeemToken(RedeemTokenParameters redeemTokenParameters) {
         try {
             Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), redeemTokenParameters.getUsername());
-            tokenService.redeemToken(member, redeemTokenParameters.getTokenId(), redeemTokenParameters.getPin());
+            tokenService.redeemToken(member, redeemTokenParameters.getTokenId(), redeemTokenParameters.getPin(), redeemTokenParameters.getTransactionTypeName());
         } catch (BadStatusForRedeem e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");
         } catch (TokenNotFoundException e) {
@@ -84,6 +85,7 @@ public class TokenWebServiceImpl implements TokenWebService {
             SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
             senderRedeemTokenData.setPin(redeemTokenParameters.getPin());
             senderRedeemTokenData.setTransactionId(redeemTokenParameters.getReferenceNumber());
+            senderRedeemTokenData.setTransactionTypeName(redeemTokenParameters.getTransactionTypeName());
             tokenService.senderRedeemToken(member, senderRedeemTokenData);
         } catch (BadStatusForRedeem e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");

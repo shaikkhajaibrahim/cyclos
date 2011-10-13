@@ -26,6 +26,8 @@ public class SenderRedeemTokenData {
     private String transactionId;
 
     private String pin;
+    
+    private String transactionTypeName;
 
     public String getTransactionId() {
         return transactionId;
@@ -42,4 +44,14 @@ public class SenderRedeemTokenData {
     public void setPin(String pin) {
         this.pin = pin;
     }
+
+    public String getTransactionTypeName() {
+        return transactionTypeName;
+    }
+
+    public void setTransactionTypeName(String transactionTypeName) {
+        this.transactionTypeName = transactionTypeName;
+    }
+
+   
 }
