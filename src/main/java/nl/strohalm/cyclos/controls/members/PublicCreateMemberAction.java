@@ -57,6 +57,7 @@ import nl.strohalm.cyclos.utils.CustomFieldHelper;
 import nl.strohalm.cyclos.utils.SettingsHelper;
 import nl.strohalm.cyclos.utils.binding.DataBinder;
 import nl.strohalm.cyclos.utils.validation.PasswordsDontMatchError;
+import nl.strohalm.cyclos.utils.validation.UsernamesDontMatchError;
 import nl.strohalm.cyclos.utils.validation.ValidationError;
 import nl.strohalm.cyclos.utils.validation.ValidationException;
 
@@ -270,6 +271,7 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
             exc.addPropertyError("captcha", new ValidationError("createMember.captcha.invalid"));
         }
 
+        //password check
         String password;
         try {
             password = StringUtils.trimToNull(member.getUser().getPassword());
@@ -280,6 +282,12 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
         final String confirmPassword = StringUtils.trimToNull(form.getConfirmPassword());
         if (password != null && (confirmPassword == null || !ObjectUtils.equals(confirmPassword, member.getUser().getPassword()))) {
             exc.addGeneralError(new PasswordsDontMatchError());
+        }
+
+        //Username confirmation check
+        String confirmedUsername = StringUtils.trimToNull(form.getConfirmedUsername());
+        if(confirmedUsername != null && !StringUtils.equals(confirmedUsername, member.getUsername())){
+                exc.addGeneralError(new UsernamesDontMatchError());
         }
 
         exc.throwIfHasErrors();

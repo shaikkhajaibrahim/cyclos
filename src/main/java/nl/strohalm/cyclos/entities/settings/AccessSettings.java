@@ -38,6 +38,7 @@ public class AccessSettings extends DataObject {
     private boolean            virtualKeyboardTransactionPassword = false;
     private boolean            numericPassword                    = false;
     private boolean            allowOperatorLogin                 = false;
+    private boolean            confirmUsername                    = false;
 
     private TimePeriod         adminTimeout                       = new TimePeriod(15, TimePeriod.Field.MINUTES);
     private String             administrationWhitelist            = "#Any host";
@@ -104,6 +105,10 @@ public class AccessSettings extends DataObject {
         return virtualKeyboard;
     }
 
+    public boolean isConfirmUsername() {
+        return confirmUsername;
+    }
+
     public boolean isVirtualKeyboardTransactionPassword() {
         return virtualKeyboardTransactionPassword;
     }
@@ -158,6 +163,10 @@ public class AccessSettings extends DataObject {
 
     public void setVirtualKeyboardTransactionPassword(final boolean virtualKeyboardTransactionPassword) {
         this.virtualKeyboardTransactionPassword = virtualKeyboardTransactionPassword;
+    }
+
+    public void setConfirmUsername(final boolean confirmUsername) {
+        this.confirmUsername = confirmUsername;
     }
 
 }

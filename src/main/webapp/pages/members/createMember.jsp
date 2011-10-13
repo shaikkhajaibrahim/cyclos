@@ -54,6 +54,12 @@
 			<td valign="top" colspan="2"><html:text property="member(user).username" maxlength="${accessSettings.usernameLength.max}" styleClass="large InputBoxEnabled required"/></td>
 		</tr>
 	</c:if>
+	<c:if test="${(not accessSettings.usernameGenerated) && (accessSettings.confirmUsername)}">
+		<tr>
+			<td width="30%" class="label"><bean:message key="login.username.confirm"/></td>
+			<td valign="top" colspan="2"><html:text property="confirmedUsername" maxlength="${accessSettings.usernameLength.max}" styleClass="large InputBoxEnabled required"/></td>
+		</tr>
+	</c:if>
     <c:if test="${displayFullName}">
 	<tr>
 		<td width="30%" class="label"><bean:message key="member.name"/></td>
@@ -64,7 +70,7 @@
 	<tr>
 		<td class="label"><bean:message key="member.email"/></td>
 		<td><html:text property="member(email)" styleClass="large InputBoxEnabled ${localSettings.emailRequired ? 'required' : ''}"/></td>
-		<td nowrap="nowrap" valign="top" align="left"><html:checkbox property="member(hideEmail)" styleClass="checkbox" /></td>
+		<!--td nowrap="nowrap" valign="top" align="left"><html:checkbox property="member(hideEmail)" styleClass="checkbox" /></td-->
 	</tr>
     <c:forEach var="field" items="${customFields}">
 		<tr>

@@ -332,7 +332,7 @@
                    		<td class="label""><bean:message key="settings.local.sms.customField"/></td>
                    		<td>
                    			<html:select property="setting(smsCustomFieldId)" styleClass="InputBoxDisabled" disabled="true">
-		                    	<html:option value=""><bean:message key="global.no.defined"/></html:option>
+		                    	<html:option value=""><bean:message key="login.username"/></html:option>
 		                   		<c:forEach var="field" items="${smsCustomFields}">
 		                    		<html:option value="${field.id}">${field.name}</html:option>
 		                   		</c:forEach>

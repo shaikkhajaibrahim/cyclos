@@ -18,6 +18,7 @@
  */
 package nl.strohalm.cyclos.controls.elements;
 
+import bsh.StringUtil;
 import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.controls.BaseBindingForm;
@@ -42,6 +43,7 @@ import nl.strohalm.cyclos.utils.binding.PropertyBinder;
 import nl.strohalm.cyclos.utils.conversion.HtmlConverter;
 import nl.strohalm.cyclos.utils.conversion.ReferenceConverter;
 import nl.strohalm.cyclos.utils.validation.PasswordsDontMatchError;
+import nl.strohalm.cyclos.utils.validation.UsernamesDontMatchError;
 import nl.strohalm.cyclos.utils.validation.ValidationException;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -163,6 +165,7 @@ public abstract class CreateElementAction<E extends Element> extends BaseFormAct
             exc = e;
         }
 
+        //password validation
         String password;
         try {
             password = StringUtils.trimToNull(element.getUser().getPassword());

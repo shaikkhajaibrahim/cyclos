@@ -110,6 +110,10 @@
                     <td class="label"><bean:message key="settings.access.transactionPasswordChars"/></td>
                     <td><html:text property="setting(transactionPasswordChars)" styleClass="medium InputBoxDisabled" readonly="true"/></td>
                 </tr>
+                <tr>
+                    <td class="label" width="30%"><bean:message key="settings.access.confirmUsername"/></td>
+                    <td><html:checkbox property="setting(confirmUsername)" value="true" styleClass="checkbox InputBoxDisabled" disabled="true"/></td>
+                </tr>
                 <c:if test="${cyclos:granted('systemSettings', 'manageAccess')}">
 	                <tr>
 						<td colspan="2" align="right">

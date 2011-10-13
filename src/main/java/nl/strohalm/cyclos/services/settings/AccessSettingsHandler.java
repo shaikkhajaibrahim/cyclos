@@ -68,6 +68,7 @@ public class AccessSettingsHandler extends BaseSettingsHandler<AccessSettings> {
         accessConverters.put("poswebTimeout.field", CoercionConverter.instance(Field.class));
         accessConverters.put("transactionPasswordChars", CoercionConverter.instance(String.class));
         accessConverters.put("usernameRegex", CoercionConverter.instance(String.class));
+        accessConverters.put("confirmUsername", CoercionConverter.instance(Boolean.TYPE));
         return accessConverters;
     }
 

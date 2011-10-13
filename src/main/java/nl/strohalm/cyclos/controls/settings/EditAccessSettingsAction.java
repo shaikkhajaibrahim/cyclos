@@ -59,6 +59,7 @@ public class EditAccessSettingsAction extends BaseFormAction {
             binder.registerBinder("generatedUsernameLength", PropertyBinder.instance(Integer.TYPE, "generatedUsernameLength"));
             binder.registerBinder("transactionPasswordChars", PropertyBinder.instance(String.class, "transactionPasswordChars"));
             binder.registerBinder("usernameRegex", PropertyBinder.instance(String.class, "usernameRegex"));
+            binder.registerBinder("confirmUsername", PropertyBinder.instance(Boolean.TYPE, "confirmUsername"));
             dataBinder = binder;
         }
         return dataBinder;

@@ -254,7 +254,8 @@ public class LocalSettingsHandler extends BaseSettingsHandler<LocalSettings> {
                     return null;
                 }
                 if (id == null || id.intValue() < 0) {
-                    return new RequiredError();
+//                    return new RequiredError();
+                    return null;
                 }
                 try {
                     // Load and ensure it's a member custom field

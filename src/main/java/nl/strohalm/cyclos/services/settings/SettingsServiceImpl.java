@@ -163,6 +163,7 @@ public class SettingsServiceImpl implements SettingsService {
         return messageSettingsHandler.get();
     }
 
+    @Override
     public MemberCustomField getSmsCustomField() {
         final Long id = getLocalSettings().getSmsCustomFieldId();
         if (id == null) {

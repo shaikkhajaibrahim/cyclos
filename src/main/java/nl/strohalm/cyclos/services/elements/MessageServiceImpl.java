@@ -36,7 +36,9 @@ import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.accounts.SystemAccountOwner;
 import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
+import nl.strohalm.cyclos.entities.customization.fields.CustomField;
 import nl.strohalm.cyclos.entities.customization.fields.MemberCustomField;
+import nl.strohalm.cyclos.entities.customization.fields.MemberCustomFieldValue;
 import nl.strohalm.cyclos.entities.groups.AdminGroup;
 import nl.strohalm.cyclos.entities.groups.MemberGroup;
 import nl.strohalm.cyclos.entities.groups.MemberGroupSettings;
@@ -52,6 +54,7 @@ import nl.strohalm.cyclos.entities.sms.SmsLog.ErrorType;
 import nl.strohalm.cyclos.exceptions.PermissionDeniedException;
 import nl.strohalm.cyclos.exceptions.UnexpectedEntityException;
 import nl.strohalm.cyclos.services.accounts.AccountStatusHandler;
+import nl.strohalm.cyclos.services.customization.CustomFieldService;
 import nl.strohalm.cyclos.services.elements.exceptions.MemberWontReceiveNotificationException;
 import nl.strohalm.cyclos.services.fetch.FetchService;
 import nl.strohalm.cyclos.services.groups.GroupService;
@@ -342,8 +345,21 @@ public class MessageServiceImpl implements MessageService, DisposableBean {
 
     public SmsLog sendSms(final SendSmsDTO params) {
         final Member target = params.getTargetMember();
+        String mobilePhone = null;
         final MemberCustomField customField = settingsService.getSmsCustomField();
-        if (customField == null || !memberService.hasValueForField(target, customField)) {
+        if (customField == null){
+            mobilePhone = target.getUsername();
+        }
+        else if(memberService.hasValueForField(target, customField)) {
+            Collection<MemberCustomFieldValue> customValues = fetchService.fetch(target, Member.Relationships.CUSTOM_VALUES).getCustomValues();
+            for (MemberCustomFieldValue val: customValues){
+              if(val.getField().equals(customField)){
+                  mobilePhone = val.getStringValue();
+                  break;
+              }
+            }
+        }
+        else{
             // Either no custom field, or the member didn't have value for the mobile phone
             return logSms(params, ErrorType.NO_PHONE, false);
         }
@@ -421,7 +437,8 @@ public class MessageServiceImpl implements MessageService, DisposableBean {
         // Send the message itself if no error so far
         if (errorType == null) {
             try {
-                if (!smsSender.send(target, params.getText())) {
+//                if (!smsSender.send(target, params.getText())) {
+                if (!smsSender.send(mobilePhone, params.getText())) {
                     throw new Exception();
                 }
                 // The message was sent. Update the member sms status

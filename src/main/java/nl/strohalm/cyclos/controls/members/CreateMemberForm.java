@@ -29,6 +29,7 @@ import nl.strohalm.cyclos.controls.elements.CreateElementForm;
 public class CreateMemberForm extends CreateElementForm {
     private static final long serialVersionUID = -8054408188398196588L;
     private String            captcha;
+    private String            confirmedUsername;
 
     public String getCaptcha() {
         return captcha;
@@ -52,5 +53,13 @@ public class CreateMemberForm extends CreateElementForm {
 
     public void setMember(final String key, final Object value) {
         values.put(key, value);
+    }
+
+    public String getConfirmedUsername() {
+        return confirmedUsername;
+    }
+
+    public void setConfirmedUsername(String confirmUsername) {
+        this.confirmedUsername = confirmUsername;
     }
 }
