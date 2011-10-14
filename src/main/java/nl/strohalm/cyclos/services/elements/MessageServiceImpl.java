@@ -337,6 +337,7 @@ public class MessageServiceImpl implements MessageService, DisposableBean {
         if (entity != null && linkGenerator != null) {
             link = linkGenerator.generateLinkFor(message.getToMember(), entity);
         }
+
         final String body = StringUtils.replace(message.getBody(), "#link#", link);
         message.setBody(body);
         message.setHtml(true);
