@@ -54,14 +54,24 @@ import java.util.*;
 public class TokenServiceImpl implements TokenService {
 
     public final static String CREATE_TOKEN_TRANSACTION_TYPE_NAME = "tokenCreation";
-
     public final static String REDEEM_TOKEN_TRANSACTION_TYPE_NAME = "tokenRedemption";
-
     public final static String SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME = "senderTokenRedemption";
-
     public final static String TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME = "tokenExpiration";
-
     public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME = "tokenRefund";
+    
+    
+    public final static String CREATE_TOKEN_TRANSACTION_TYPE_NAME_WAP = "tokenCreationWAP";
+    public final static String REDEEM_TOKEN_TRANSACTION_TYPE_NAME_WAP = "tokenRedemptionWAP";
+    public final static String SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME_WAP = "senderTokenRedemptionWAP";
+    public final static String TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME_WAP = "tokenExpirationWAP";
+    public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME_WAP = "tokenRefundWAP";
+    
+    
+    public final static String CREATE_TOKEN_TRANSACTION_TYPE_NAME_USSD = "tokenCreationUSSD";
+    public final static String REDEEM_TOKEN_TRANSACTION_TYPE_NAME_USSD = "tokenRedemptionUSSD";
+    public final static String SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME_USSD = "senderTokenRedemptionUSSD";
+    public final static String TOKEN_EXPIRATION_TRANSACTION_TYPE_NAME_USSD = "tokenExpirationUSSD";
+    public final static String TOKEN_REFUND_TRANSACTION_TYPE_NAME_USSD = "tokenRefundUSSD";
 
 
     private TokenDAO tokenDao;
@@ -106,11 +116,12 @@ public class TokenServiceImpl implements TokenService {
         Member from = loadUser(generateTokenDTO.getFrom());
         doPaymentDTO.setFrom(from);
 
+        String tokenTypeName = (generateTokenDTO.getTransactionTypeName() != null) ?generateTokenDTO.getTransactionTypeName() : CREATE_TOKEN_TRANSACTION_TYPE_NAME;
         TransferTypeQuery ttq = new TransferTypeQuery();
-        ttq.setName(CREATE_TOKEN_TRANSACTION_TYPE_NAME);
+        ttq.setName(tokenTypeName);
         List<TransferType> tts = transferTypeService.search(ttq);
         if (tts.isEmpty()) {
-            throw new NoTransactionTypeException("No transaction type " + CREATE_TOKEN_TRANSACTION_TYPE_NAME);
+            throw new NoTransactionTypeException("No transaction type " + tokenTypeName);
         }
         doPaymentDTO.setTransferType(tts.get(0));
 
@@ -129,10 +140,11 @@ public class TokenServiceImpl implements TokenService {
 
 
     @Override
-    public void redeemToken(Member broker, String tokenId, String pin) {
+    public void redeemToken(Member broker, String tokenId, String pin, String transactionTypeName) {
         Token token = tokenDao.loadByTokenId(tokenId);
         validatePin(token, pin);
-        Transfer transfer = redeemToken(token, REDEEM_TOKEN_TRANSACTION_TYPE_NAME, broker, Status.ISSUED, Status.REMITTED);
+        String tokenTypeName = (transactionTypeName != null) ?transactionTypeName : REDEEM_TOKEN_TRANSACTION_TYPE_NAME;
+        Transfer transfer = redeemToken(token, tokenTypeName, broker, Status.ISSUED, Status.REMITTED);
         token.setTransferTo(transfer);
         token.setStatus(Status.REMITTED);
         tokenDao.update(token);
@@ -148,7 +160,8 @@ public class TokenServiceImpl implements TokenService {
     public void senderRedeemToken(Member member, SenderRedeemTokenData senderRedeemTokenData) {
         Token token = tokenDao.loadByTransactionId(senderRedeemTokenData.getTransactionId());
         validatePin(token, senderRedeemTokenData.getPin());
-        token.setTransferTo(redeemToken(token, SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME, member, Status.ISSUED, Status.SENDER_REMITTED));
+        String tokenTypeName = (senderRedeemTokenData.getTransactionTypeName() != null) ?senderRedeemTokenData.getTransactionTypeName() : SENDER_REDEEM_TOKEN_TRANSACTION_TYPE_NAME;
+        token.setTransferTo(redeemToken(token, tokenTypeName, member, Status.ISSUED, Status.SENDER_REMITTED));
         token.setStatus(Status.SENDER_REMITTED);
         tokenDao.update(token);
     }
@@ -205,7 +218,8 @@ public class TokenServiceImpl implements TokenService {
         if (token.getStatus() != Status.EXPIRED) {
             throw new RefundNonExpiredToken();
         }
-        redeemToken(token, TOKEN_REFUND_TRANSACTION_TYPE_NAME, member, Status.EXPIRED, Status.REFUNDED);
+        String tokenTypeName = (senderRedeemTokenData.getTransactionTypeName() != null) ?senderRedeemTokenData.getTransactionTypeName() : TOKEN_REFUND_TRANSACTION_TYPE_NAME;
+        redeemToken(token, tokenTypeName, member, Status.EXPIRED, Status.REFUNDED);
         token.setStatus(Status.REFUNDED);
         tokenDao.update(token);
     }

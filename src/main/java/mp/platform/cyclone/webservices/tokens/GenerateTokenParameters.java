@@ -30,6 +30,8 @@ public class GenerateTokenParameters extends BaseRequest{
     private String senderMobile;
 
     private BigDecimal amount;
+    
+    private String transactionTypeName;
 
     public String getRecipientMobile() {
         return recipientMobile;
@@ -55,5 +57,12 @@ public class GenerateTokenParameters extends BaseRequest{
         this.amount = amount;
     }
 
+    public String getTransactionTypeName() {
+        return transactionTypeName;
+    }
+
+    public void setTransactionTypeName(String transactionTypeName) {
+        this.transactionTypeName = transactionTypeName;
+    }
 
 }

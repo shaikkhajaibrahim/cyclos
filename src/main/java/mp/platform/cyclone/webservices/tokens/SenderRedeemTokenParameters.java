@@ -26,6 +26,8 @@ public class SenderRedeemTokenParameters extends BaseRequest {
     private String referenceNumber;
 
     private String pin;
+    
+    private String transactionTypeName;
 
     public String getReferenceNumber() {
         return referenceNumber;
@@ -41,6 +43,14 @@ public class SenderRedeemTokenParameters extends BaseRequest {
 
     public void setPin(String tokenPin) {
         this.pin = tokenPin;
+    }
+
+    public String getTransactionTypeName() {
+        return transactionTypeName;
+    }
+
+    public void setTransactionTypeName(String transactionTypeName) {
+        this.transactionTypeName = transactionTypeName;
     }
 
 }
