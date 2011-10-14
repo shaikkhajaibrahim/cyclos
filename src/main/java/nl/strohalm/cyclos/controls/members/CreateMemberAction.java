@@ -279,6 +279,9 @@ public class CreateMemberAction extends CreateElementAction<Member> {
     @Override
     protected void runValidation(final ActionContext context, final Element element) {
         final CreateElementForm form = context.getForm();
+        if (element instanceof Member) {
+            setFullNameIfNeeded((Member) element);
+        }
         final boolean manualPassword = form.isManualPassword();
         final WhenSaving when = context.isAdmin() ? WhenSaving.MEMBER_BY_ADMIN : WhenSaving.BY_BROKER;
         getElementService().validate(element, when, manualPassword);
