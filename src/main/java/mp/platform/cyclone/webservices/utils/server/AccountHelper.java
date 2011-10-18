@@ -65,19 +65,20 @@ import mp.platform.cyclone.webservices.utils.WebServiceHelper;
 
 /**
  * Utility class for accounts
+ *
  * @author luis
  */
 public class AccountHelper {
 
-    private CustomFieldService  customFieldService;
-    private SettingsService     settingsService;
+    private CustomFieldService customFieldService;
+    private SettingsService settingsService;
     private TransferTypeService transferTypeService;
-    private FetchService        fetchService;
-    private QueryHelper         queryHelper;
-    private MemberHelper        memberHelper;
-    private FieldHelper         fieldHelper;
-    private ChannelHelper       channelHelper;
-    private CurrencyHelper      currencyHelper;
+    private FetchService fetchService;
+    private QueryHelper queryHelper;
+    private MemberHelper memberHelper;
+    private FieldHelper fieldHelper;
+    private ChannelHelper channelHelper;
+    private CurrencyHelper currencyHelper;
 
     public CurrencyHelper getCurrencyHelper() {
         return currencyHelper;
@@ -290,9 +291,11 @@ public class AccountHelper {
         }
         vo.setTransferType(toVO(transfer.getType()));
 
-        for (Transfer tr : transfer.getChildren()) {
-            if (tr.getTransactionFee()!=null) {
-                vo.getTransferFees().add(toTransferFeeVO(tr));
+        if (transfer.getChildren() != null) {
+            for (Transfer tr : transfer.getChildren()) {
+                if (tr.getTransactionFee() != null) {
+                    vo.getTransferFees().add(toTransferFeeVO(tr));
+                }
             }
         }
 
