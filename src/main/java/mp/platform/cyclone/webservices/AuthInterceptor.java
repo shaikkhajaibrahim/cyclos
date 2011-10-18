@@ -148,6 +148,7 @@ public class AuthInterceptor extends AbstractSoapInterceptor {
         try {
             return serviceClientService.findByAddressAndCredentials(address, credentials[0], credentials[1]);
         } catch (final EntityNotFoundException e) {
+
             return null;
         }
     }

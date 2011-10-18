@@ -45,7 +45,7 @@ public class DateOfBirthValidation implements PropertyValidation {
         Date now = new Date();
 
         if (!isTimeDifferenceMore(dob, now, MIN_AGE_IN_YEARS))
-            return new ValidationError("Age should be more than " + MIN_AGE_IN_YEARS + "years.");
+            return new ValidationError("validator.dateofbirth.public.tooyoung");
 
         return null;
     }
