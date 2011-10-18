@@ -85,23 +85,24 @@ import org.apache.struts.action.ActionForward;
 
 /**
  * Action used to edit a group's permissions
+ *
  * @author luis
  */
 public class EditGroupPermissionsAction extends BaseFormAction {
 
-    private static final Relationship[]                        FETCH = { Group.Relationships.PERMISSIONS, Group.Relationships.TRANSFER_TYPES, Group.Relationships.DOCUMENTS, Group.Relationships.MESSAGE_CATEGORIES, BrokerGroup.Relationships.BROKER_DOCUMENTS, Group.Relationships.CHARGEBACK_TRANSFER_TYPES, AdminGroup.Relationships.MANAGES_GROUPS, AdminGroup.Relationships.TRANSFER_TYPES_AS_MEMBER, AdminGroup.Relationships.VIEW_INFORMATION_OF, AdminGroup.Relationships.VIEW_CONNECTED_ADMINS_OF, MemberGroup.Relationships.CAN_VIEW_ADS_OF_GROUPS, MemberGroup.Relationships.CAN_VIEW_PROFILE_OF_GROUPS };
-    private GroupService                                       groupService;
-    private ChannelService                                     channelService;
-    private TransferTypeService                                transferTypeService;
-    private DocumentService                                    documentService;
-    private AccountTypeService                                 accountTypeService;
-    private MessageCategoryService                             messageCategoryService;
-    private MemberRecordTypeService                            memberRecordTypeService;
-    private CurrencyService                                    currencyService;
-    private GuaranteeTypeService                               guaranteeTypeService;
-    private DataBinder<AdminGroupPermissionsDTO>               adminDataBinder;
+    private static final Relationship[] FETCH = {Group.Relationships.PERMISSIONS, Group.Relationships.TRANSFER_TYPES, Group.Relationships.DOCUMENTS, Group.Relationships.MESSAGE_CATEGORIES, BrokerGroup.Relationships.BROKER_DOCUMENTS, Group.Relationships.CHARGEBACK_TRANSFER_TYPES, AdminGroup.Relationships.MANAGES_GROUPS, AdminGroup.Relationships.TRANSFER_TYPES_AS_MEMBER, AdminGroup.Relationships.VIEW_INFORMATION_OF, AdminGroup.Relationships.VIEW_CONNECTED_ADMINS_OF, MemberGroup.Relationships.CAN_VIEW_ADS_OF_GROUPS, MemberGroup.Relationships.CAN_VIEW_PROFILE_OF_GROUPS};
+    private GroupService groupService;
+    private ChannelService channelService;
+    private TransferTypeService transferTypeService;
+    private DocumentService documentService;
+    private AccountTypeService accountTypeService;
+    private MessageCategoryService messageCategoryService;
+    private MemberRecordTypeService memberRecordTypeService;
+    private CurrencyService currencyService;
+    private GuaranteeTypeService guaranteeTypeService;
+    private DataBinder<AdminGroupPermissionsDTO> adminDataBinder;
     private DataBinder<MemberGroupPermissionsDTO<MemberGroup>> memberDataBinder;
-    private DataBinder<BrokerGroupPermissionsDTO>              brokerDataBinder;
+    private DataBinder<BrokerGroupPermissionsDTO> brokerDataBinder;
 
     public DataBinder<AdminGroupPermissionsDTO> getAdminDataBinder() {
         if (adminDataBinder == null) {
@@ -117,6 +118,10 @@ public class EditGroupPermissionsAction extends BaseFormAction {
             binder.registerBinder("systemToSystemTTs", SimpleCollectionBinder.instance(TransferType.class, "systemToSystemTTs"));
             binder.registerBinder("conversionSimulationTTs", SimpleCollectionBinder.instance(TransferType.class, "conversionSimulationTTs"));
             binder.registerBinder("managesGroups", SimpleCollectionBinder.instance(MemberGroup.class, "managesGroups"));
+
+            binder.registerBinder("managesAdminGroups", SimpleCollectionBinder.instance(AdminGroup.class, "managesAdminGroups"));
+
+
             binder.registerBinder("viewInformationOf", SimpleCollectionBinder.instance(SystemAccountType.class, "viewInformationOf"));
             binder.registerBinder("viewConnectedAdminsOf", SimpleCollectionBinder.instance(SystemAccountType.class, "viewConnectedAdminsOf"));
             binder.registerBinder("viewAdminRecordTypes", SimpleCollectionBinder.instance(MemberRecordType.class, "viewAdminRecordTypes"));
@@ -282,10 +287,13 @@ public class EditGroupPermissionsAction extends BaseFormAction {
         } else {
             final AdminGroup adminGroup = (AdminGroup) group;
             final Collection<MemberGroup> managesGroups = adminGroup.getManagesGroups();
+            final Collection<AdminGroup> managesAdminGroups = adminGroup.getManagesAdminGroups();
+
             memberAccountTypes = new HashSet<MemberAccountType>();
             for (final MemberGroup memberGroup : managesGroups) {
                 memberAccountTypes.addAll(memberGroup.getAccountTypes());
             }
+
         }
 
         // Get the associated account types
@@ -353,7 +361,7 @@ public class EditGroupPermissionsAction extends BaseFormAction {
             final TransferTypeQuery systemChargebackQuery = new TransferTypeQuery();
             systemChargebackQuery.setFromNature(AccountType.Nature.SYSTEM);
             final List<TransferType> systemChargebacks = transferTypeService.search(systemChargebackQuery);
-            for (final Iterator<TransferType> iter = systemChargebacks.iterator(); iter.hasNext();) {
+            for (final Iterator<TransferType> iter = systemChargebacks.iterator(); iter.hasNext(); ) {
                 final TransferType tt = iter.next();
                 final Context ctx = tt.getContext();
                 if (!ctx.isPayment() && !ctx.isSelfPayment()) {
@@ -366,7 +374,7 @@ public class EditGroupPermissionsAction extends BaseFormAction {
             final TransferTypeQuery memberChargebackQuery = new TransferTypeQuery();
             memberChargebackQuery.setFromNature(AccountType.Nature.MEMBER);
             final List<TransferType> memberChargebacks = transferTypeService.search(memberChargebackQuery);
-            for (final Iterator<TransferType> iter = memberChargebacks.iterator(); iter.hasNext();) {
+            for (final Iterator<TransferType> iter = memberChargebacks.iterator(); iter.hasNext(); ) {
                 final TransferType tt = iter.next();
                 final Context ctx = tt.getContext();
                 if (!ctx.isPayment() && !ctx.isSelfPayment()) {
@@ -396,7 +404,7 @@ public class EditGroupPermissionsAction extends BaseFormAction {
             ttQuery.setToNature(AccountType.Nature.MEMBER);
             ttQuery.setFromAccountTypes(memberAccountTypes);
             final List<TransferType> memberMemberTTs = new ArrayList<TransferType>(transferTypeService.search(ttQuery));
-            for (final Iterator<TransferType> iter = memberMemberTTs.iterator(); iter.hasNext();) {
+            for (final Iterator<TransferType> iter = memberMemberTTs.iterator(); iter.hasNext(); ) {
                 final Context ctx = iter.next().getContext();
                 if (!ctx.isPayment()) {
                     iter.remove();
@@ -462,7 +470,7 @@ public class EditGroupPermissionsAction extends BaseFormAction {
             ttQuery.setFromAccountTypes(memberAccountTypes);
             ttQuery.setToAccountTypes(memberAccountTypes);
             final List<TransferType> memberMemberTTs = new ArrayList<TransferType>(transferTypeService.search(ttQuery));
-            for (final Iterator<TransferType> iter = memberMemberTTs.iterator(); iter.hasNext();) {
+            for (final Iterator<TransferType> iter = memberMemberTTs.iterator(); iter.hasNext(); ) {
                 final Context ctx = iter.next().getContext();
                 if (!ctx.isPayment()) {
                     iter.remove();
@@ -523,8 +531,9 @@ public class EditGroupPermissionsAction extends BaseFormAction {
     /**
      * Sets the guarantee types list into the request as an attribute. If the specified group's nature is ADMIN then retrieves all the enabled
      * guarantee types else retrieve only the guarantee types according to the member group's currencies.
+     *
      * @param request used to store the attribute
-     * @param group used to create the search query
+     * @param group   used to create the search query
      */
     private void setGuaranteeTypes(final HttpServletRequest request, final Group group) {
         List<GuaranteeType> guaranteeTypes = null;

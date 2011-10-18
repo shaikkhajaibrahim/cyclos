@@ -43,6 +43,7 @@ public class AdminGroupPermissionsDTO extends GroupPermissionsDTO<AdminGroup> {
     private Collection<TransferType>      systemToMemberTTs;
     private Collection<TransferType>      systemToSystemTTs;
     private Collection<MemberGroup>       managesGroups;
+    private Collection<AdminGroup>        managesAdminGroups;
     private Collection<SystemAccountType> viewInformationOf;
     private Collection<AdminGroup>        viewConnectedAdminsOf;
     private Collection<MessageCategory>   messageCategories;
@@ -217,4 +218,11 @@ public class AdminGroupPermissionsDTO extends GroupPermissionsDTO<AdminGroup> {
         this.viewMemberRecordTypes = viewMemberRecordTypes;
     }
 
+    public Collection<AdminGroup> getManagesAdminGroups() {
+        return managesAdminGroups;
+    }
+
+    public void setManagesAdminGroups(Collection<AdminGroup> managesAdminGroups) {
+        this.managesAdminGroups = managesAdminGroups;
+    }
 }

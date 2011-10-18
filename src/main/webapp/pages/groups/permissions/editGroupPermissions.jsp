@@ -49,6 +49,20 @@
 							</tr>
 						</table>
 		        	</c:if>
+        <c:if test="${cyclos:name(module.type) == 'ADMIN_ADMIN'}">
+			<table class="nested" width="100%">
+				<tr>
+					<td class="label" width="5%" nowrap="nowrap"><bean:message key="permission.admin.managesAdminGroups"/></td>
+					<td>
+						<cyclos:multiDropDown name="permission(managesAdminGroups)" size="5" disabled="true" onchange="managedGroupsChanged()">
+							<c:forEach var="current" items="${adminGroups}">
+								<cyclos:option value="${current.id}" text="${current.name}" selected="${cyclos:contains(group.managesAdminGroups, current)}" />
+							</c:forEach>
+						</cyclos:multiDropDown>
+					</td>
+				</tr>
+			</table>
+       	</c:if>
 	</c:if>
 	<c:set var="oldType" value="${module.type}"/>
 

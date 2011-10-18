@@ -291,6 +291,7 @@ public interface ElementService extends Service {
      * Register a new administrator
      */
     @AdminAction(@Permission(module = "adminAdmins", operation = "register"))
+    @PathToMember("")
     Administrator registerAdmin(Administrator admin, boolean forceChangePassword);
 
     /**

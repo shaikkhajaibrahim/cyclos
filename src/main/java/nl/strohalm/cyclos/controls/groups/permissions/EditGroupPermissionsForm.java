@@ -34,6 +34,8 @@ public class EditGroupPermissionsForm extends BaseBindingForm {
     public EditGroupPermissionsForm() {
         setPermission("operations", Collections.emptyList());
         setPermission("managesGroups", Collections.emptyList());
+        setPermission("managesAdminGroups", Collections.emptyList());
+
         setPermission("viewInformationOf", Collections.emptyList());
         setPermission("viewConnectedAdminsOf", Collections.emptyList());
         setPermission("canViewProfileOfGroups", Collections.emptyList());

@@ -25,6 +25,7 @@ import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.controls.elements.SearchElementsAction;
 import nl.strohalm.cyclos.entities.customization.fields.AdminCustomFieldValue;
 import nl.strohalm.cyclos.entities.customization.fields.CustomFieldValue;
+import nl.strohalm.cyclos.entities.groups.AdminGroup;
 import nl.strohalm.cyclos.entities.groups.Group;
 import nl.strohalm.cyclos.entities.groups.GroupQuery;
 import nl.strohalm.cyclos.entities.members.FullTextAdminQuery;
@@ -61,12 +62,13 @@ public class SearchAdminsAction extends SearchElementsAction<FullTextAdminQuery>
     @Override
     protected QueryParameters prepareForm(final ActionContext context) {
         final FullTextAdminQuery query = (FullTextAdminQuery) super.prepareForm(context);
-
+        final AdminGroup adminGroup = context.getGroup();
         final HttpServletRequest request = context.getRequest();
 
         // Store the groups
         final GroupQuery groupQuery = new GroupQuery();
         groupQuery.setNatures(Group.Nature.ADMIN);
+        groupQuery.setManagedBy(adminGroup);
         request.setAttribute("groups", groupService.search(groupQuery));
 
         // Store the possible groups for new admin
@@ -74,6 +76,8 @@ public class SearchAdminsAction extends SearchElementsAction<FullTextAdminQuery>
             final GroupQuery possibleGroupQuery = new GroupQuery();
             possibleGroupQuery.setNatures(Group.Nature.ADMIN);
             possibleGroupQuery.setStatus(Group.Status.NORMAL);
+            possibleGroupQuery.setManagedBy(adminGroup);
+
             request.setAttribute("possibleNewGroups", groupService.search(possibleGroupQuery));
         }
         return query;

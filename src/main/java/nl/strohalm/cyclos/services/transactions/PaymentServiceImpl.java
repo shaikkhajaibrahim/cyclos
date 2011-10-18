@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.corba.se.spi.servicecontext.UnknownServiceContext;
 import mp.platform.cyclone.webservices.utils.server.PaymentHelper;
 import nl.strohalm.cyclos.dao.accounts.transactions.ReverseDAO;
 import nl.strohalm.cyclos.dao.accounts.transactions.ScheduledPaymentDAO;
@@ -100,6 +101,7 @@ import nl.strohalm.cyclos.services.permissions.PermissionService;
 import nl.strohalm.cyclos.services.preferences.MessageChannel;
 import nl.strohalm.cyclos.services.preferences.PreferenceService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
+import nl.strohalm.cyclos.services.settings.SettingsServiceImpl;
 import nl.strohalm.cyclos.services.stats.StatisticalResultDTO;
 import nl.strohalm.cyclos.services.transactions.exceptions.*;
 import nl.strohalm.cyclos.services.transfertypes.BuildTransferWithFeesDTO;
@@ -107,13 +109,7 @@ import nl.strohalm.cyclos.services.transfertypes.TransactionFeePreviewDTO;
 import nl.strohalm.cyclos.services.transfertypes.TransactionFeePreviewForRatesDTO;
 import nl.strohalm.cyclos.services.transfertypes.TransactionFeeService;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
-import nl.strohalm.cyclos.utils.BigDecimalHelper;
-import nl.strohalm.cyclos.utils.CurrentTransactionData;
-import nl.strohalm.cyclos.utils.DateHelper;
-import nl.strohalm.cyclos.utils.MessageProcessingHelper;
-import nl.strohalm.cyclos.utils.MessageResolver;
-import nl.strohalm.cyclos.utils.RelationshipHelper;
-import nl.strohalm.cyclos.utils.TimePeriod;
+import nl.strohalm.cyclos.utils.*;
 import nl.strohalm.cyclos.utils.access.LoggedUser;
 import nl.strohalm.cyclos.utils.conversion.CalendarConverter;
 import nl.strohalm.cyclos.utils.conversion.CoercionHelper;
@@ -2040,6 +2036,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
         final LocalSettings localSettings = settingsService.getLocalSettings();
         if (fromAccount != null) {
             final BigDecimal creditLimit = fromAccount.getCreditLimit();
+
             if (creditLimit != null) {
                 // ... only if not unlimited
                 final AccountStatus fromStatus = accountService.getStatus(new GetTransactionsDTO(fromAccount));

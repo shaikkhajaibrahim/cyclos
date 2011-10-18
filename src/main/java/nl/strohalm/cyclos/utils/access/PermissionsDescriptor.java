@@ -144,20 +144,20 @@ public abstract class PermissionsDescriptor {
         this.relatedEntity = relatedEntity;
     }
 
-    private boolean checkForAdmin(final Collection<Member> members) {
+    private boolean checkForAdmin(final Collection<? extends Element> members) {
         if (members.isEmpty()) {
             return false;
         }
 
         AdminGroup group = LoggedUser.group();
         group = fetchService.reload(group, AdminGroup.Relationships.MANAGES_GROUPS);
-        final Collection<MemberGroup> managesGroups = group.getManagesGroups();
-        for (Member member : members) {
+        for (Element member : members) {
             if (!fetchService.isInitialized(member) || member.getGroup() == null) {
                 member = fetchService.fetch(member, Element.Relationships.GROUP);
             }
-            final MemberGroup memberGroup = (MemberGroup) fetchService.fetch(member.getGroup());
-            final boolean isOk = managesGroups.contains(memberGroup);
+            final Group memberGroup = fetchService.fetch(member.getGroup());
+            final boolean isOk = (member.getNature() == Element.Nature.ADMIN ?
+                    group.getManagesAdminGroups() : group.getManagesGroups()).contains(memberGroup);
             if (!isOk && checkAllRelatedMembers) {
                 return false;
             } else if (isOk && !checkAllRelatedMembers) {
@@ -167,14 +167,14 @@ public abstract class PermissionsDescriptor {
         return checkAllRelatedMembers ? true : false;
     }
 
-    private boolean checkForBroker(final Collection<Member> members) {
+    private boolean checkForBroker(final Collection<? extends Element> members) {
         if (members.isEmpty()) {
             return false;
         }
 
         final Member broker = LoggedUser.element();
-        for (final Member member : members) {
-            final boolean isOk = broker.equals(member.getBroker());
+        for (final Element member : members) {
+            final boolean isOk = member instanceof Member && broker.equals(((Member) member).getBroker());
             if (!isOk && checkAllRelatedMembers) {
                 return false;
             } else if (isOk && !checkAllRelatedMembers) {
@@ -184,13 +184,13 @@ public abstract class PermissionsDescriptor {
         return checkAllRelatedMembers ? true : false;
     }
 
-    private boolean checkForMember(final Collection<Member> members) {
+    private boolean checkForMember(final Collection<? extends Element> members) {
         if (members.isEmpty()) {
             return false;
         }
 
         final Element element = LoggedUser.element();
-        for (final Member current : members) {
+        for (final Element current : members) {
             final boolean isOk = element.equals(current);
             if (!isOk && checkAllRelatedMembers) {
                 return false;
@@ -202,13 +202,13 @@ public abstract class PermissionsDescriptor {
     }
 
     // It's expected a members collection's size of 1
-    private boolean checkForOperator(final Collection<Member> members) {
+    private boolean checkForOperator(final Collection<? extends Element> members) {
         if (members.isEmpty()) {
             return false;
         }
 
         final Operator operator = LoggedUser.element();
-        for (final Member member : members) {
+        for (final Element member : members) {
             final boolean isOk = operator.getMember().equals(member);
             if (!isOk && checkAllRelatedMembers) {
                 return false;
@@ -226,7 +226,7 @@ public abstract class PermissionsDescriptor {
         boolean granted = false;
         Permission perm = null;
         boolean useMemberNature = false;
-        Collection<Member> members = Collections.emptyList();
+        Collection<? extends Element> members = Collections.emptyList();
 
         if (annotated) {
             boolean inferMember = false;
@@ -287,16 +287,18 @@ public abstract class PermissionsDescriptor {
         return new PermissionCheck(granted, perm);
     }
 
-    private boolean checkRelated(final Permission permission, final Collection<Member> members) {
+    private boolean checkRelated(final Permission permission, final Collection<? extends Element> members) {
         final Type type = Module.Type.getByModuleName(permission.module());
         boolean checkForBroker = false;
         switch (type) {
             case ADMIN_MEMBER:
+            case ADMIN_ADMIN:
                 // If logged as admin, check if can manage each member's group
                 if (!checkForAdmin(members)) {
                     return false;
                 }
                 break;
+
             case BROKER:
                 // If logged as broker, check if the each member's broker is the logged user
                 if (checkForBroker(members)) {
@@ -339,7 +341,7 @@ public abstract class PermissionsDescriptor {
     /**
      * Recursively fetch the path until the member
      */
-    private Member fetchMember(Object bean, final String path) {
+    private Element fetchMember(Object bean, final String path) {
         final String name = path;
         String first = PropertyHelper.firstProperty(name);
         String nested = PropertyHelper.nestedPath(name);
@@ -386,7 +388,7 @@ public abstract class PermissionsDescriptor {
             }
         }
 
-        return (Member) bean;
+        return (Element) bean;
     }
 
     private Permission getGrantedPermission(final Group group, final Permission[] permissions) {
@@ -417,7 +419,7 @@ public abstract class PermissionsDescriptor {
         return b != null && b;
     }
 
-    private Collection<Member> resolveMembers(Object argument) {
+    private Collection<? extends Element> resolveMembers(Object argument) {
         if (argument == null) {
             throw new IllegalArgumentException("Can not resolve related members: null argument");
         }
@@ -461,11 +463,11 @@ public abstract class PermissionsDescriptor {
         for (int i = 0; i < paths.length; i++) {
             paths[i] = StringUtils.trimToNull(paths[i]);
         }
-        final List<Member> members = new ArrayList<Member>();
+        final List<Element> members = new ArrayList<Element>();
         for (final Object object : objects) {
             for (final String path : paths) {
                 try {
-                    final Member member = fetchMember(object, path);
+                    final Element member = fetchMember(object, path);
                     // if (member == null) {
                     // throw new IllegalStateException("The '" + path + "' property on argument '" + object + "' for method " + method + " was null");
                     // }
@@ -484,7 +486,7 @@ public abstract class PermissionsDescriptor {
     /**
      * Verify permission to the related member for the given arguments
      */
-    private boolean verifyRelatedMember(final Group.Nature nature, final Permission permission, final Collection<Member> members, final Object arg, final IPermissionRequestor permissionRequestor) {
+    private boolean verifyRelatedMember(final Group.Nature nature, final Permission permission, final Collection<? extends Element> members, final Object arg, final IPermissionRequestor permissionRequestor) {
         if (permission != null) {
             final Type type = Module.Type.getByModuleName(permission.module());
             // Check if we must verify the member also

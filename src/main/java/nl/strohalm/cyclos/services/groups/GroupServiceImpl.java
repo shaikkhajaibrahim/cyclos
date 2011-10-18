@@ -2209,6 +2209,7 @@ public class GroupServiceImpl implements GroupService, ApplicationContextAware {
 
             adminGroup.setViewInformationOf(adminDto.getViewInformationOf());
             adminGroup.setManagesGroups(adminDto.getManagesGroups());
+            adminGroup.setManagesAdminGroups(adminDto.getManagesAdminGroups());
             adminGroup.setViewConnectedAdminsOf(adminDto.getViewConnectedAdminsOf());
             adminGroup.setViewAdminRecordTypes(adminDto.getViewAdminRecordTypes());
             adminGroup.setCreateAdminRecordTypes(adminDto.getCreateAdminRecordTypes());

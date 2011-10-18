@@ -44,7 +44,7 @@ public class Module extends Entity implements Comparable<Module> {
     }
 
     public static enum Type implements StringValuedEnum {
-        BASIC("B", "basic", false), ADMIN_SYSTEM("AS", "system", false), ADMIN_MEMBER("AM", "adminMember", true), ADMIN_ADMIN("AA", "adminAdmin", false), MEMBER("M", "member", true), BROKER("BK", "broker", true), OPERATOR("O", "operator", true);
+        BASIC("B", "basic", false), ADMIN_SYSTEM("AS", "system", false), ADMIN_MEMBER("AM", "adminMember", true), ADMIN_ADMIN("AA", "adminAdmin", true), MEMBER("M", "member", true), BROKER("BK", "broker", true), OPERATOR("O", "operator", true);
 
         /**
          * Returns a type for the given operation name

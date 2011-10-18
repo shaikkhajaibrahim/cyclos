@@ -50,6 +50,8 @@ public class AdminGroup extends Group {
 
     private Collection<TransferType>      transferTypesAsMember;
     private Collection<MemberGroup>       managesGroups;
+    private Collection<AdminGroup>       managesAdminGroups;
+
     private Collection<SystemAccountType> viewInformationOf;
     private Collection<AdminGroup>        viewConnectedAdminsOf;
     private Collection<AdminGroup>        connectedAdminsViewedBy;
@@ -180,4 +182,11 @@ public class AdminGroup extends Group {
         this.viewMemberRecordTypes = viewMemberRecordTypes;
     }
 
+    public Collection<AdminGroup> getManagesAdminGroups() {
+        return managesAdminGroups;
+    }
+
+    public void setManagesAdminGroups(Collection<AdminGroup> managesAdminGroups) {
+        this.managesAdminGroups = managesAdminGroups;
+    }
 }

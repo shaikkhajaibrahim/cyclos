@@ -160,8 +160,7 @@ public class GroupDAOImpl extends BaseDAOImpl<Group> implements GroupDAO {
         HibernateHelper.addInElementsParameter(hql, namedParameters, "g.paymentFilters", query.getPaymentFilter());
 
         if (query.getManagedBy() != null) {
-            hql.append(" and ((g.class = :adminGroup) or (g in (select mg from AdminGroup ag join ag.managesGroups mg where ag = :managedBy))) ");
-            namedParameters.put("adminGroup", Group.Nature.ADMIN.getDiscriminator());
+            hql.append(" and ((g in (select mg from AdminGroup ag join ag.managesAdminGroups mg where ag = :managedBy)) or (g in (select mg from AdminGroup ag join ag.managesGroups mg where ag = :managedBy))) ");
             namedParameters.put("managedBy", query.getManagedBy());
         }
 
