@@ -339,6 +339,7 @@ public class EditGroupPermissionsAction extends BaseFormAction {
             // View connected admins
             GroupQuery groupQuery = new GroupQuery();
             groupQuery.setNatures(Group.Nature.ADMIN);
+            groupQuery.setIgnoreManagedBy(true);
             final List<AdminGroup> adminGroups = (List<AdminGroup>) groupService.search(groupQuery);
             request.setAttribute("adminGroups", adminGroups);
 
