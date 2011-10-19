@@ -37,6 +37,7 @@ public class RegisterMemberParameters implements Serializable {
     private String                         loginPassword;
     private String                         pin;
     private String                         credentials;
+    private boolean                        acceptRegistrationAgreement;
     private List<RegistrationFieldValueVO> fields;
 
     public String getCredentials() {
@@ -101,6 +102,14 @@ public class RegisterMemberParameters implements Serializable {
 
     public void setUsername(final String username) {
         this.username = username;
+    }
+
+    public boolean isAcceptRegistrationAgreement() {
+        return acceptRegistrationAgreement;
+    }
+
+    public void setAcceptRegistrationAgreement(boolean acceptRegistrationAgreement) {
+        this.acceptRegistrationAgreement = acceptRegistrationAgreement;
     }
 
     @Override

@@ -22,6 +22,7 @@
 package nl.strohalm.cyclos.controls.tokens;
 
 import nl.strohalm.cyclos.controls.ActionContext;
+import nl.strohalm.cyclos.entities.groups.Group;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
@@ -48,8 +49,8 @@ public class GenerateTokenAction extends BaseTokenAction implements LocalSetting
     ActionForward tokenSubmit(BaseTokenForm form, Member loggedMember, ActionContext context) {
         final GenerateTokenDTO generateTokenDTO = getDataBinder().readFromString(form.getValues());
 
-        LocalSettings localSettings = settingService.getLocalSettings();
-        Long ttId = loggedMember.getMemberGroup().isBroker() ? localSettings.getBrokerTokenGenerationTransferType()
+        LocalSettings localSettings = settingsService.getLocalSettings();
+        Long ttId = context.isBroker() ? localSettings.getBrokerTokenGenerationTransferType()
                 : localSettings.getMemberTokenGenerationTransferType();
         
         generateTokenDTO.setTransferTypeId(ttId);

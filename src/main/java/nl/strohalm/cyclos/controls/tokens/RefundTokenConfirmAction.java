@@ -21,15 +21,9 @@
 
 package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
-import nl.strohalm.cyclos.controls.BaseFormAction;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.entities.tokens.Status;
-import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
-import nl.strohalm.cyclos.services.tokens.TokenService;
-import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
 
 public class RefundTokenConfirmAction extends BaseTokenAction {
@@ -39,7 +33,7 @@ public class RefundTokenConfirmAction extends BaseTokenAction {
         SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
         senderRedeemTokenData.setPin(token.getPin());
         senderRedeemTokenData.setTransactionId(token.getTransactionId());
-        senderRedeemTokenData.setTransferTypeId(settingService.getLocalSettings().getRefundTokenTransferType());
+        senderRedeemTokenData.setTransferTypeId(settingsService.getLocalSettings().getRefundTokenTransferType());
         tokenService.refundToken(loggedMember, senderRedeemTokenData);
         context.sendMessage("tokens.tokenRefunded", token.getTransactionId());
         return context.getSuccessForward();

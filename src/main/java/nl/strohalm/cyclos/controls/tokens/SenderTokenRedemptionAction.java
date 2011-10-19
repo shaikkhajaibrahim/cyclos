@@ -35,10 +35,10 @@ public class SenderTokenRedemptionAction extends BaseTokenAction {
         SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
         senderRedeemTokenData.setPin(token.getPin());
         senderRedeemTokenData.setTransactionId(token.getTransactionId());
-        LocalSettings localSettings = settingService.getLocalSettings();
-             Long ttId = loggedMember.getMemberGroup().isBroker() ?
-                     localSettings.getBrokerSenderTokenRedemptionTransferType()
-                     : localSettings.getMemberSenderTokenRedemptionTransferType();
+        LocalSettings localSettings = settingsService.getLocalSettings();
+        Long ttId = actionContext.isBroker() ?
+                localSettings.getBrokerSenderTokenRedemptionTransferType()
+                : localSettings.getMemberSenderTokenRedemptionTransferType();
 
         senderRedeemTokenData.setTransferTypeId(ttId);
 
@@ -50,7 +50,7 @@ public class SenderTokenRedemptionAction extends BaseTokenAction {
     protected void prepareForm(ActionContext context) throws Exception {
         super.prepareForm(context);    //To change body of overridden methods use File | Settings | File Templates.
         String transactionId = context.getRequest().getParameter("token(transactionId)");
-        context.getRequest().setAttribute("asBroker", transactionId ==null);
+        context.getRequest().setAttribute("asBroker", transactionId == null);
 
     }
 }
