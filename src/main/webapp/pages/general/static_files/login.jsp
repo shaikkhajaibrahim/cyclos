@@ -52,7 +52,7 @@
 				<div class="loginText">
 					<cyclos:escapeHTML><bean:message key="login.registration.text" arg0="${localSettings.applicationName}" /></cyclos:escapeHTML>
 				</div>
-				<input type="button" onclick="publicRegisterUser()" class="button" value="<bean:message key="global.submit"/>">
+				<input type="button" onclick="publicRegisterUser()" class="button" value="<bean:message key="login.createAccount.button"/>">
 			</div>
 		</td>
 	</tr>
