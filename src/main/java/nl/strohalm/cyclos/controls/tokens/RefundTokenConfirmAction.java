@@ -39,6 +39,7 @@ public class RefundTokenConfirmAction extends BaseTokenAction {
         SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
         senderRedeemTokenData.setPin(token.getPin());
         senderRedeemTokenData.setTransactionId(token.getTransactionId());
+        senderRedeemTokenData.setTransferTypeId(settingService.getLocalSettings().getRefundTokenTransferType());
         tokenService.refundToken(loggedMember, senderRedeemTokenData);
         context.sendMessage("tokens.tokenRefunded", token.getTransactionId());
         return context.getSuccessForward();

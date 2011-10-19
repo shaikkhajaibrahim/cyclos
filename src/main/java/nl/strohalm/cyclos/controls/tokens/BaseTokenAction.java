@@ -30,10 +30,11 @@ import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.exceptions.ApplicationException;
 import nl.strohalm.cyclos.services.elements.ElementService;
+import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
-import nl.strohalm.cyclos.services.tokens.exceptions.NoTransactionTypeException;
+import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
 import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
 import nl.strohalm.cyclos.utils.ActionHelper;
@@ -43,9 +44,16 @@ public abstract class BaseTokenAction extends BaseFormAction {
 
     TokenService tokenService;
 
+    SettingsService settingService;
+
     @Inject
     public void setTokenService(TokenService tokenService) {
         this.tokenService = tokenService;
+    }
+
+    @Inject
+    public void setSettingService(SettingsService settingService) {
+        this.settingService = settingService;
     }
 
     ElementService elementService;
@@ -70,8 +78,8 @@ public abstract class BaseTokenAction extends BaseFormAction {
             errorKey = "tokens.error.tokenNotFound";
         } catch (BadStatusForRedeem e) {
             errorKey = "tokens.error.badStatusForRedeem";
-        } catch (NoTransactionTypeException e) {
-            errorKey = "tokens.error.noTransactionType";
+        } catch (NoTransferTypeException e) {
+            errorKey = "tokens.error.noTransferType";
         } catch (RefundNonExpiredToken e) {
             errorKey = "tokens.error.refundNotExpired";
         } catch (NotEnoughCreditsException e) {

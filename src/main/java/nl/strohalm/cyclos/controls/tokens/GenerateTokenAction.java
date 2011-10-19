@@ -48,6 +48,11 @@ public class GenerateTokenAction extends BaseTokenAction implements LocalSetting
     ActionForward tokenSubmit(BaseTokenForm form, Member loggedMember, ActionContext context) {
         final GenerateTokenDTO generateTokenDTO = getDataBinder().readFromString(form.getValues());
 
+        LocalSettings localSettings = settingService.getLocalSettings();
+        Long ttId = loggedMember.getMemberGroup().isBroker() ? localSettings.getBrokerTokenGenerationTransferType()
+                : localSettings.getMemberTokenGenerationTransferType();
+        
+        generateTokenDTO.setTransferTypeId(ttId);
         generateTokenDTO.setFrom(loggedMember.getUsername());
         if (!context.isBroker()) {
             generateTokenDTO.setSenderMobilePhone(null);

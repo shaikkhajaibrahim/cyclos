@@ -30,7 +30,7 @@ import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
 import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
-import nl.strohalm.cyclos.services.tokens.exceptions.NoTransactionTypeException;
+import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
 import mp.platform.cyclone.webservices.WebServiceFaultsEnum;
 
@@ -52,11 +52,11 @@ public class TokenWebServiceImpl implements TokenWebService {
             generateTokenDTO.setFrom(generateTokenParameters.getUsername());
             generateTokenDTO.setSenderMobilePhone(generateTokenParameters.getSenderMobile());
             generateTokenDTO.setRecipientMobilePhone(generateTokenParameters.getRecipientMobile());
-            generateTokenDTO.setTransactionTypeName(generateTokenParameters.getTransactionTypeName());
+            generateTokenDTO.setTransferTypeId(generateTokenParameters.getTransferTypeId());
             return tokenService.generateToken(generateTokenDTO);
         } catch (NotEnoughCreditsException e) {
             throw WebServiceFaultsEnum.NOT_ENOUGH_CREDITS.getFault("Not enough credits for token generation");
-        } catch (NoTransactionTypeException e) {
+        } catch (NoTransferTypeException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Cannot perform operation");
         }
 
@@ -66,12 +66,12 @@ public class TokenWebServiceImpl implements TokenWebService {
     public void redeemToken(RedeemTokenParameters redeemTokenParameters) {
         try {
             Member member = elementService.loadByPrincipal(new PrincipalType(Channel.Principal.USER), redeemTokenParameters.getUsername());
-            tokenService.redeemToken(member, redeemTokenParameters.getTokenId(), redeemTokenParameters.getPin(), redeemTokenParameters.getTransactionTypeName());
+            tokenService.redeemToken(member, redeemTokenParameters.getTokenId(), redeemTokenParameters.getPin(), redeemTokenParameters.getTransferTypeId());
         } catch (BadStatusForRedeem e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");
         } catch (TokenNotFoundException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token not found");
-        } catch (NoTransactionTypeException e) {
+        } catch (NoTransferTypeException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Cannot perform operation");
         }
     }
@@ -85,13 +85,13 @@ public class TokenWebServiceImpl implements TokenWebService {
             SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
             senderRedeemTokenData.setPin(redeemTokenParameters.getPin());
             senderRedeemTokenData.setTransactionId(redeemTokenParameters.getReferenceNumber());
-            senderRedeemTokenData.setTransactionTypeName(redeemTokenParameters.getTransactionTypeName());
+            senderRedeemTokenData.setTransferTypeId(redeemTokenParameters.getTransferTypeId());
             tokenService.senderRedeemToken(member, senderRedeemTokenData);
         } catch (BadStatusForRedeem e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token cannot be redeemed");
         } catch (TokenNotFoundException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Token not found");
-        } catch (NoTransactionTypeException e) {
+        } catch (NoTransferTypeException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Cannot perform operation");
         }
     }

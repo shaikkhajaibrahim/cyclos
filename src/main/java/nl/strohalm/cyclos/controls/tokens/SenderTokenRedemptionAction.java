@@ -23,6 +23,7 @@ package nl.strohalm.cyclos.controls.tokens;
 
 import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
 import org.apache.struts.action.ActionForward;
 
@@ -34,6 +35,13 @@ public class SenderTokenRedemptionAction extends BaseTokenAction {
         SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
         senderRedeemTokenData.setPin(token.getPin());
         senderRedeemTokenData.setTransactionId(token.getTransactionId());
+        LocalSettings localSettings = settingService.getLocalSettings();
+             Long ttId = loggedMember.getMemberGroup().isBroker() ?
+                     localSettings.getBrokerSenderTokenRedemptionTransferType()
+                     : localSettings.getMemberSenderTokenRedemptionTransferType();
+
+        senderRedeemTokenData.setTransferTypeId(ttId);
+
         tokenService.senderRedeemToken(loggedMember, senderRedeemTokenData);
         return actionContext.getSuccessForward();
     }

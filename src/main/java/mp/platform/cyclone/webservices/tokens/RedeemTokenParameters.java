@@ -27,7 +27,7 @@ public class RedeemTokenParameters extends BaseRequest {
 
     private String pin;
     
-   private String transactionTypeName;
+   private Long transferTypeId;
    
     public String getTokenId() {
         return tokenId;
@@ -45,14 +45,11 @@ public class RedeemTokenParameters extends BaseRequest {
         this.pin = tokenPin;
     }
 
-    public String getTransactionTypeName() {
-        return transactionTypeName;
+    public Long getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public void setTransactionTypeName(String transactionTypeName) {
-        this.transactionTypeName = transactionTypeName;
+    public void setTransferTypeId(Long transferTypeId) {
+        this.transferTypeId = transferTypeId;
     }
-
-  
-
 }

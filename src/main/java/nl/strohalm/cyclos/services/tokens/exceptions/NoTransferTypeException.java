@@ -19,37 +19,12 @@
  *
  */
 
-package nl.strohalm.cyclos.services.tokens;
+package nl.strohalm.cyclos.services.tokens.exceptions;
 
-public class SenderRedeemTokenData {
+import nl.strohalm.cyclos.exceptions.ApplicationException;
 
-    private String transactionId;
-
-    private String pin;
-    
-    private Long transferTypeId;
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public String getPin() {
-        return pin;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
-
-    public Long getTransferTypeId() {
-        return transferTypeId;
-    }
-
-    public void setTransferTypeId(Long transferTypeId) {
-        this.transferTypeId = transferTypeId;
+public class NoTransferTypeException extends ApplicationException {
+    public NoTransferTypeException(String s) {
+        super(s);
     }
 }

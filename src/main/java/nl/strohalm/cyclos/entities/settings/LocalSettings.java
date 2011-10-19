@@ -479,8 +479,22 @@ public class LocalSettings extends DataObject {
     private transient Dimensions                          maxThumbnailDimensions;
     private transient List<Level>                         referenceLevelList;
     private String                                        fullNameExpression;
+
+    //token
     private int                                           tokenExpirationInDays;
-    
+    private Long                                          memberTokenGenerationTransferType;
+    private Long                                          brokerTokenGenerationTransferType;
+    private Long                                          redeemTokenTransferType;
+    private Long                                          memberSenderTokenRedemptionTransferType;
+    private Long                                          brokerSenderTokenRedemptionTransferType;
+    private Long                                          refundTokenTransferType;
+    private Long                                          expireTokenTransferType;
+    public static final String[] TOKEN_TRANSFER_TYPE_SETTINGS = new String[]{"memberTokenGenerationTransferType","brokerTokenGenerationTransferType",
+                    "redeemTokenTransferType",
+                    "memberSenderTokenRedemptionTransferType",
+                    "brokerSenderTokenRedemptionTransferType",
+                    "refundTokenTransferType",
+                    "expireTokenTransferType"};
     
     public TextFormat getAdDescriptionFormat() {
         return adDescriptionFormat;
@@ -1105,5 +1119,61 @@ public class LocalSettings extends DataObject {
 
     public void setTokenExpirationInDays(int tokenExpirationInDays) {
         this.tokenExpirationInDays = tokenExpirationInDays;
+    }
+
+    public Long getMemberTokenGenerationTransferType() {
+        return memberTokenGenerationTransferType;
+    }
+
+    public void setMemberTokenGenerationTransferType(Long memberTokenGenerationTransferType) {
+        this.memberTokenGenerationTransferType = memberTokenGenerationTransferType;
+    }
+
+    public Long getBrokerTokenGenerationTransferType() {
+        return brokerTokenGenerationTransferType;
+    }
+
+    public void setBrokerTokenGenerationTransferType(Long brokerTokenGenerationTransferType) {
+        this.brokerTokenGenerationTransferType = brokerTokenGenerationTransferType;
+    }
+
+    public Long getRedeemTokenTransferType() {
+        return redeemTokenTransferType;
+    }
+
+    public void setRedeemTokenTransferType(Long redeemTokenTransferType) {
+        this.redeemTokenTransferType = redeemTokenTransferType;
+    }
+
+    public Long getMemberSenderTokenRedemptionTransferType() {
+        return memberSenderTokenRedemptionTransferType;
+    }
+
+    public void setMemberSenderTokenRedemptionTransferType(Long memberSenderTokenRedemptionTransferType) {
+        this.memberSenderTokenRedemptionTransferType = memberSenderTokenRedemptionTransferType;
+    }
+
+    public Long getBrokerSenderTokenRedemptionTransferType() {
+        return brokerSenderTokenRedemptionTransferType;
+    }
+
+    public void setBrokerSenderTokenRedemptionTransferType(Long brokerSenderTokenRedemptionTransferType) {
+        this.brokerSenderTokenRedemptionTransferType = brokerSenderTokenRedemptionTransferType;
+    }
+
+    public Long getRefundTokenTransferType() {
+        return refundTokenTransferType;
+    }
+
+    public void setRefundTokenTransferType(Long refundTokenTransferType) {
+        this.refundTokenTransferType = refundTokenTransferType;
+    }
+
+    public Long getExpireTokenTransferType() {
+        return expireTokenTransferType;
+    }
+
+    public void setExpireTokenTransferType(Long expireTokenTransferType) {
+        this.expireTokenTransferType = expireTokenTransferType;
     }
 }

@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.controls.BaseFormAction;
+import nl.strohalm.cyclos.entities.accounts.transactions.TransferTypeQuery;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.LocalSettings.DatePattern;
 import nl.strohalm.cyclos.entities.settings.LocalSettings.Language;
@@ -42,6 +43,7 @@ import nl.strohalm.cyclos.services.customization.MessageImportType;
 import nl.strohalm.cyclos.services.customization.TranslationMessageService;
 import nl.strohalm.cyclos.services.groups.GroupService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
+import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
 import nl.strohalm.cyclos.struts.CyclosMessageResources;
 import nl.strohalm.cyclos.utils.FileUnits;
 import nl.strohalm.cyclos.utils.RequestHelper;
@@ -67,6 +69,7 @@ public class EditLocalSettingsAction extends BaseFormAction {
     private GroupService              groupService;
     private ChannelService            channelService;
     private TranslationMessageService translationMessageService;
+    private TransferTypeService       transferTypeService;
     private SettingsService           settingsService;
     private DataBinder<LocalSettings> dataBinder;
 
@@ -132,8 +135,12 @@ public class EditLocalSettingsAction extends BaseFormAction {
             binder.registerBinder("showCountersInAdCategories", PropertyBinder.instance(Boolean.TYPE, "showCountersInAdCategories"));
 
             binder.registerBinder("fullNameExpression", PropertyBinder.instance(String.class, "fullNameExpression"));
+            
             binder.registerBinder("tokenExpirationInDays", PropertyBinder.instance(Integer.TYPE, "tokenExpirationInDays"));
             
+            for (String ttId : LocalSettings.TOKEN_TRANSFER_TYPE_SETTINGS) {
+                binder.registerBinder(ttId, PropertyBinder.instance(Long.TYPE, ttId));
+            }
             dataBinder = binder;
         }
         return dataBinder;
@@ -169,6 +176,11 @@ public class EditLocalSettingsAction extends BaseFormAction {
     @Inject
     public void setTranslationMessageService(final TranslationMessageService translationMessageService) {
         this.translationMessageService = translationMessageService;
+    }
+
+    @Inject
+    public void setTransferTypeService(TransferTypeService transferTypeService) {
+        this.transferTypeService = transferTypeService;
     }
 
     @Override
@@ -234,6 +246,7 @@ public class EditLocalSettingsAction extends BaseFormAction {
         request.setAttribute("indexRebuildingTimeUnits", Arrays.asList(TimePeriod.Field.DAYS, TimePeriod.Field.WEEKS, TimePeriod.Field.MONTHS));
         request.setAttribute("smsChannels", channelService.listNonBuiltin());
         request.setAttribute("smsCustomFields", channelService.possibleCustomFieldsAsPrincipal());
+        request.setAttribute("transferTypes", transferTypeService.search(new TransferTypeQuery()));
 
         // Transform the time zones in an
         final List<String> timeZones = new ArrayList<String>();

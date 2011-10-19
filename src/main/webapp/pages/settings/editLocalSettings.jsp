@@ -3,7 +3,7 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags/struts-html" prefix="html" %>
 <%@ taglib uri="http://sslext.sf.net/tags/sslext" prefix="ssl" %>
 <%@ taglib uri="http://devel.cyclos.org/tlibs/cyclos-core" prefix="cyclos" %>
-<%@ taglib uri="http://www.servletsuite.com/servlets/toggletag" prefix="t" %> 
+<%@ taglib uri="http://www.servletsuite.com/servlets/toggletag" prefix="t" %>
 
 <cyclos:script src="/pages/settings/editLocalSettings.js" />
 
@@ -312,7 +312,7 @@
 		        	<tr>
                    		<td class="label" width="30%"><bean:message key="settings.local.sms.enable"/></td>
                    		<td><html:checkbox property="setting(enableSms)" styleId="smsCheck" styleClass="checkbox InputBoxDisabled" disabled="true" value="true" /></td>
-                   	</tr>		        
+                   	</tr>
                   	<tr class="trSms" style="display:none">
                    		<td class="label""><bean:message key="settings.local.sms.channel"/></td>
                    		<td>
@@ -323,11 +323,11 @@
 		                   		</c:forEach>
 	                    	</html:select>
 	                    </td>
-                   	</tr>                   	
+                   	</tr>
                   	<tr class="trSms" style="display:none">
                    		<td class="label""><bean:message key="settings.local.sms.sendSmsWebServiceUrl"/></td>
                    		<td><html:text property="setting(sendSmsWebServiceUrl)" styleClass="full InputBoxDisabled" readonly="true"/></td>
-                   	</tr>                   	
+                   	</tr>
                   	<tr class="trSms" style="display:none">
                    		<td class="label""><bean:message key="settings.local.sms.customField"/></td>
                    		<td>
@@ -338,7 +338,7 @@
 		                   		</c:forEach>
                    			</html:select>
 						</td>
-                   	</tr>                   	
+                   	</tr>
 	            </table>
             </fieldset>
             <fieldset>
@@ -393,11 +393,87 @@
 	                    <td class="label"><bean:message key="settings.local.schedulingMinute"/></td>
 	                    <td><html:text property="setting(schedulingMinute)" styleClass="tiny number InputBoxDisabled" readonly="true"/></td>
 	                </tr>
-                    <tr>
-   	                    <td class="label"><bean:message key="settings.local.tokenExpirationInDays"/></td>
-                        <td><html:text property="setting(tokenExpirationInDays)" styleClass="full InputBoxDisabled" readonly="true"/></td>
-   	                </tr>
 	            </table>
+            </fieldset>
+            <fieldset>
+                <legend><bean:message key="settings.local.tokens"/></legend>
+   		        <table class="defaultTable">
+                   <tr>
+                        <td class="label"><bean:message key="settings.local.tokens.memberTokenGenerationTransferType"/></td>
+                        <td>
+                        <html:select property="setting(memberTokenGenerationTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                            <c:forEach var="transferType" items="${transferTypes}">
+                                <html:option value="${transferType.id}">${transferType.name}</html:option>
+                            </c:forEach>
+                        </html:select>
+                        </td>
+                    </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.brokerTokenGenerationTransferType"/></td>
+                            <td>
+                            <html:select property="setting(brokerTokenGenerationTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                        </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.redeemTokenTransferType"/></td>
+                            <td>
+                            <html:select property="setting(redeemTokenTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                        </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.memberSenderTokenRedemptionTransferType"/></td>
+                            <td>
+                            <html:select property="setting(memberSenderTokenRedemptionTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                        </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.brokerSenderTokenRedemptionTransferType"/></td>
+                            <td>
+                            <html:select property="setting(brokerSenderTokenRedemptionTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                        </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.refundTokenTransferType"/></td>
+                            <td>
+                            <html:select property="setting(refundTokenTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                        </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.expireTokenTransferType"/></td>
+                            <td>
+                            <html:select property="setting(expireTokenTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                        </tr>
+                    <tr>
+      	                <td class="label"><bean:message key="settings.local.tokenExpirationInDays"/></td>
+                        <td><html:text property="setting(tokenExpirationInDays)" styleClass="full InputBoxDisabled" readonly="true"/></td>
+      	            </tr>
+   	            </table>
+
             </fieldset>
 			<c:if test="${cyclos:granted('systemSettings', 'manageLocal')}">
 				<table class="defaultTable">
@@ -409,8 +485,8 @@
 						</td>
 					</tr>
 	            </table>
-			</c:if>   
-		</td>            
+			</c:if>
+		</td>
     </tr>
 </table>
 </ssl:form>

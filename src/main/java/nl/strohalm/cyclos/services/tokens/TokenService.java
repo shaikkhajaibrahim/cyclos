@@ -35,7 +35,7 @@ public interface TokenService extends Service {
     String generateToken(GenerateTokenDTO generateTokenDTO);
 
     //@BrokerAction
-    void redeemToken(Member broker, String tokenId, String pin, String transactionTypeName);
+    void redeemToken(Member broker, String tokenId, String pin, Long transferTypeId);
 
     void senderRedeemToken(Member member, SenderRedeemTokenData senderRedeemTokenData);
 

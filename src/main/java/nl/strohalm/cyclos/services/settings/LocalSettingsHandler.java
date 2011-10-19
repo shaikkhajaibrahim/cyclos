@@ -45,6 +45,7 @@ import nl.strohalm.cyclos.services.groups.GroupService;
 import nl.strohalm.cyclos.utils.FileUnits;
 import nl.strohalm.cyclos.utils.TextFormat;
 import nl.strohalm.cyclos.utils.TimePeriod.Field;
+import nl.strohalm.cyclos.utils.binding.PropertyBinder;
 import nl.strohalm.cyclos.utils.conversion.CoercionConverter;
 import nl.strohalm.cyclos.utils.conversion.Converter;
 import nl.strohalm.cyclos.utils.conversion.IdConverter;
@@ -151,7 +152,9 @@ public class LocalSettingsHandler extends BaseSettingsHandler<LocalSettings> {
         localConverters.put("showCountersInAdCategories", CoercionConverter.instance(Boolean.TYPE));
         localConverters.put("fullNameExpression", CoercionConverter.instance(String.class));
         localConverters.put("tokenExpirationInDays", CoercionConverter.instance(Integer.TYPE));
-
+        for (String ttId : LocalSettings.TOKEN_TRANSFER_TYPE_SETTINGS) {
+            localConverters.put(ttId, CoercionConverter.instance(Long.TYPE));
+        }
         return localConverters;
     }
 

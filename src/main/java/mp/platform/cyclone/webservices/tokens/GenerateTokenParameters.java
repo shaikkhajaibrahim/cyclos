@@ -23,15 +23,15 @@ package mp.platform.cyclone.webservices.tokens;
 
 import java.math.BigDecimal;
 
-public class GenerateTokenParameters extends BaseRequest{
+public class GenerateTokenParameters extends BaseRequest {
 
     private String recipientMobile;
 
     private String senderMobile;
 
     private BigDecimal amount;
-    
-    private String transactionTypeName;
+
+    private Long transferTypeId;
 
     public String getRecipientMobile() {
         return recipientMobile;
@@ -57,12 +57,12 @@ public class GenerateTokenParameters extends BaseRequest{
         this.amount = amount;
     }
 
-    public String getTransactionTypeName() {
-        return transactionTypeName;
+    public Long getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public void setTransactionTypeName(String transactionTypeName) {
-        this.transactionTypeName = transactionTypeName;
+    public void setTransferTypeId(Long transferTypeId) {
+        this.transferTypeId = transferTypeId;
     }
 
 }
