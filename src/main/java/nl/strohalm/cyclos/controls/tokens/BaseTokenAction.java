@@ -28,7 +28,6 @@ import nl.strohalm.cyclos.dao.tokens.exceptions.TokenNotFoundException;
 import nl.strohalm.cyclos.entities.access.Channel;
 import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.exceptions.ApplicationException;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.tokens.TokenService;
@@ -37,23 +36,22 @@ import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
 import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
 import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
-import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
 
 public abstract class BaseTokenAction extends BaseFormAction {
 
     TokenService tokenService;
 
-    SettingsService settingService;
-
     @Inject
     public void setTokenService(TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
+    SettingsService settingsService;
+
     @Inject
-    public void setSettingService(SettingsService settingService) {
-        this.settingService = settingService;
+    public void setSettingsService(SettingsService settingsService) {
+        this.settingsService = settingsService;
     }
 
     ElementService elementService;

@@ -21,14 +21,8 @@
 
 package nl.strohalm.cyclos.controls.tokens;
 
-import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
-import nl.strohalm.cyclos.controls.BaseFormAction;
-import nl.strohalm.cyclos.entities.access.User;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
-import nl.strohalm.cyclos.services.tokens.TokenService;
-import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
 
 public class RedeemTokenAction extends BaseTokenAction {
@@ -38,7 +32,7 @@ public class RedeemTokenAction extends BaseTokenAction {
         String pin = (String) token.getToken("pin");
 
 
-        tokenService.redeemToken(loggedMember, token.getTokenId(), pin , settingService.getLocalSettings().getRefundTokenTransferType());
+        tokenService.redeemToken(loggedMember, token.getTokenId(), pin , settingsService.getLocalSettings().getRefundTokenTransferType());
         context.sendMessage("tokens.tokenRedeemed", token.getTokenId());
         return context.getSuccessForward();
     }
