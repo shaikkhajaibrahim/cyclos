@@ -156,6 +156,11 @@ public class MemberWebServiceImpl implements MemberWebService {
 
         // Register the member
         final RegisteredMember registered = elementService.registerMemberByWebService(WebServiceContext.getClient(), member, WebServiceContext.getRequest().getRemoteAddr());
+        if (params.isAcceptRegistrationAgreement() && registered.getMemberGroup().getRegistrationAgreement() != null) {
+            elementService.acceptAgreement((Member) elementService.load(registered.getId()),
+                    registered.getMemberGroup().getRegistrationAgreement(), WebServiceContext.getRequest().getRemoteAddr());
+        }
+
         final MemberRegistrationResult result = new MemberRegistrationResult();
         if (registered instanceof PendingMember) {
             result.setAwaitingEmailValidation(true);
