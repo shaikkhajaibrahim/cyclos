@@ -90,12 +90,14 @@ public interface ElementService extends Service {
      * @throws ValidationException When any of the arguments are null or empty, when the new group is the same as the old or when the admin is removed
      */
     @AdminAction(@Permission(module = "adminAdmins", operation = "changeGroup"))
+    @PathToMember("")
     Administrator changeAdminGroup(Administrator admin, AdminGroup newGroup, String comments) throws ValidationException;
 
     /**
      * Change the profile of an administrator - not the logged one
      */
     @AdminAction(@Permission(module = "adminAdmins", operation = "changeProfile"))
+    @PathToMember("")
     Administrator changeAdminProfile(Administrator admin);
 
     /**
@@ -326,6 +328,7 @@ public interface ElementService extends Service {
      * @throws UnexpectedEntityException When the given id is not of an admin
      */
     @AdminAction(@Permission(module = "adminAdmins", operation = "remove"))
+    @PathToMember("")
     void removeAdmin(Long id) throws UnexpectedEntityException;
 
     /**
