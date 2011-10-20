@@ -153,7 +153,10 @@
 		</tr>
 		<c:choose><c:when test="${empty group.registrationAgreement}">
 			<tr>
-				<td colspan="3" align="right">
+                            <td colspan="2" align="right">
+                                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
+                            </td>
+				<td colspan="1" align="middle">
 					<input type="submit" id="saveButton" class="button" value="<bean:message key="global.submit"/>">
 				</td>
 			</tr>
@@ -182,7 +185,10 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="3" align="right">
+				 <td colspan="2" align="right">
+                                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
+                            </td>
+				<td colspan="1" align="middle">
 					<br class="small">
 					<input type="submit" id="saveButton" class="button" value="<bean:message key="global.submit" />">
 				</td>
@@ -196,7 +202,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" align="right">
+                    <td colspan="2" align="right">
+                                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
+                            </td>
+				<td colspan="1" align="middle">
 				<span class="label"><bean:message key="createMember.action.saveAndOpenProfile"/></span>
 				<input type="submit" id="saveAndOpenProfileButton" class="button" value="<bean:message key="global.submit"/>">
 			</td>
@@ -211,7 +220,7 @@
 <br class="small">
 <table class="defaultTableContentHidden" cellspacing="0" cellpadding="0">
 	<tr>
-		<td><input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>"></td>
+		
 	</tr>
 </table>
 
