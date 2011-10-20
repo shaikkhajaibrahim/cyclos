@@ -1887,8 +1887,10 @@ public class ElementServiceImpl implements ElementService {
                 // Check if the name has changed
                 final String savedName = saved.getName();
                 final String givenName = element.getName();
+                boolean useExpressionName = !StringUtils.isEmpty(settingsService.getLocalSettings().getFullNameExpression());
                 if (!savedName.equals(givenName)) {
-                    final boolean canChangeName = isWebServiceInvocation || permissionService.checkPermission("adminMembers", "changeName") || permissionService.checkPermission("brokerMembers", "changeName") || permissionService.checkPermission("memberProfile", "changeName");
+                    final boolean canChangeName = isWebServiceInvocation || permissionService.checkPermission("adminMembers", "changeName") || permissionService.checkPermission("brokerMembers", "changeName") ||
+                            permissionService.checkPermission("memberProfile", "changeName") || useExpressionName;
                     if (!canChangeName) {
                         // No permissions. Ensure the name is not changed
                         member.setName(savedName);
