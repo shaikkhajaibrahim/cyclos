@@ -72,8 +72,11 @@ import nl.strohalm.cyclos.utils.binding.DataBinder;
 import nl.strohalm.cyclos.utils.binding.PropertyBinder;
 import nl.strohalm.cyclos.utils.validation.ValidationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.upload.FormFile;
+
+import static nl.strohalm.cyclos.controls.members.MemberUtils.setFullNameIfNeeded;
 
 /**
  * Profile action for members
@@ -348,6 +351,9 @@ public class MemberProfileAction extends ProfileAction<Member> {
         request.setAttribute("operatorCanViewReports", operatorCanViewReports);
         request.setAttribute("hasCardType", hasCardType);
 
+        request.setAttribute("showName",
+                StringUtils.isEmpty(SettingsHelper.getLocalSettings(request).getFullNameExpression()));
+
         if (editable) {
             return context.getInputForward();
         } else {
@@ -442,7 +448,9 @@ public class MemberProfileAction extends ProfileAction<Member> {
 
     private Member resolveMember(final ActionContext context) {
         final MemberProfileForm form = context.getForm();
-        return getWriteDataBinder(context).readFromString(form.getMember());
+        Member member = getWriteDataBinder(context).readFromString(form.getMember());
+        setFullNameIfNeeded(member, context.getRequest(), customFieldService);
+        return member;
     }
 
 }

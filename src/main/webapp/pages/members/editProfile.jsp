@@ -78,11 +78,13 @@
 					<td width="25%" class="label"><bean:message key="member.username"/></td>
 					<td nowrap="nowrap" colspan="2"><html:text property="member(user).username" maxlength="20" readonly="true" styleClass="medium InputBoxDisabled required"/></td>
 				</tr>
+                <c:if test="${showName}">
 				<tr>
 					<td class="label"><bean:message key="member.name"/></td>
 					<td nowrap="nowrap"><html:text property="member(name)" readonly="true" styleClass="large InputBoxDisabled required"/></td>
 			        <td valign="bottom" class="label" style="text-align:center;" nowrap="nowrap"><cyclos:escapeHTML><bean:message key="profile.member.hide"/></cyclos:escapeHTML></td>
 				</tr>
+                </c:if>
 				<tr>
 					<td class="label"><bean:message key="member.email"/></td>
 					<td nowrap="nowrap"><html:text property="member(email)" readonly="true" styleClass="large InputBoxDisabled ${localSettings.emailRequired ? 'required' : ''}"/></td>

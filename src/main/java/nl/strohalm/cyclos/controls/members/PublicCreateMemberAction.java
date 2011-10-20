@@ -67,6 +67,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import static nl.strohalm.cyclos.controls.members.MemberUtils.setFullNameIfNeeded;
+
 /**
  * Action for a public member registration
  * @author luis
@@ -108,24 +110,6 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
         } finally {
             lock.writeLock().unlock();
         }
-    }
-
-    protected void setFullNameIfNeeded(Member member, HttpServletRequest request) {
-        String fullNameExpression = SettingsHelper.getLocalSettings(request).getFullNameExpression();
-        if (!StringUtils.isEmpty(fullNameExpression)) {
-            String fullName = prepareFullName(member.getCustomValues(), fullNameExpression);
-            member.setName(fullName);
-        }
-    }
-
-    private String prepareFullName(Collection<MemberCustomFieldValue> fields, String fullNameExpression) {
-        String fullName = fullNameExpression;
-        for (MemberCustomFieldValue value : fields) {
-            CustomField cf = customFieldService.load(value.getField().getId());
-            String fieldValue = value.getValue() == null ? "" : value.getValue();
-            fullName = fullName.replaceAll("#"+cf.getInternalName()+"#",fieldValue);
-        }
-        return fullName;
     }
 
     @Inject
@@ -171,7 +155,7 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
 
         // Save the member
         final Member member = getDataBinder().readFromString(form.getMember());
-        setFullNameIfNeeded(member, request);
+        setFullNameIfNeeded(member, request, customFieldService);
         RegisteredMember registeredMember;
         try {
             registeredMember = elementService.publicRegisterMember(member, request.getRemoteAddr());
@@ -256,7 +240,7 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
 
         // Form validation
         final Member member = getDataBinder().readFromString(form.getMember());
-        setFullNameIfNeeded(member, request);
+        setFullNameIfNeeded(member, request, customFieldService);
 
         ValidationException exc;
         try {

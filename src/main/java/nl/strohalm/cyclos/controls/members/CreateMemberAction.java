@@ -56,6 +56,8 @@ import nl.strohalm.cyclos.utils.validation.ValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 
+import static nl.strohalm.cyclos.controls.members.MemberUtils.setFullNameIfNeeded;
+
 /**
  * Action used to create members
  * @author luis
@@ -104,7 +106,7 @@ public class CreateMemberAction extends CreateElementAction<Member> {
         final CreateElementForm form = context.getForm();
         final Member member = (Member) element;
 
-        setFullNameIfNeeded(member);
+        setFullNameIfNeeded(member, context.getRequest(), customFieldService);
 
         final boolean sendPasswordByEmail = member.getMemberGroup().getMemberSettings().isSendPasswordByEmail();
         final boolean canChangePassword = getPermissionService().checkPermission(context.isAdmin() ? "adminMemberAccess" : "brokerMemberAccess", "changePassword");
@@ -175,23 +177,6 @@ public class CreateMemberAction extends CreateElementAction<Member> {
         return ActionHelper.redirectWithParam(context.getRequest(), forward, paramName, paramValue);
     }
 
-    protected void setFullNameIfNeeded(Member member) {
-        String fullNameExpression = settingsService.getLocalSettings().getFullNameExpression();
-        if (!StringUtils.isEmpty(fullNameExpression)) {
-            String fullName = prepareFullName(member.getCustomValues(), fullNameExpression);
-            member.setName(fullName);
-        }
-    }
-
-    private String prepareFullName(Collection<MemberCustomFieldValue> fields, String fullNameExpression) {
-        String fullName = fullNameExpression;
-        for (MemberCustomFieldValue value : fields) {
-            CustomField cf = customFieldService.load(value.getField().getId());
-            String fieldValue = value.getValue() == null ? "" : value.getValue();
-            fullName = fullName.replaceAll("#"+cf.getInternalName()+"#",fieldValue);
-        }
-        return fullName;
-    }
 
     @Override
     protected void formAction(final ActionContext context) throws Exception {
@@ -280,7 +265,7 @@ public class CreateMemberAction extends CreateElementAction<Member> {
     protected void runValidation(final ActionContext context, final Element element) {
         final CreateElementForm form = context.getForm();
         if (element instanceof Member) {
-            setFullNameIfNeeded((Member) element);
+             setFullNameIfNeeded(((Member) element), context.getRequest(), customFieldService);
         }
         final boolean manualPassword = form.isManualPassword();
         final WhenSaving when = context.isAdmin() ? WhenSaving.MEMBER_BY_ADMIN : WhenSaving.BY_BROKER;

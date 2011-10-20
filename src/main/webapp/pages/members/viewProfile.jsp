@@ -50,11 +50,13 @@
 						</td>
 					</tr>
 				</c:otherwise></c:choose>
+                <c:if test="${showName}">
 				<tr>
 					<td class="headerLabel"><bean:message key="member.name"/></td>
 					<td>${member.name}</td>
 				</tr>
-				<c:if test="${isAdmin}">
+				</c:if>
+                <c:if test="${isAdmin}">
 					<tr>
 						<td width="25%" class="headerLabel"><bean:message key="member.group"/></td>
 						<td>${member.group.name}</td>
