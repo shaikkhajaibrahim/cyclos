@@ -33,6 +33,11 @@ public class MessageSettings extends DataObject {
     }
 
     public enum MessageSettingsEnum {
+        REGISTERED(MessageSettingsCategoryEnum.MEMBER,
+                "Welcome",
+                "Thank you for registering",
+                "Thank you for registering"),
+
         LOGIN_BLOCKED(MessageSettingsCategoryEnum.MEMBER,
                 "Your login is temporarily blocked",
                 "You have reached the maximum number of wrong login tries.<br>Now, your login is temporarily blocked.",
@@ -455,6 +460,10 @@ public class MessageSettings extends DataObject {
     }
 
     private static final long serialVersionUID                                    = 2371528369677324709L;
+
+    private String            registeredSubject                                 = MessageSettingsEnum.REGISTERED.defaultSubject();
+    private String            registeredMessage                                 = MessageSettingsEnum.REGISTERED.defaultMessage();
+    private String            registeredSms                                     = MessageSettingsEnum.REGISTERED.defaultSms();
 
     private String            loginBlockedSubject                                 = MessageSettingsEnum.LOGIN_BLOCKED.defaultSubject();
     private String            loginBlockedMessage                                 = MessageSettingsEnum.LOGIN_BLOCKED.defaultMessage();
@@ -2199,5 +2208,29 @@ public class MessageSettings extends DataObject {
 
     public void setTokenPinGeneratedSms(String tokenPinGeneratedSms) {
         this.tokenPinGeneratedSms = tokenPinGeneratedSms;
+    }
+
+    public String getRegisteredSubject() {
+        return registeredSubject;
+    }
+
+    public void setRegisteredSubject(String registeredSubject) {
+        this.registeredSubject = registeredSubject;
+    }
+
+    public String getRegisteredMessage() {
+        return registeredMessage;
+    }
+
+    public void setRegisteredMessage(String registeredMessage) {
+        this.registeredMessage = registeredMessage;
+    }
+
+    public String getRegisteredSms() {
+        return registeredSms;
+    }
+
+    public void setRegisteredSms(String registeredSms) {
+        this.registeredSms = registeredSms;
     }
 }

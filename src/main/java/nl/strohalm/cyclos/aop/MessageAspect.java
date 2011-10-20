@@ -63,6 +63,7 @@ import nl.strohalm.cyclos.entities.members.TransactionFeedbackRequest;
 import nl.strohalm.cyclos.entities.members.brokerings.BrokerCommissionContract;
 import nl.strohalm.cyclos.entities.members.brokerings.Brokering;
 import nl.strohalm.cyclos.entities.members.messages.Message;
+import nl.strohalm.cyclos.entities.services.ServiceClient;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.services.access.ChannelService;
@@ -1025,6 +1026,8 @@ public class MessageAspect {
         sendPaymentMessages(transfer, sendMessageTo, subject, body, sms);
     }
 
+
+
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.accounts.guarantees.PaymentObligationService.changeStatus(..)) && args(paymentObligationId, newStatus)", argNames = "paymentObligationId, newStatus")
     public void paymentObligationPublishedNotification(final Long paymentObligationId, final PaymentObligation.Status newStatus) {
         // Load payment obligation
@@ -1220,6 +1223,23 @@ public class MessageAspect {
         // Send the message
         messageService.sendFromSystem(message);
     }
+
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.registerMember*(..)) && args(member, forceChange)", argNames = "member, forceChange")
+    public void memberRegistered(final Member member, boolean forceChange) {
+        sendRegistrationMessage(member);
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.publicRegisterMember*(..)) && args(member, remoteAddress)", argNames = "member, remoteAddress")
+    public void memberRegisteredWS(Member member, String remoteAddress) {
+        sendRegistrationMessage(member);
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.registerMemberByWebService*(..)) && args(client, member, remoteAddress)", argNames = "client, member, remoteAddress")
+    public void memberRegisteredPublic(ServiceClient client, Member member, String remoteAddress) {
+        sendRegistrationMessage(member);
+    }
+
 
     @AfterReturning(pointcut = "(execution(* nl.strohalm.cyclos.services.transactions.InvoiceService.send*(..)) && args(invoice))", argNames = "invoice")
     public void receivedInvoiceNotification(final Invoice invoice) {
@@ -2033,6 +2053,24 @@ public class MessageAspect {
             // Send the message
             messageService.sendFromSystem(message);
         }
+    }
+
+    private void sendRegistrationMessage(Member member) {
+        final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
+        final LocalSettings localSettings = settingsService.getLocalSettings();
+        MessageSettings messageSettings = settingsService.getMessageSettings();
+
+        final String processedSubject = MessageProcessingHelper.processVariables(messageSettings.getRegisteredSubject(), member, localSettings);
+        final String processedBody = MessageProcessingHelper.processVariables(messageSettings.getRegisteredMessage(), member, localSettings);
+        final String processedSms = MessageProcessingHelper.processVariables(messageSettings.getRegisteredSms(), member, localSettings);
+
+        message.setType(Message.Type.REGISTRATION);
+        message.setEntity(member);
+        message.setToMember(member);
+        message.setSubject(processedSubject);
+        message.setBody(processedBody);
+        message.setSms(processedSms);
+        messageService.sendFromSystem(message);
     }
 
 }
