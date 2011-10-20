@@ -422,6 +422,12 @@ public class AccountHistoryAction extends BaseQueryAction {
             request.setAttribute("creditLimit", creditLimit.negate());
         }
 
+        if (type.getNature() == AccountType.Nature.MEMBER && context.isMember()) {
+            Member member = (Member) elementService.load(context.getElement().getId());
+
+            request.setAttribute("accountSettings", groupService.loadAccountSettings(member.getGroup().getId(), account.getType().getId()));
+        }
+
         // Retrieve the payment filters
         final PaymentFilterQuery pfQuery = new PaymentFilterQuery();
         pfQuery.setAccountType(query.getType());

@@ -96,8 +96,7 @@
 	        <property name="allowMakePayment" type="boolean">
 	        	<column name="member_allow_make_payment" not-null="true" default="false" />
 	        </property>
-            <property name="maxTransferAmount" column="max_transfer_amount" type="big_decimal" precision="15" scale="6"/>
-	        <many-to-one name="groupAfterExpiration" class="nl.strohalm.cyclos.entities.groups.MemberGroup">
+            <many-to-one name="groupAfterExpiration" class="nl.strohalm.cyclos.entities.groups.MemberGroup">
 	            <column name="member_expire_group_id" sql-type="integer"/>
 	    	</many-to-one>
 		</component>

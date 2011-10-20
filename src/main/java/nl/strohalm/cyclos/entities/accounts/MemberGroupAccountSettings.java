@@ -44,19 +44,20 @@ public class MemberGroupAccountSettings extends Entity {
         }
     }
 
-    private static final long serialVersionUID   = -3433010484398168393L;
+    private static final long serialVersionUID = -3433010484398168393L;
 
-    private MemberGroup       group;
+    private MemberGroup group;
     private MemberAccountType accountType;
-    private BigDecimal        defaultCreditLimit = BigDecimal.ZERO;
-    private BigDecimal        defaultUpperCreditLimit;
-    private BigDecimal        initialCredit;
-    private TransferType      initialCreditTransferType;
-    private boolean           isDefault;
-    private boolean           transactionPasswordRequired;
-    private boolean           hideWhenNoCreditLimit;
-    private BigDecimal        lowUnits;
-    private String            lowUnitsMessage;
+    private BigDecimal defaultCreditLimit = BigDecimal.ZERO;
+    private BigDecimal defaultUpperCreditLimit;
+    private BigDecimal initialCredit;
+    private TransferType initialCreditTransferType;
+    private boolean isDefault;
+    private boolean transactionPasswordRequired;
+    private boolean hideWhenNoCreditLimit;
+    private BigDecimal lowUnits;
+    private String lowUnitsMessage;
+    private BigDecimal maxTransferAmount = new BigDecimal(0);
 
     public MemberAccountType getAccountType() {
         return accountType;
@@ -144,6 +145,14 @@ public class MemberGroupAccountSettings extends Entity {
 
     public void setTransactionPasswordRequired(final boolean transactionPasswordRequired) {
         this.transactionPasswordRequired = transactionPasswordRequired;
+    }
+
+    public BigDecimal getMaxTransferAmount() {
+        return maxTransferAmount;
+    }
+
+    public void setMaxTransferAmount(BigDecimal maxTransferAmount) {
+        this.maxTransferAmount = maxTransferAmount;
     }
 
     @Override

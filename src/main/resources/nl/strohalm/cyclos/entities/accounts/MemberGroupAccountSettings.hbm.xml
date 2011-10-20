@@ -28,6 +28,8 @@
     	</many-to-one>
     	<property name="lowUnits" column="low_units" type="big_decimal" precision="15" scale="6" />
     	<property name="lowUnitsMessage" column="low_units_message" type="text" />
+        <property name="maxTransferAmount" column="max_transfer_amount" type="big_decimal" precision="15" scale="6"/>
+
     </class>
     
 </hibernate-mapping>

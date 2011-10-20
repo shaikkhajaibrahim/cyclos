@@ -234,6 +234,10 @@
 						<cyclos:cell width="20%" className="headerLabel"><bean:message key="account.upperCreditLimit"/></cyclos:cell>
 						<cyclos:cell width="30%"><cyclos:format number="${status.upperCreditLimit}" unitsPattern="${unitsPattern}" /></cyclos:cell>
 					</c:if>
+                    <c:if test="${accountSettings.maxTransferAmount > 0 and accountSettings.maxTransferAmount != null}">
+               						<cyclos:cell width="20%" className="headerLabel"><bean:message key="account.maxTransferAmount"/></cyclos:cell>
+               						<cyclos:cell width="30%"><cyclos:format number="${accountSettings.maxTransferAmount}" unitsPattern="${unitsPattern}" /></cyclos:cell>
+               					</c:if>
 					<c:if test="${isAdmin and (not empty dRate or not empty aRate)}">
 						<cyclos:rowBreak/>
 						<c:if test="${not empty aRate}">

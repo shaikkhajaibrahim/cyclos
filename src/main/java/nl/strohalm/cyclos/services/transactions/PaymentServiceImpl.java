@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sun.corba.se.spi.servicecontext.UnknownServiceContext;
+import mp.platform.cyclone.webservices.utils.server.GroupHelper;
 import mp.platform.cyclone.webservices.utils.server.PaymentHelper;
 import nl.strohalm.cyclos.dao.accounts.transactions.ReverseDAO;
 import nl.strohalm.cyclos.dao.accounts.transactions.ScheduledPaymentDAO;
@@ -2137,7 +2138,7 @@ public class PaymentServiceImpl implements PaymentService, ApplicationContextAwa
     private void validateMaxAmount(final Account account, final BigDecimal amount) {
         if (account.getOwner() instanceof Member) {
             MemberGroup group = ((Member) account.getOwner()).getMemberGroup();
-            final BigDecimal maxAmount = group.getMemberSettings().getMaxTransferAmount();
+            final BigDecimal maxAmount = group.findAccountSettings(account).getMaxTransferAmount();
             if (maxAmount != null && maxAmount.floatValue() > PRECISION_DELTA && amount.compareTo(maxAmount) == 1) {
                 throw new MaxAmountExceededException(account, amount);
             }

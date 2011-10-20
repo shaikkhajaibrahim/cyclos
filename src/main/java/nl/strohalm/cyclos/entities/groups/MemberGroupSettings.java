@@ -138,8 +138,6 @@ public class MemberGroupSettings extends DataObject {
     private int                   numberOfCopies             = 2;
     private int                   resultPageSize             = 5;
 
-    private BigDecimal            maxTransferAmount          = new BigDecimal(0);
-
     public TimePeriod getDefaultAdPublicationTime() {
         return defaultAdPublicationTime;
     }
@@ -388,11 +386,4 @@ public class MemberGroupSettings extends DataObject {
         this.viewLoansByGroup = viewLoansByGroup;
     }
 
-    public BigDecimal getMaxTransferAmount() {
-        return maxTransferAmount;
-    }
-
-    public void setMaxTransferAmount(BigDecimal maxTransferAmount) {
-        this.maxTransferAmount = maxTransferAmount;
-    }
 }

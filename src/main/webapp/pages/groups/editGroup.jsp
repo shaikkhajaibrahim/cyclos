@@ -555,17 +555,7 @@
 						</table>
 					</fieldset>
 					<br/>
-					<fieldset>
-						<legend><bean:message key="group.title.settings.transfers"/></legend>
-						<table class="defaultTable">
-								<tr>
-				                    <td class="label" width="50%"><bean:message key="group.settings.maxTransferAmount"/></td>
-				                    <td><html:text property="group(memberSettings).maxTransferAmount" styleClass="tiny number InputBoxDisabled" readonly="true"/></td>
-				                </tr>
 
-						</table>
-					</fieldset>
-					<br/>
 	            </c:if>
 			</c:if>
 			<c:if test="${isOperatorGroup && not empty transferTypes}">

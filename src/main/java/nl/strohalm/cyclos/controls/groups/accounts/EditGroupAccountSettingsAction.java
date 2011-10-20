@@ -89,6 +89,7 @@ public class EditGroupAccountSettingsAction extends BaseFormAction implements Lo
             binder.registerBinder("lowUnits", PropertyBinder.instance(BigDecimal.class, "lowUnits", localSettings.getNumberConverter()));
             binder.registerBinder("lowUnitsMessage", PropertyBinder.instance(String.class, "lowUnitsMessage"));
             binder.registerBinder("hideWhenNoCreditLimit", PropertyBinder.instance(Boolean.TYPE, "hideWhenNoCreditLimit"));
+            binder.registerBinder("maxTransferAmount", PropertyBinder.instance(BigDecimal.class, "maxTransferAmount"));
 
             dataBinder = binder;
         }

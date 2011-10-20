@@ -105,6 +105,11 @@
 	            		<td class="label" valign="top"><bean:message key="account.lowUnitsMessage" /></td>
 	            		<td><html:textarea property="setting(lowUnitsMessage)" styleClass="full InputBoxDisabled" rows="4" readonly="true"/></td>
 	            	</tr>
+               								<tr>
+               				                    <td class="label" width="50%"><bean:message key="group.settings.maxTransferAmount"/></td>
+               				                    <td><html:text property="setting(maxTransferAmount)" styleClass="tiny number InputBoxDisabled" readonly="true"/></td>
+               				                </tr>
+
 	            	<c:if test="${editable}">
 		            	<tr>
 							<td align="right" colspan="2">

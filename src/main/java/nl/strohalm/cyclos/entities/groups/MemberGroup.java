@@ -23,6 +23,7 @@ import java.util.HashSet;
 
 import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.access.Channel;
+import nl.strohalm.cyclos.entities.accounts.Account;
 import nl.strohalm.cyclos.entities.accounts.AccountType;
 import nl.strohalm.cyclos.entities.accounts.MemberAccountType;
 import nl.strohalm.cyclos.entities.accounts.MemberGroupAccountSettings;
@@ -304,5 +305,14 @@ public class MemberGroup extends Group {
 
     public void setToTransactionFees(final Collection<TransactionFee> toTransactionFees) {
         this.toTransactionFees = toTransactionFees;
+    }
+
+    public MemberGroupAccountSettings findAccountSettings(Account account) {
+        for (MemberGroupAccountSettings memberGroupAccountSettings : accountSettings) {
+            if (account.getType().getId().equals(memberGroupAccountSettings.getAccountType().getId())) {
+                return memberGroupAccountSettings;
+            }
+        }
+        return null;
     }
 }
