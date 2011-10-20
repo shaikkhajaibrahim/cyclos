@@ -125,11 +125,11 @@
 		
 		<tr class="trPassword" style="display: ${allowAutomaticPassword ? 'none' : ''}">
 			<td class="label"><bean:message key="createMember.password"/></td>
-			<td><input type="password" name="member(user).password" size="20" class="small InputBoxEnabled ${numericPassword ? 'number' : ''} ${allowAutomaticPassword ? '' :'required'}"/></td>
+			<td><input type="password" name="member(user).password" size="20"  maxlength="4" class="small InputBoxEnabled ${numericPassword ? 'number' : ''} ${allowAutomaticPassword ? '' :'required'}"/></td>
 		</tr>
 		<tr class="trPassword" style="display: ${allowAutomaticPassword ? 'none' : ''}">
 			<td class="label"><bean:message key="createMember.passwordConfirmation"/></td>
-			<td><input type="password" name="confirmPassword" size="20" class="small InputBoxEnabled ${numericPassword ? 'number' : ''} ${allowAutomaticPassword ? '' :'required'}"/></td>
+                        <td><input type="password" name="confirmPassword" size="20" maxlength="4" class="small InputBoxEnabled ${numericPassword ? 'number' : ''} ${allowAutomaticPassword ? '' :'required'}"/></td>
 		</tr>
 	</c:if>
 	<c:if test="${allowSetForceChangePassword}">
