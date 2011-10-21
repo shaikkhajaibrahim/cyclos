@@ -25,16 +25,21 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import nl.strohalm.cyclos.dao.members.MessageDAO;
+import nl.strohalm.cyclos.entities.Entity;
 import nl.strohalm.cyclos.entities.customization.fields.CustomField;
 import nl.strohalm.cyclos.entities.customization.fields.MemberCustomField;
 import nl.strohalm.cyclos.entities.members.Element;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.members.messages.Message;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsEvent;
 import nl.strohalm.cyclos.services.alerts.ErrorLogService;
 import nl.strohalm.cyclos.services.customization.CustomFieldService;
+import nl.strohalm.cyclos.services.elements.MessageService;
+import nl.strohalm.cyclos.services.elements.SendMessageFromSystemDTO;
 import nl.strohalm.cyclos.services.fetch.FetchService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.utils.CustomFieldHelper;
@@ -75,6 +80,7 @@ public class SmsSenderImpl implements SmsSender, LocalSettingsChangeListener, Se
     private FetchService fetchService;
     private MemberHelper memberHelper;
     private SettingsService settingsService;
+    private MessageService messageService;
 
     public void onLocalSettingsUpdate(final LocalSettingsEvent event) {
         smsWebService = null;
@@ -108,6 +114,26 @@ public class SmsSenderImpl implements SmsSender, LocalSettingsChangeListener, Se
             errorLogService.insert(e, settingsService.getLocalSettings().getSendSmsWebServiceUrl(), params);
             return false;
         }
+    }
+
+    @Override
+    public boolean send(String mobileNumber, String text, Member fallbackMember, String fallbackSubject, String fallbackText, Entity obj) {
+        boolean success = send(mobileNumber, text);
+        if (!success) {
+            final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
+            final LocalSettings localSettings = settingsService.getLocalSettings();
+
+            final String processedSubject = MessageProcessingHelper.processVariables(fallbackSubject, obj, localSettings);
+            final String processedBody = MessageProcessingHelper.processVariables(fallbackText, obj, localSettings);
+    
+            message.setType(Message.Type.SMS_FAILED);
+            //message.setEntity(obj);
+            message.setToMember(fallbackMember);
+            message.setSubject(processedSubject);
+            message.setBody(processedBody);
+            messageService.sendFromSystem(message);
+        }
+        return success;
     }
 
     @Override
@@ -161,6 +187,7 @@ public class SmsSenderImpl implements SmsSender, LocalSettingsChangeListener, Se
             fetchService = SpringHelper.bean(servletContext, "fetchService");
             memberHelper = SpringHelper.bean(servletContext, "memberHelper");
             errorLogService = SpringHelper.bean(servletContext, "errorLogService");
+            messageService = SpringHelper.bean(servletContext, "messageService");
             initialized = true;
         }
     }

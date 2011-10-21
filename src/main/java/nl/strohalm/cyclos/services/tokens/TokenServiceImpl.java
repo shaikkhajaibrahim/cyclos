@@ -43,6 +43,7 @@ import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
 import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
 import nl.strohalm.cyclos.services.transactions.PaymentService;
 import nl.strohalm.cyclos.services.transactions.TransactionContext;
+import nl.strohalm.cyclos.services.transactions.TransferDTO;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
 import nl.strohalm.cyclos.utils.MessageProcessingHelper;
 import nl.strohalm.cyclos.utils.sms.SmsSender;
@@ -88,24 +89,23 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private Transfer transferToSuspenseAccount(GenerateTokenDTO generateTokenDTO, String recipient) {
-        DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
+        TransferDTO doPaymentDTO = new TransferDTO();
 
         doPaymentDTO.setAmount(generateTokenDTO.getAmount());
         doPaymentDTO.setChannel("");
         Member from = loadUser(generateTokenDTO.getFrom());
-        doPaymentDTO.setFrom(from);
+        doPaymentDTO.setFromOwner(from);
 
         Long tokenTypeId = generateTokenDTO.getTransferTypeId();
         TransferType tt = transferTypeService.load(tokenTypeId);
         doPaymentDTO.setTransferType(tt);
 
-        doPaymentDTO.setTo(SystemAccountOwner.instance());
+        doPaymentDTO.setToOwner(SystemAccountOwner.instance());
         doPaymentDTO.setContext(TransactionContext.AUTOMATIC);
         doPaymentDTO.setDescription("Creation of token for recipient "+recipient);
-        //FIXME: some better channel? cannot be web, since we don't want to be accessible through normal payment page
         doPaymentDTO.setChannel(Channel.POSWEB);
 
-        return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
+        return (Transfer) paymentService.insertWithoutNotification(doPaymentDTO);
     }
 
     private Member loadUser(String userName) {
@@ -146,18 +146,17 @@ public class TokenServiceImpl implements TokenService {
         token.setStatus(newStatus);
         tokenDao.update(token);
 
-        DoExternalPaymentDTO doPaymentDTO = new DoExternalPaymentDTO();
+        TransferDTO doPaymentDTO = new TransferDTO();
         doPaymentDTO.setAmount(token.getAmount());
-        doPaymentDTO.setFrom(SystemAccountOwner.instance());
+        doPaymentDTO.setFromOwner(SystemAccountOwner.instance());
 
         doPaymentDTO.setTransferType(
                 transferTypeService.load(transferTypeId));
 
-        doPaymentDTO.setTo(to);
-        //FIXME
+        doPaymentDTO.setToOwner(to);
         doPaymentDTO.setDescription("Redemption of token " + token.getTokenId());
         doPaymentDTO.setContext(TransactionContext.AUTOMATIC);
-        return (Transfer) paymentService.insertExternalPayment(doPaymentDTO);
+        return (Transfer) paymentService.insertWithoutNotification(doPaymentDTO);
     }
 
     private void generatePin(String tokenId) {
@@ -237,7 +236,9 @@ public class TokenServiceImpl implements TokenService {
         params.put("pin", token.getPin());
         params.put("transactionId", token.getTransferFrom().getTransactionNumber());
         final String sms = MessageProcessingHelper.processVariables(smsTemplate, params);
-        smsSender.send(smsRecipient, sms);
+        Member creator = (Member) token.getTransferFrom().getFromOwner();
+        MessageSettings messageSettings = settingsService.getMessageSettings();
+        smsSender.send(smsRecipient, sms, creator, messageSettings.getTokenSmsFailedSubject(), messageSettings.getTokenSmsFailedMessage(), token);
     }
 
     private MessageSettings getMessageSettings() {
@@ -274,7 +275,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public List<Token> getUserTokens(User user) {
-
         return tokenDao.getUserTokens(user.getUsername());
     }
 }

@@ -366,6 +366,9 @@ public class MessageSettings extends DataObject {
 
         TOKEN_PIN_GENERATED_SMS(MessageSettingsCategoryEnum.GENERAL, "PIN #pin# was generated for token #transactionId# for #recipient#"),
 
+        TOKEN_SMS_FAILED(MessageSettingsCategoryEnum.MEMBER,
+                        "Voucher not delivered", "Sorry, the voucher you sent have not been delivered"),
+
         ;
 
         private String                      defaultSubject;
@@ -721,6 +724,10 @@ public class MessageSettings extends DataObject {
     private String            tokenGeneratedSms                                   = MessageSettingsEnum.TOKEN_GENERATED_SMS.defaultMessage();
 
     private String            tokenPinGeneratedSms                                = MessageSettingsEnum.TOKEN_PIN_GENERATED_SMS.defaultMessage();
+
+    private String            tokenSmsFailedSubject                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultSubject();
+    private String            tokenSmsFailedMessage                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultMessage();
+
 
     public String getAccountFeeReceivedMessage() {
         return accountFeeReceivedMessage;
@@ -2232,5 +2239,21 @@ public class MessageSettings extends DataObject {
 
     public void setRegisteredSms(String registeredSms) {
         this.registeredSms = registeredSms;
+    }
+
+    public String getTokenSmsFailedSubject() {
+        return tokenSmsFailedSubject;
+    }
+
+    public void setTokenSmsFailedSubject(String tokenSmsFailedSubject) {
+        this.tokenSmsFailedSubject = tokenSmsFailedSubject;
+    }
+
+    public String getTokenSmsFailedMessage() {
+        return tokenSmsFailedMessage;
+    }
+
+    public void setTokenSmsFailedMessage(String tokenSmsFailedMessage) {
+        this.tokenSmsFailedMessage = tokenSmsFailedMessage;
     }
 }

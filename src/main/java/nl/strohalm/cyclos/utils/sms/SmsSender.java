@@ -18,6 +18,7 @@
  */
 package nl.strohalm.cyclos.utils.sms;
 
+import nl.strohalm.cyclos.entities.Entity;
 import nl.strohalm.cyclos.entities.members.Member;
 
 /**
@@ -30,6 +31,8 @@ public interface SmsSender {
      * Sends the given message to the given member
      */
     boolean send(Member member, String text);
+
+    boolean send(String mobileNumber, String text, Member fallbackMember, String fallbackSubject, String fallbackText, Entity obj);
 
     boolean send(String mobileNumber, String text);
 
