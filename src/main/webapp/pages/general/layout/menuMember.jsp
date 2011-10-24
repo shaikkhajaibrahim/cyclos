@@ -17,7 +17,7 @@
 		<cyclos:menu url="/do/member/selectDocument" key="menu.member.personal.documents"/>
 	</c:if>
 	<cyclos:menu url="/do/member/changePassword" key="menu.member.personal.changePassword" />
-	<c:if test="${hasExternalChannels}"> 
+	<c:if test="${hasExternalChannels && cyclos:granted('memberProfile', 'manageExternalAccess')}">
 		<cyclos:menu url="/do/member/manageExternalAccess" key="menu.member.personal.manageExternalAccess" />
 	</c:if>
 	<cyclos:menu url="/do/member/searchSmsLogs" key="menu.member.personal.sms" module="memberSms" operation="view"/>

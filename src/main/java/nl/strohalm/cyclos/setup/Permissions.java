@@ -103,7 +103,7 @@ public class Permissions {
         buildModule(modules, Module.Type.ADMIN_ADMIN, "adminAdminRecords", "view", "create", "modify", "delete");
 
         /* MEMBER PERMISSIONS */
-        buildModule(modules, Module.Type.MEMBER, "memberProfile", "view", "changeUsername", "changeName");
+        buildModule(modules, Module.Type.MEMBER, "memberProfile", "view", "changeUsername", "changeName", "manageExternalAccess");
         buildModule(modules, Module.Type.MEMBER, "memberAccess", "unblockPin");
         buildModule(modules, Module.Type.MEMBER, "memberAccount", "authorizedInformation", "scheduledInformation"
                 //

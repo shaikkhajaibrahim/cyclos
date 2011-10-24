@@ -124,7 +124,7 @@ public interface AccessService extends Service {
     /**
      * Change the channels that the logged member have access to
      */
-    @MemberAction
+    @MemberAction(@Permission(module = "memberOperators", operation = "manage"))
     @IgnoreMember
     Member changeMyChannelsAccess(final Collection<Channel> channels, boolean verifySmsChannel);
 
@@ -151,7 +151,7 @@ public interface AccessService extends Service {
      * Changes the password of the given operator user
      * @throws CredentialsAlreadyUsedException When the given new password was already used for that user in past
      */
-    @MemberAction(@Permission(module = "memberOperators", operation = "manage"))
+    @MemberAction(@Permission(module = "memberProfile", operation = "manageExternalAccess"))
     @PathToMember("user.element.member")
     OperatorUser changeOperatorPassword(ChangeLoginPasswordDTO params) throws CredentialsAlreadyUsedException;
 
