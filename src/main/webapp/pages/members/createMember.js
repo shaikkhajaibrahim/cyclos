@@ -39,7 +39,7 @@ function adjustTimeout() {
 
 function showTimeoutWarning() {
     secondsToTimeout = timeoutInMilis /2000;
-    document.getElementById("logoutWarning").style.display = 'block';
+    Element.show(document.getElementById("logoutWarning"));
     adjustTimeout();
 }
 
@@ -60,7 +60,7 @@ function cancelTimeouts() {
     if (registrationTimeout) {
         clearTimeout(registrationTimeout);
     }
-    document.getElementById("logoutWarning").style.display = 'none';
+    Element.hide(document.getElementById("logoutWarning"));
     setTimeoutActions();
 }
 
@@ -177,8 +177,31 @@ Behaviour.register({
 			newCaptcha();
 			setFocus('captcha');
 		}
-	}
+	},
+    '.InputBoxEnabled': function(input) {
+        input.onmouseover = show;
+        input.onmouseout = hide;
+   	},
+    'select': function(input) {
+        input.onmouseover = show;
+        input.onmouseout = hide;
+   	}
 });
+
+function show() {
+    var that = this;
+    Element.extend(that);
+    if (that.next('.msg')) {
+        Element.show(that.next('.msg'));
+    }
+}
+function hide() {
+    var that = this;
+    Element.extend(that);
+    if (that.next('.msg')) {
+        Element.hide(that.next('.msg'));
+    }
+}
 
 Event.observe(self, "load", function() {
 	(getObject("member(user).username") || getObject("member(name)")).focus();
@@ -200,4 +223,6 @@ Event.observe(self, "load", function() {
 		pwd.value = '';
 		setValue('confirmPassword', '');
 	}
+
 })
+

@@ -305,7 +305,7 @@ public class CustomFieldTag extends TagSupport {
 
     private void renderCheckBox(final StringBuilder sb) throws JspException {
         final boolean value = Boolean.parseBoolean(getStringValue());
-        sb.append("<input type=\"hidden\" id=\"_value_of_").append(field.getId()).append("\" name=\"").append(valueName).append("\" value=\"").append(value).append("\">");
+        sb.append("<input type=\"hidden\" id=\"_value_of_").append(field.getId()).append("\" name=\"").append(valueName).append("\" value=\"").append(value).append("\"/>");
         sb.append("<input type=\"checkbox\" id=\"_check_of_").append(field.getId()).append("\" class=\"checkbox\" onclick=\"if (!this.disabled){$('_value_of_").append(field.getId()).append("').value=String(this.checked);}\"");
         if (!enabled) {
             sb.append("disabled ");
@@ -313,7 +313,7 @@ public class CustomFieldTag extends TagSupport {
         if (value) {
             sb.append(" checked");
         }
-        sb.append(">");
+        sb.append("/>");
     }
 
     private void renderDisplay(final StringBuilder sb) throws JspException {
@@ -421,7 +421,7 @@ public class CustomFieldTag extends TagSupport {
         }
         sb.append("</tr>\n");
         sb.append("</table>\n");
-        sb.append("<input type=\"hidden\" id=\"_value_of_").append(field.getId()).append("\" name=\"").append(valueName).append("\" value=\"" + selectedValue + "\">\n");
+        sb.append("<input type=\"hidden\" id=\"_value_of_").append(field.getId()).append("\" name=\"").append(valueName).append("\" value=\"" + selectedValue + "\"/>\n");
     }
 
     private void renderRichEditor(final StringBuilder sb) {
@@ -574,8 +574,9 @@ public class CustomFieldTag extends TagSupport {
                 }
                 sb.append(">").append(MessageHelper.message(pageContext.getServletContext(), "global.no")).append("</option>\n");
             }
+            sb.append("</select>\n");
             if (hasChildren) {
-                sb.append("</select>\n");
+
                 sb.append("<script>\n");
                 sb.append("$('").append(id).append("').onchange = function() {\n");
                 for (final CustomField child : field.getChildren()) {
@@ -638,7 +639,7 @@ public class CustomFieldTag extends TagSupport {
         if (lengthConstraint != null && lengthConstraint.getMax() != null && lengthConstraint.getMax() > 0) {
             sb.append(" maxLength=\"").append(lengthConstraint.getMax()).append('"');
         }
-        sb.append(" class=\"").append(StringUtils.join(classNames.iterator(), ' ')).append("\">\n");
+        sb.append(" class=\"").append(StringUtils.join(classNames.iterator(), ' ')).append("\"/>\n");
     }
 
     private void renderTextarea(final StringBuilder sb) {

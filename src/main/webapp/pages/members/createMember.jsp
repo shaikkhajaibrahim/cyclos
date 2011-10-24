@@ -35,16 +35,9 @@
 <ssl:form action="${formAction}" method="post">
 <html:hidden property="member(group)" value="${createMemberForm.groupId}"/>
 <html:hidden property="groupId"/>
-<div id="logoutWarning" align="center" style="
-position:absolute;
-background-color:#CCCCCC;
-width:300px;
-height:100px;
-top:100px;
-color: #000000;
-z-index: 9002;
-display:none; align:center"
->You will be logged out in <span id="secondsToTimeout" style="color: red;"/> seconds</div>
+<div id="logoutWarning" align="center" class="logoutWarning" style="display:none;">
+    Please fill form, otherwise you will be redirected to main page in
+    <span id="secondsToTimeout" style="color: red;">0</span><span>&nbsp;seconds</span></div>
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable"><bean:message key="${titleKey}"/></td>
@@ -86,12 +79,15 @@ display:none; align:center"
 	</tr>
     <c:forEach var="field" items="${customFields}">
 		<tr>
-			<td valign="top" title="${field.description}" class="label">${field.name}</td>
-			<td title="${field.description}">
+			<td valign="top" class="label">${field.name}</td>
+			<td>
 				<c:if test="${field.memberCanHide}">
 					<input type="hidden" id="hidden_${field.id}" name="member(customValues).hidden" value="false">
 				</c:if>
 				<cyclos:customField field="${field}" valueName="member(customValues).value" fieldName="member(customValues).field"/>
+                <span class="msg"  style="display:none;">
+                <c:out value="${field.description}"/>
+                </span>
 			</td>
 			<td nowrap="nowrap" valign="top" align="left">
 				<c:if test="${field.memberCanHide}">

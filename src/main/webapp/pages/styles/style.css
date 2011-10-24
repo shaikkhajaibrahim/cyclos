@@ -1102,3 +1102,24 @@ a.manualLink:hover {
 		display:none;
 	}
 }
+
+.msg {
+    width: 100px;
+    border: 1px;
+    height: 30px;
+    background-color: #f0e68c;
+}
+
+.logoutWarning {
+    position:absolute;
+    background-color:white;
+    width:250px;
+    height:30px;
+    top:100px;
+    color: #343434;
+    font-family: Liberation sans, Arial, Sans-serif;
+    font-size: 9pt;
+    z-index: 9002;
+    border:	3px solid #CCCCCC;
+    padding: 10px;
+}

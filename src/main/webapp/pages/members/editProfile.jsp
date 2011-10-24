@@ -102,9 +102,9 @@
 			            </c:otherwise>
 			        </c:choose>
 			        <tr>
-						<td valign="top" class="label">${field.name}</td>
-						<td width="15%" nowrap="nowrap" colspan="${cyclos:name(field.control) == 'RICH_EDITOR' ? 3 : 1}">
-							<input type="hidden" id="hidden_${field.id}" name="member(customValues).hidden" value="${hidden}">
+						<td valign="top" class="label" title="${field.description}" >${field.name}</td>
+						<td width="15%" title="${field.description}"  nowrap="nowrap" colspan="${cyclos:name(field.control) == 'RICH_EDITOR' ? 3 : 1}">
+							<input type="hidden" id="hidden_${field.id}" name="member(customValues).hidden" value="${hidden}"/>
 							<span class="customFieldContainer" editable="${editableFields[field]}">
 								<cyclos:customField field="${field}" value="${value}" editable="${editableFields[field]}" valueName="member(customValues).value" fieldName="member(customValues).field" enabled="false"/>
 							</span>
@@ -154,7 +154,7 @@
 				<tr style="display:none" id="trPictureCheck">
 					<td class="label"><bean:message key="profile.member.addPicture"/></td>
 					<td colspan="2" valign="top">	
-						<input type="checkbox" class="checkbox" disabled="disabled" id="addPictureCheck">
+						<input type="checkbox" class="checkbox" disabled="disabled" id="addPictureCheck"/>
 					</td>
 				</tr>
 				<tr class="trPicture" style="display:none">
