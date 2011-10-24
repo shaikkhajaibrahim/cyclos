@@ -1,3 +1,9 @@
+var registrationWarningTimeout;
+var registrationTimeout;
+var timeoutInMilis;
+var secondsToTimeout;
+
+
 function setPostAction(action) {
 	var postAction = this.elements["postAction"];
 	if (postAction == null) {
@@ -18,6 +24,51 @@ function newCaptcha() {
 		setValue('captcha', '');
 	}
 }
+
+function registrationTimeoutHandler() {
+    window.location = "login";
+}
+
+function adjustTimeout() {
+   if (document.getElementById("secondsToTimeout")) {
+    document.getElementById("secondsToTimeout").innerHTML = secondsToTimeout;
+    secondsToTimeout--;
+    setTimeout("adjustTimeout()", 1000);
+   }
+}
+
+function showTimeoutWarning() {
+    secondsToTimeout = timeoutInMilis /2000;
+    document.getElementById("logoutWarning").style.display = 'block';
+    adjustTimeout();
+}
+
+
+
+function initTimeouts(timeout) {
+   timeoutInMilis = timeout;
+   setTimeoutActions();
+   document.onkeypress = cancelTimeouts;
+   document.onclick = cancelTimeouts;
+
+}
+
+function cancelTimeouts() {
+    if (registrationWarningTimeout) {
+        clearTimeout(registrationWarningTimeout);
+    }
+    if (registrationTimeout) {
+        clearTimeout(registrationTimeout);
+    }
+    document.getElementById("logoutWarning").style.display = 'none';
+    setTimeoutActions();
+}
+
+function setTimeoutActions() {
+    registrationWarningTimeout = setTimeout("showTimeoutWarning()", timeoutInMilis/2);
+    registrationTimeout = setTimeout("registrationTimeoutHandler()", timeoutInMilis);
+}
+
 
 Behaviour.register({
 	'#backButton': function(button) {

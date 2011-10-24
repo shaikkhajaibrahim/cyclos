@@ -53,6 +53,8 @@ public class AccessSettings extends DataObject {
 
     private String             usernameRegex                      = "^[\\w\\.]*$";
 
+    private TimePeriod         registrationTimeout                = new TimePeriod(1, TimePeriod.Field.MINUTES);
+
     public String getAdministrationWhitelist() {
         return administrationWhitelist;
     }
@@ -169,4 +171,11 @@ public class AccessSettings extends DataObject {
         this.confirmUsername = confirmUsername;
     }
 
+    public TimePeriod getRegistrationTimeout() {
+        return registrationTimeout;
+    }
+
+    public void setRegistrationTimeout(TimePeriod registrationTimeout) {
+        this.registrationTimeout = registrationTimeout;
+    }
 }

@@ -10,6 +10,9 @@
 	var isPublic = ${empty isPublic ? false : isPublic};
 	var agreementPrintTitle = "<cyclos:escapeJS>${localSettings.applicationName} - <bean:message key="group.registrationAgreement" /></cyclos:escapeJS>";
 	var registrationAgreementNotCheckedMessage = "<cyclos:escapeJS><bean:message key="createMember.error.registrationAgreementCheck" /></cyclos:escapeJS>";
+    <c:if test="${timeoutInMilis>0}">
+    if (isPublic) initTimeouts(<c:out value="${timeoutInMilis}"/>);
+    </c:if>
 </script>
 <c:choose>
 	<c:when test="${isPublic}">
@@ -32,7 +35,16 @@
 <ssl:form action="${formAction}" method="post">
 <html:hidden property="member(group)" value="${createMemberForm.groupId}"/>
 <html:hidden property="groupId"/>
-
+<div id="logoutWarning" align="center" style="
+position:absolute;
+background-color:#CCCCCC;
+width:300px;
+height:100px;
+top:100px;
+color: #000000;
+z-index: 9002;
+display:none; align:center"
+>You will be logged out in <span id="secondsToTimeout" style="color: red;"/> seconds</div>
 <table class="defaultTableContent" cellspacing="0" cellpadding="0">
     <tr>
         <td class="tdHeaderTable"><bean:message key="${titleKey}"/></td>

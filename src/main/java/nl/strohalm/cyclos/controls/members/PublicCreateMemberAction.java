@@ -55,6 +55,7 @@ import nl.strohalm.cyclos.servlets.CaptchaServlet;
 import nl.strohalm.cyclos.utils.ActionHelper;
 import nl.strohalm.cyclos.utils.CustomFieldHelper;
 import nl.strohalm.cyclos.utils.SettingsHelper;
+import nl.strohalm.cyclos.utils.TimePeriod;
 import nl.strohalm.cyclos.utils.binding.DataBinder;
 import nl.strohalm.cyclos.utils.validation.PasswordsDontMatchError;
 import nl.strohalm.cyclos.utils.validation.UsernamesDontMatchError;
@@ -232,6 +233,7 @@ public class PublicCreateMemberAction extends BasePublicFormAction implements Lo
         request.setAttribute("isPublic", true);
         request.setAttribute("allowSetPassword", true);
         request.setAttribute("group", group);
+        request.setAttribute("timeoutInMilis", SettingsHelper.getAccessSettings(request).getRegistrationTimeout().getValueIn(TimePeriod.Field.MILLIS));
     }
 
     @Override
