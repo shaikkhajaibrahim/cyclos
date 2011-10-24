@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 
 public class TransferFeeVO implements Serializable {
 
+    public enum Payer {SOURCE, DESTINATION, SYSTEM, FIXED_MEMBER}
+
     private String name;
 
     private Long id;
@@ -34,14 +36,17 @@ public class TransferFeeVO implements Serializable {
 
     private String transactionNumber;
 
+    private Payer payer;
+
     public TransferFeeVO() {
     }
 
-    public TransferFeeVO(String name, Long id, BigDecimal amount, String transactionNumber) {
+    public TransferFeeVO(String name, Long id, BigDecimal amount, String transactionNumber, Payer payer) {
         this.name = name;
         this.id = id;
         this.amount = amount;
         this.transactionNumber = transactionNumber;
+        this.payer = payer;
     }
 
     public String getName() {
@@ -74,5 +79,13 @@ public class TransferFeeVO implements Serializable {
 
     public void setTransactionNumber(String transactionNumber) {
         this.transactionNumber = transactionNumber;
+    }
+
+    public Payer getPayer() {
+        return payer;
+    }
+
+    public void setPayer(Payer payer) {
+        this.payer = payer;
     }
 }
