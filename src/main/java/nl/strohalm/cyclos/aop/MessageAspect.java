@@ -1385,7 +1385,9 @@ public class MessageAspect {
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMyPassword(..)) && args(params, remoteAddress)", argNames = "params, remoteAddress")
     public void changePassword(ChangeLoginPasswordDTO params, String remoteAddress) {
-        sendChangePasswordMessage((Member) params.getUser().getElement());
+        if (params.getUser().getElement() instanceof Member) {
+            sendChangePasswordMessage((Member) params.getUser().getElement());
+        }
     }
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberCredentialsByWebService(..)) && args(memberUser, client, newCredentials)", argNames = "memberUser, client, newCredentials")
@@ -1395,7 +1397,9 @@ public class MessageAspect {
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberPassword(..)) && args(params)", argNames = "params")
     public void changePasswordByAdmin(ChangeLoginPasswordDTO params) {
-        sendChangePasswordMessage((Member) params.getUser().getElement());
+        if (params.getUser().getElement() instanceof Member) {
+            sendChangePasswordMessage((Member) params.getUser().getElement());
+        }
     }
 
     public void setAccountService(final AccountService accountService) {
