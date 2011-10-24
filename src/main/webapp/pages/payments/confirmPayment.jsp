@@ -114,17 +114,19 @@
 						<td class="headerLabel" valign="top"><bean:message key="payment.confirmation.appliedFees"/></td>
 						<td>
 							<c:forEach var="fee" items="${fees}">
+                                <c:if test="${fee.key.payer == 'SOURCE'}">
 								<div>
 									<span style="font-style:italic">${fee.key.name}</span>.&nbsp;
 									<span class="label"><bean:message key='transfer.amount'/>:</span>
 									<cyclos:format number="${fee.value}" unitsPattern="${fee.key.generatedTransferType.from.currency.pattern}"/>
 								</div>
+                                </c:if>
 							</c:forEach>
 						</td>
 					</tr>            	
 				</c:if>
 				
-				<c:set var="confirmationMessage" value="${payment.transferType.confirmationMessage}"/>
+				<c:set var="cocyclos.propenfirmationMessage" value="${payment.transferType.confirmationMessage}"/>
 				<c:if test="${not empty confirmationMessage}">
 					<tr>
 						<td colspan="2" class="label" style="text-align:center;padding-bottom:5px">
