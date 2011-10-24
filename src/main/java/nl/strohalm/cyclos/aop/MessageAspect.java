@@ -66,6 +66,7 @@ import nl.strohalm.cyclos.entities.members.messages.Message;
 import nl.strohalm.cyclos.entities.services.ServiceClient;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.MessageSettings;
+import nl.strohalm.cyclos.services.access.ChangeLoginPasswordDTO;
 import nl.strohalm.cyclos.services.access.ChannelService;
 import nl.strohalm.cyclos.services.access.exceptions.BlockedCredentialsException;
 import nl.strohalm.cyclos.services.accounts.AccountService;
@@ -1382,6 +1383,21 @@ public class MessageAspect {
         notifyScheduledPaymentProcessing(transfer, true);
     }
 
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMyPassword(..)) && args(params, remoteAddress)", argNames = "params, remoteAddress")
+    public void changePassword(ChangeLoginPasswordDTO params, String remoteAddress) {
+        sendChangePasswordMessage((Member) params.getUser().getElement());
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberCredentialsByWebService(..)) && args(memberUser, client, newCredentials)", argNames = "memberUser, client, newCredentials")
+    public void changePasswordByWebService(MemberUser memberUser, ServiceClient client, String newCredentials) {
+        sendChangePasswordMessage(memberUser.getMember());
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberPassword(..)) && args(params)", argNames = "params")
+    public void changePasswordByAdmin(ChangeLoginPasswordDTO params) {
+        sendChangePasswordMessage((Member) params.getUser().getElement());
+    }
+
     public void setAccountService(final AccountService accountService) {
         this.accountService = accountService;
     }
@@ -2056,15 +2072,27 @@ public class MessageAspect {
     }
 
     private void sendRegistrationMessage(Member member) {
+        MessageSettings messageSettings = settingsService.getMessageSettings();
+        sendMemberMessage(messageSettings.getRegisteredSubject(), messageSettings.getRegisteredMessage(), messageSettings.getRegisteredSms(),
+        member, Message.Type.REGISTRATION);
+    }
+    
+    private void sendChangePasswordMessage(Member member) {
+        MessageSettings messageSettings = settingsService.getMessageSettings();
+        sendMemberMessage(messageSettings.getChangePasswordSubject(), messageSettings.getChangePasswordMessage(), messageSettings.getChangePasswordSms(),
+        member, Message.Type.CHANGE_PASSWORD);
+
+    }
+    
+    private void sendMemberMessage(String subject, String body, String sms, Member member, Message.Type type) {
         final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
         final LocalSettings localSettings = settingsService.getLocalSettings();
-        MessageSettings messageSettings = settingsService.getMessageSettings();
 
-        final String processedSubject = MessageProcessingHelper.processVariables(messageSettings.getRegisteredSubject(), member, localSettings);
-        final String processedBody = MessageProcessingHelper.processVariables(messageSettings.getRegisteredMessage(), member, localSettings);
-        final String processedSms = MessageProcessingHelper.processVariables(messageSettings.getRegisteredSms(), member, localSettings);
+        final String processedSubject = MessageProcessingHelper.processVariables(subject, member, localSettings);
+        final String processedBody = MessageProcessingHelper.processVariables(body, member, localSettings);
+        final String processedSms = MessageProcessingHelper.processVariables(sms, member, localSettings);
 
-        message.setType(Message.Type.REGISTRATION);
+        message.setType(type);
         message.setEntity(member);
         message.setToMember(member);
         message.setSubject(processedSubject);

@@ -369,6 +369,8 @@ public class MessageSettings extends DataObject {
         TOKEN_SMS_FAILED(MessageSettingsCategoryEnum.MEMBER,
                         "Voucher not delivered", "Sorry, the voucher you sent have not been delivered"),
 
+        CHANGE_PASSWORD(MessageSettingsCategoryEnum.MEMBER, "Change password", "Your account password change was successful.",
+                "Your account password change was successful.")
         ;
 
         private String                      defaultSubject;
@@ -727,6 +729,10 @@ public class MessageSettings extends DataObject {
 
     private String            tokenSmsFailedSubject                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultSubject();
     private String            tokenSmsFailedMessage                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultMessage();
+
+    private String            changePasswordSubject                               = MessageSettingsEnum.CHANGE_PASSWORD.defaultSubject();
+    private String            changePasswordMessage                               = MessageSettingsEnum.CHANGE_PASSWORD.defaultMessage();
+    private String            changePasswordSms                                   = MessageSettingsEnum.CHANGE_PASSWORD.defaultSms();
 
 
     public String getAccountFeeReceivedMessage() {
@@ -2255,5 +2261,29 @@ public class MessageSettings extends DataObject {
 
     public void setTokenSmsFailedMessage(String tokenSmsFailedMessage) {
         this.tokenSmsFailedMessage = tokenSmsFailedMessage;
+    }
+
+    public String getChangePasswordSubject() {
+        return changePasswordSubject;
+    }
+
+    public void setChangePasswordSubject(String changePasswordSubject) {
+        this.changePasswordSubject = changePasswordSubject;
+    }
+
+    public String getChangePasswordMessage() {
+        return changePasswordMessage;
+    }
+
+    public void setChangePasswordMessage(String changePasswordMessage) {
+        this.changePasswordMessage = changePasswordMessage;
+    }
+
+    public String getChangePasswordSms() {
+        return changePasswordSms;
+    }
+
+    public void setChangePasswordSms(String changePasswordSms) {
+        this.changePasswordSms = changePasswordSms;
     }
 }

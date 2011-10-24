@@ -87,7 +87,7 @@ public class Message extends Entity {
      * @author luis
      */
     public static enum Type implements StringValuedEnum {
-        FROM_MEMBER(RootType.MEMBER, "mbr"), FROM_ADMIN_TO_MEMBER(RootType.ADMIN, "a2m"), FROM_ADMIN_TO_GROUP(RootType.ADMIN, "a2g"), ACCESS(RootType.SYSTEM, "acs"), REGISTRATION(RootType.SYSTEM, "reg"), SMS_FAILED(RootType.SYSTEM, "smf"), ACCOUNT(RootType.SYSTEM, "act"), BROKERING(RootType.SYSTEM, "brk"), PAYMENT(RootType.SYSTEM, "pmt"), EXTERNAL_PAYMENT(RootType.SYSTEM, "ept"), LOAN(RootType.SYSTEM, "loa"), AD_EXPIRATION(RootType.SYSTEM, "ade"), AD_INTEREST(RootType.SYSTEM, "adi"), INVOICE(RootType.SYSTEM, "inv"), REFERENCE(RootType.SYSTEM, "ref"), TRANSACTION_FEEDBACK(RootType.SYSTEM, "tfb"), CERTIFICATION(RootType.SYSTEM, "cer"), GUARANTEE(RootType.SYSTEM, "gua"), PAYMENT_OBLIGATION(RootType.SYSTEM, "pob");
+        FROM_MEMBER(RootType.MEMBER, "mbr"), FROM_ADMIN_TO_MEMBER(RootType.ADMIN, "a2m"), FROM_ADMIN_TO_GROUP(RootType.ADMIN, "a2g"), ACCESS(RootType.SYSTEM, "acs"), REGISTRATION(RootType.SYSTEM, "reg"), SMS_FAILED(RootType.SYSTEM, "smf"), ACCOUNT(RootType.SYSTEM, "act"), BROKERING(RootType.SYSTEM, "brk"), PAYMENT(RootType.SYSTEM, "pmt"), EXTERNAL_PAYMENT(RootType.SYSTEM, "ept"), LOAN(RootType.SYSTEM, "loa"), AD_EXPIRATION(RootType.SYSTEM, "ade"), AD_INTEREST(RootType.SYSTEM, "adi"), INVOICE(RootType.SYSTEM, "inv"), REFERENCE(RootType.SYSTEM, "ref"), TRANSACTION_FEEDBACK(RootType.SYSTEM, "tfb"), CERTIFICATION(RootType.SYSTEM, "cer"), GUARANTEE(RootType.SYSTEM, "gua"), PAYMENT_OBLIGATION(RootType.SYSTEM, "pob"), CHANGE_PASSWORD(RootType.SYSTEM, "cps");
 
         /**
          * Returns the second level message types given a first level one
