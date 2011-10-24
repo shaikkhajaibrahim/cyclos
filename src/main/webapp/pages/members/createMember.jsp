@@ -85,9 +85,9 @@
 					<input type="hidden" id="hidden_${field.id}" name="member(customValues).hidden" value="false">
 				</c:if>
 				<cyclos:customField field="${field}" valueName="member(customValues).value" fieldName="member(customValues).field"/>
-                <span class="msg"  style="display:none;">
+                <div class="msg"  style="display:none;">
                 <c:out value="${field.description}"/>
-                </span>
+                </div>
 			</td>
 			<td nowrap="nowrap" valign="top" align="left">
 				<c:if test="${field.memberCanHide}">

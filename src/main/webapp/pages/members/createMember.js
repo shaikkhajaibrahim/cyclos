@@ -192,14 +192,14 @@ function show() {
     var that = this;
     Element.extend(that);
     if (that.next('.msg')) {
-        Element.show(that.next('.msg'));
+        that.next('.msg').style.display = 'inline';
     }
 }
 function hide() {
     var that = this;
     Element.extend(that);
     if (that.next('.msg')) {
-        Element.hide(that.next('.msg'));
+        that.next('.msg').style.display = 'none';
     }
 }
 
