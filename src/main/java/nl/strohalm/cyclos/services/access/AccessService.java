@@ -88,6 +88,7 @@ public interface AccessService extends Service {
      * Changes the password of the given admin user
      */
     @AdminAction(@Permission(module = "adminAdminAccess", operation = "changePassword"))
+    @PathToMember("user.element")
     AdminUser changeAdminPassword(ChangeLoginPasswordDTO params);
 
     /**
@@ -308,6 +309,7 @@ public interface AccessService extends Service {
      * Immediately reenables an Admin to login after wrong password tries
      */
     @AdminAction(@Permission(module = "adminAdminAccess", operation = "enableLogin"))
+    @PathToMember("")
     void reenableAdminLogin(AdminUser user);
 
     /**
@@ -328,6 +330,7 @@ public interface AccessService extends Service {
      * Resets the transaction password of the specified admin user
      */
     @AdminAction(@Permission(module = "adminAdminAccess", operation = "transactionPassword"))
+    @PathToMember("user.element")
     AdminUser resetAdminTransactionPassword(ResetTransactionPasswordDTO dto);
 
     /**
@@ -386,6 +389,7 @@ public interface AccessService extends Service {
      * Validates the password change for an admin
      */
     @AdminAction(@Permission(module = "adminAdminAccess", operation = "changePassword"))
+    @PathToMember("user.element")
     void validateChangeAdminPassword(ChangeLoginPasswordDTO params) throws ValidationException;
 
     /**
