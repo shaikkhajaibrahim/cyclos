@@ -123,7 +123,7 @@ public class EditGroupPermissionsAction extends BaseFormAction {
 
 
             binder.registerBinder("viewInformationOf", SimpleCollectionBinder.instance(SystemAccountType.class, "viewInformationOf"));
-            binder.registerBinder("viewConnectedAdminsOf", SimpleCollectionBinder.instance(SystemAccountType.class, "viewConnectedAdminsOf"));
+            binder.registerBinder("viewConnectedAdminsOf", SimpleCollectionBinder.instance(AdminGroup.class, "viewConnectedAdminsOf"));
             binder.registerBinder("viewAdminRecordTypes", SimpleCollectionBinder.instance(MemberRecordType.class, "viewAdminRecordTypes"));
             binder.registerBinder("createAdminRecordTypes", SimpleCollectionBinder.instance(MemberRecordType.class, "createAdminRecordTypes"));
             binder.registerBinder("modifyAdminRecordTypes", SimpleCollectionBinder.instance(MemberRecordType.class, "modifyAdminRecordTypes"));
