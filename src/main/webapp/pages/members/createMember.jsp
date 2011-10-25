@@ -161,12 +161,10 @@
 		</tr>
 		<c:choose><c:when test="${empty group.registrationAgreement}">
 			<tr>
-                            <td colspan="2" align="right">
-                                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
-                            </td>
-				<td colspan="1" align="middle">
-					<input type="submit" id="saveButton" class="button" value="<bean:message key="global.submit"/>">
-				</td>
+               <td colspan="3" align="right">
+                   <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
+                   <input type="submit" id="saveButton" class="button" value="<bean:message key="global.submit"/>">
+                </td>
 			</tr>
 		</c:when><c:otherwise>
 			<tr>
@@ -184,7 +182,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="3" align="center">
+				<td colspan="3" align="right">
 					<br class="small">
 					<label>
 					<input type="checkbox" class="checkbox" id="registrationAgreementCheck">
@@ -193,11 +191,9 @@
 				</td>
 			</tr>
 			<tr>
-				 <td colspan="2" align="right">
-                                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
-                            </td>
-				<td colspan="1" align="middle">
+				<td colspan="3" align="right">
 					<br class="small">
+                    <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
 					<input type="submit" id="saveButton" class="button" value="<bean:message key="global.submit" />">
 				</td>
 			</tr>
@@ -210,10 +206,10 @@
 			</td>
 		</tr>
 		<tr>
-                    <td colspan="2" align="right">
-                                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
-                            </td>
-				<td colspan="1" align="middle">
+			<td colspan="1" align="left">
+                <input type="button" id="backButton" class="button" value="<bean:message key="global.back"/>">
+			</td>
+			<td colspan="2" align="right">
 				<span class="label"><bean:message key="createMember.action.saveAndOpenProfile"/></span>
 				<input type="submit" id="saveAndOpenProfileButton" class="button" value="<bean:message key="global.submit"/>">
 			</td>
@@ -228,7 +224,7 @@
 <br class="small">
 <table class="defaultTableContentHidden" cellspacing="0" cellpadding="0">
 	<tr>
-		
+
 	</tr>
 </table>
 
