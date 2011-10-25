@@ -1249,12 +1249,12 @@ public class MessageAspect {
     }
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.publicRegisterMember*(..)) && args(member, remoteAddress)", argNames = "member, remoteAddress")
-    public void memberRegisteredWS(Member member, String remoteAddress) {
+    public void memberRegisteredMember(Member member, String remoteAddress) {
         sendRegistrationMessage(member);
     }
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.registerMemberByWebService*(..)) && args(client, member, remoteAddress)", argNames = "client, member, remoteAddress")
-    public void memberRegisteredPublic(ServiceClient client, Member member, String remoteAddress) {
+    public void memberRegisteredWS(ServiceClient client, Member member, String remoteAddress) {
         sendRegistrationMessage(member);
     }
 
