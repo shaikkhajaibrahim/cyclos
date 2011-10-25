@@ -26,6 +26,9 @@
 		<property name="requiresAuthorization" column="requires_authorization" type="boolean" not-null="true"/>
 		<property name="allowsScheduledPayments" column="allows_scheduled_payments" type="boolean" not-null="true"/>
 		<property name="name" column="name" type="string" not-null="true" length="100"/>
+        <property name="nameInMessage" column="name_in_message" type="string" not-null="true" length="100"/>
+
+
 		<property name="description" column="description" not-null="true" type="text"/>
 		<property name="confirmationMessage" column="confirmation_message" type="text"/>
 		<property name="maxAmountPerDay" column="max_amount_per_day" type="big_decimal" precision="15" scale="6"/>

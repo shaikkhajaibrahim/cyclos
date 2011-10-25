@@ -144,6 +144,7 @@ public class TransferType extends Entity {
     private Member                               fixedDestinationMember;
     private Collection<PaymentCustomField>       customFields;
     private Collection<PaymentCustomField>       linkedCustomFields;
+    private String                               nameInMessage;
 
     /**
      * gets all the transaction fees based on a-rate, being the fees with ChargeType A_RATE or MIXED_A_D_RATES
@@ -528,6 +529,14 @@ public class TransferType extends Entity {
 
     public void setTransactionFees(final Collection<? extends TransactionFee> transactionFees) {
         this.transactionFees = transactionFees;
+    }
+
+    public String getNameInMessage() {
+        return nameInMessage;
+    }
+
+    public void setNameInMessage(String nameInMessage) {
+        this.nameInMessage = nameInMessage;
     }
 
     @Override

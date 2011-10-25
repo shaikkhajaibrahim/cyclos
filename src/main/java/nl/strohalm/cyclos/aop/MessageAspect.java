@@ -106,28 +106,31 @@ import org.aspectj.lang.annotation.Before;
 
 /**
  * Aspect used to notify members about various events on the system
+ *
  * @author jefferson
  */
 @Aspect
 public class MessageAspect {
-    private static final float       PRECISION_DELTA = 0.0001F;
-    private AccountService           accountService;
-    private BrokeringService         brokeringService;
-    private CertificationService     certificationService;
-    private ChannelService           channelService;
-    private ElementService           elementService;
-    private FetchService             fetchService;
-    private GroupService             groupService;
-    private InvoiceService           invoiceService;
-    private MessageService           messageService;
+    private static final float PRECISION_DELTA = 0.0001F;
+    private AccountService accountService;
+    private BrokeringService brokeringService;
+    private CertificationService certificationService;
+    private ChannelService channelService;
+    private ElementService elementService;
+    private FetchService fetchService;
+    private GroupService groupService;
+    private InvoiceService invoiceService;
+    private MessageService messageService;
     private PaymentObligationService paymentObligationService;
-    private SettingsService          settingsService;
-    private TicketService            ticketService;
-    /** Store, for each member, the time in millis when the low units alert was sent. Used to not send the alert twice a day */
-    private final Set<Long>          sentLowUnits    = Collections.synchronizedSet(new HashSet<Long>());
-    private Calendar                 lastPaymentDate;
-    private MessageResolver          messageResolver;
-    private PreferenceService        preferenceService;
+    private SettingsService settingsService;
+    private TicketService ticketService;
+    /**
+     * Store, for each member, the time in millis when the low units alert was sent. Used to not send the alert twice a day
+     */
+    private final Set<Long> sentLowUnits = Collections.synchronizedSet(new HashSet<Long>());
+    private Calendar lastPaymentDate;
+    private MessageResolver messageResolver;
+    private PreferenceService preferenceService;
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.transactions.InvoiceService.accept*(..))", returning = "invoice", argNames = "invoice")
     public void acceptedInvoiceNotification(final Invoice invoice) {
@@ -1028,7 +1031,6 @@ public class MessageAspect {
     }
 
 
-
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.accounts.guarantees.PaymentObligationService.changeStatus(..)) && args(paymentObligationId, newStatus)", argNames = "paymentObligationId, newStatus")
     public void paymentObligationPublishedNotification(final Long paymentObligationId, final PaymentObligation.Status newStatus) {
         // Load payment obligation
@@ -1096,100 +1098,40 @@ public class MessageAspect {
     @AfterReturning(pointcut = "(execution(* nl.strohalm.cyclos.services.transactions.PaymentService.doPayment*(..)))", argNames = "payment", returning = "payment")
     public void paymentReceivedNotification(final Payment payment) {
         // A message is sent only when the payment is a transfer and the destination is a member (not system)
+        MessageSettings messageSettings = settingsService.getMessageSettings();
         if (payment instanceof Transfer && payment.getToOwner() instanceof Member) {
             final Transfer transfer = (Transfer) payment;
+            
+            // Get the message settings
+            String subject;
+            String body;
+            String sms;
 
-            // Only send notifications for root transfers
-            if (!transfer.isRoot()) {
-                return;
-            }
-            final MessageSettings messageSettings = settingsService.getMessageSettings();
-            final LocalSettings localSettings = settingsService.getLocalSettings();
-
-            // Get the transfer authorizer, if any
-            final AuthorizationLevel nextAuthorizationLevel = transfer.getNextAuthorizationLevel();
-            final Authorizer authorizer = nextAuthorizationLevel == null ? null : nextAuthorizationLevel.getAuthorizer();
-
-            // Get the destination
-            final Member destinationMember = (Member) payment.getToOwner();
-            final Set<MessageChannel> channels = preferenceService.receivedChannels(destinationMember, Message.Type.PAYMENT);
-            if (!channels.isEmpty()) {
-                // The account status is only used in messages via SMS
-                final boolean sendSmsNotification = transfer.getType().isAllowSmsNotification() && channels.contains(MessageChannel.SMS);
-                AccountStatus status = null;
-                if (sendSmsNotification) {
-                    status = accountService.getStatus(new GetTransactionsDTO(transfer.getTo()));
-                }
-
-                // Get the message settings
-                String subject = null;
-                String body = null;
-                String sms = null;
-
-                // Check if the transfer has been processed or awaits authorization
-                if (transfer.getProcessDate() == null) {
-                    if (authorizer == Authorizer.RECEIVER) {
-                        subject = messageSettings.getNewPendingPaymentByReceiverSubject();
-                        body = messageSettings.getNewPendingPaymentByReceiverMessage();
-                        if (sendSmsNotification) {
-                            sms = messageSettings.getNewPendingPaymentByReceiverSms();
-                        }
-                    } else {
-                        subject = messageSettings.getPendingPaymentReceivedSubject();
-                        body = messageSettings.getPendingPaymentReceivedMessage();
-                        if (sendSmsNotification) {
-                            sms = messageSettings.getPendingPaymentReceivedSms();
-                        }
-                    }
+            // Check if the transfer has been processed or awaits authorization
+            if (transfer.getProcessDate() == null) {
+                if (getAuthorizer(transfer) == Authorizer.RECEIVER) {
+                    subject = messageSettings.getNewPendingPaymentByReceiverSubject();
+                    body = messageSettings.getNewPendingPaymentByReceiverMessage();
+                    sms = messageSettings.getNewPendingPaymentByReceiverSms();
                 } else {
-                    subject = messageSettings.getPaymentReceivedSubject();
-                    body = messageSettings.getPaymentReceivedMessage();
-                    if (sendSmsNotification) {
-                        sms = messageSettings.getPaymentReceivedSms();
-                    }
+                    subject = messageSettings.getPendingPaymentReceivedSubject();
+                    body = messageSettings.getPendingPaymentReceivedMessage();
+                    sms = messageSettings.getPendingPaymentReceivedSms();
                 }
-
-                // Process message contents
-                final AccountOwner fromAccountOwner = payment.getFromOwner();
-                final String processedSubject = MessageProcessingHelper.processVariables(subject, localSettings, fromAccountOwner, payment);
-                final String processedBody = MessageProcessingHelper.processVariables(body, localSettings, fromAccountOwner, payment);
-                final String processedSms = sendSmsNotification ? MessageProcessingHelper.processVariables(sms, localSettings, fromAccountOwner, payment, status) : null;
-
-                // Create the DTO
-                final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
-                message.setType(Message.Type.PAYMENT);
-                message.setEntity(payment);
-                message.setToMember(destinationMember);
-                message.setSubject(processedSubject);
-                message.setBody(processedBody);
-                message.setSms(processedSms);
-
-                // Send the message
-                messageService.sendFromSystem(message);
+            } else {
+                subject = messageSettings.getPaymentReceivedSubject();
+                body = messageSettings.getPaymentReceivedMessage();
+                sms = messageSettings.getPaymentReceivedSms();
             }
+            sendPaymentMessage(transfer, transfer.getTo(), transfer.getFrom(), subject, body, sms, Message.Type.PAYMENT);
+            notifyBroker(transfer);
 
-            // Notify the broker
-            final Member fromMember = fetchService.fetch(payment.isFromSystem() ? null : (Member) payment.getFromOwner(), Member.Relationships.BROKER);
-            final Member broker = fromMember == null ? null : fromMember.getBroker();
-            if (authorizer == Authorizer.BROKER && broker != null) {
-                final String subject = messageSettings.getNewPendingPaymentByBrokerSubject();
-                final String body = messageSettings.getNewPendingPaymentByBrokerMessage();
-                final String sms = messageSettings.getNewPendingPaymentByBrokerSms();
-                final String processedSubject = MessageProcessingHelper.processVariables(subject, localSettings, fromMember, payment);
-                final String processedBody = MessageProcessingHelper.processVariables(body, localSettings, fromMember, payment);
-                final String processedSms = MessageProcessingHelper.processVariables(sms, localSettings, fromMember, payment);
+        }
+        if (payment instanceof Transfer && payment.getFromOwner() instanceof Member) {
+            final Transfer transfer = (Transfer) payment;
+            sendPaymentMessage(transfer, transfer.getFrom(),transfer.getTo(), messageSettings.getPaymentSentSubject(),
+                    messageSettings.getPaymentSentMessage(), messageSettings.getPaymentSentSms(), Message.Type.PAYMENT_SENT);
 
-                final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
-                message.setType(Message.Type.BROKERING);
-                message.setEntity(payment);
-                message.setToMember(broker);
-                message.setSubject(processedSubject);
-                message.setBody(processedBody);
-                message.setSms(processedSms);
-
-                // Send the message
-                messageService.sendFromSystem(message);
-            }
         }
 
         // Request a transaction feedback for the payment source
@@ -1197,7 +1139,82 @@ public class MessageAspect {
 
         // Perform the low units notification, if needed
         notifyLowUnits(payment);
+
     }
+
+    private Authorizer getAuthorizer(Transfer transfer) {
+        final AuthorizationLevel nextAuthorizationLevel = transfer.getNextAuthorizationLevel();
+        return nextAuthorizationLevel == null ? null : nextAuthorizationLevel.getAuthorizer();
+    }
+
+    private void notifyBroker(Transfer payment) {
+        MessageSettings messageSettings = settingsService.getMessageSettings();
+        LocalSettings localSettings = settingsService.getLocalSettings();
+        Authorizer authorizer = getAuthorizer(payment);
+        // Notify the broker
+        final Member fromMember = fetchService.fetch(payment.isFromSystem() ? null : (Member) payment.getFromOwner(), Member.Relationships.BROKER);
+        final Member broker = fromMember == null ? null : fromMember.getBroker();
+        if (authorizer == Authorizer.BROKER && broker != null) {
+            final String subject = messageSettings.getNewPendingPaymentByBrokerSubject();
+            final String body = messageSettings.getNewPendingPaymentByBrokerMessage();
+            final String sms = messageSettings.getNewPendingPaymentByBrokerSms();
+            final String processedSubject = MessageProcessingHelper.processVariables(subject, localSettings, fromMember, payment);
+            final String processedBody = MessageProcessingHelper.processVariables(body, localSettings, fromMember, payment);
+            final String processedSms = MessageProcessingHelper.processVariables(sms, localSettings, fromMember, payment);
+
+            final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
+            message.setType(Message.Type.BROKERING);
+            message.setEntity(payment);
+            message.setToMember(broker);
+            message.setSubject(processedSubject);
+            message.setBody(processedBody);
+            message.setSms(processedSms);
+
+            // Send the message
+            messageService.sendFromSystem(message);
+        }
+    }
+
+
+    private void sendPaymentMessage(Transfer payment, Account receiver, Account otherSide, String subject, String body, String sms, 
+                                    Message.Type type) {
+        if (!payment.isRoot()) {
+            return;
+        }
+        final LocalSettings localSettings = settingsService.getLocalSettings();
+
+        // Get the transfer authorizer, if any
+        final Authorizer authorizer = getAuthorizer(payment);
+
+        // Get the destination
+        final Member destinationMember = (Member) receiver.getOwner();
+        final Set<MessageChannel> channels = preferenceService.receivedChannels(destinationMember, type);
+        if (!channels.isEmpty()) {
+            // The account status is only used in messages via SMS
+            final boolean sendSmsNotification = payment.getType().isAllowSmsNotification() && channels.contains(MessageChannel.SMS);
+            AccountStatus status = null;
+            if (sendSmsNotification) {
+                status = accountService.getStatus(new GetTransactionsDTO(payment.getTo()));
+            }
+            // Process message contents
+            final String processedSubject = MessageProcessingHelper.processVariables(subject, localSettings, otherSide.getOwner(), payment);
+            final String processedBody = MessageProcessingHelper.processVariables(body, localSettings, otherSide.getOwner(), payment);
+            final String processedSms = sendSmsNotification ? MessageProcessingHelper.processVariables(sms, localSettings, otherSide.getOwner(), payment, status) : null;
+
+            // Create the DTO
+            final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
+            message.setType(type);
+            message.setEntity(payment);
+            message.setToMember(destinationMember);
+            message.setSubject(processedSubject);
+            message.setBody(processedBody);
+            message.setSms(processedSms);
+
+            // Send the message
+            messageService.sendFromSystem(message);
+        }
+    }
+
 
     @AfterThrowing(pointcut = "execution(* nl.strohalm.cyclos.services.accounts.pos.MemberPosService.checkPin(..)) && args(member, pin, posId)", throwing = "ppbe", argNames = "ppbe, member, pin, posId")
     public void posPinBlockedNotification(final PosPinBlockedException ppbe, final Member member, final String pin, final Long posId) {
@@ -1872,8 +1889,7 @@ public class MessageAspect {
         // Get the required data
         final Member payer = transfer.isFromSystem() ? null : (Member) transfer.getFrom().getOwner();
         final Member payee = transfer.isToSystem() ? null : (Member) transfer.getTo().getOwner();
-        final AuthorizationLevel nextAuthorizationLevel = transfer.getNextAuthorizationLevel();
-        final Authorizer authorizer = nextAuthorizationLevel == null ? null : nextAuthorizationLevel.getAuthorizer();
+        final Authorizer authorizer = getAuthorizer(transfer);
         final MessageSettings messageSettings = settingsService.getMessageSettings();
 
         // Resolve the message
@@ -2078,16 +2094,16 @@ public class MessageAspect {
     private void sendRegistrationMessage(Member member) {
         MessageSettings messageSettings = settingsService.getMessageSettings();
         sendMemberMessage(messageSettings.getRegisteredSubject(), messageSettings.getRegisteredMessage(), messageSettings.getRegisteredSms(),
-        member, Message.Type.REGISTRATION);
+                member, Message.Type.REGISTRATION);
     }
-    
+
     private void sendChangePasswordMessage(Member member) {
         MessageSettings messageSettings = settingsService.getMessageSettings();
         sendMemberMessage(messageSettings.getChangePasswordSubject(), messageSettings.getChangePasswordMessage(), messageSettings.getChangePasswordSms(),
-        member, Message.Type.CHANGE_PASSWORD);
+                member, Message.Type.CHANGE_PASSWORD);
 
     }
-    
+
     private void sendMemberMessage(String subject, String body, String sms, Member member, Message.Type type) {
         final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
         final LocalSettings localSettings = settingsService.getLocalSettings();

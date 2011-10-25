@@ -126,6 +126,8 @@ public class EditTransferTypeAction extends BaseFormAction implements LocalSetti
                 final BeanBinder<TransferType> binder = BeanBinder.instance(TransferType.class);
                 binder.registerBinder("id", PropertyBinder.instance(Long.class, "id", IdConverter.instance()));
                 binder.registerBinder("name", PropertyBinder.instance(String.class, "name"));
+                binder.registerBinder("nameInMessage", PropertyBinder.instance(String.class, "nameInMessage"));
+
                 binder.registerBinder("description", PropertyBinder.instance(String.class, "description"));
                 binder.registerBinder("confirmationMessage", PropertyBinder.instance(String.class, "confirmationMessage"));
                 binder.registerBinder("context", contextBinder);

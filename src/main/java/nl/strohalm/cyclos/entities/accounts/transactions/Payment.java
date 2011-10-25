@@ -231,12 +231,16 @@ public abstract class Payment extends Entity implements EntityWithCustomFields<P
     @Override
     protected void appendVariableValues(final Map<String, Object> variables, final LocalSettings localSettings) {
         String typeName;
+        String shortTypeName;
         try {
             typeName = getType().getName();
+            shortTypeName = getType().getNameInMessage();
         } catch (final Exception e) {
             typeName = "";
+            shortTypeName = "";
         }
         variables.put("payment_type", typeName);
+        variables.put("short_payment_type", shortTypeName);
         String fromAccountName;
         try {
             fromAccountName = getFrom().getType().getName();
@@ -266,6 +270,7 @@ public abstract class Payment extends Entity implements EntityWithCustomFields<P
         } catch (final Exception e) {
             variables.put("amount", localSettings.getNumberConverter().toString(getAmount()));
         }
+
         variables.put("date", localSettings.getDateConverter().toString(getDate()));
     }
 

@@ -153,6 +153,12 @@ public class MessageSettings extends DataObject {
                 "A payment of #amount# was received from #member# (#login#). <br>#link# for more details",
                 "A payment of #amount# was received from #login#. Your new balance is #balance#"),
 
+        PAYMENT_SENT(MessageSettingsCategoryEnum.MEMBER,
+                "Payment sent",
+                "A payment of #amount# was sent to #member# (#login#). <br>#link# for more details",
+                "A payment of #amount# was sent to #login#. Your new balance is #balance#"),
+
+
         PENDING_PAYMENT_RECEIVED(MessageSettingsCategoryEnum.MEMBER,
                 "A payment awaiting authorization was received",
                 "A payment awaiting authorization of #amount# was received from #member# (#login#).<br>#link# for more details",
@@ -561,6 +567,10 @@ public class MessageSettings extends DataObject {
     private String            paymentReceivedSubject                              = MessageSettingsEnum.PAYMENT_RECEIVED.defaultSubject();
     private String            paymentReceivedMessage                              = MessageSettingsEnum.PAYMENT_RECEIVED.defaultMessage();
     private String            paymentReceivedSms                                  = MessageSettingsEnum.PAYMENT_RECEIVED.defaultSms();
+
+    private String            paymentSentSubject                                  = MessageSettingsEnum.PAYMENT_SENT.defaultSubject();
+    private String            paymentSentMessage                                  = MessageSettingsEnum.PAYMENT_SENT.defaultMessage();
+    private String            paymentSentSms                                      = MessageSettingsEnum.PAYMENT_SENT.defaultSms();
 
     private String            pendingPaymentReceivedSubject                       = MessageSettingsEnum.PENDING_PAYMENT_RECEIVED.defaultSubject();
     private String            pendingPaymentReceivedMessage                       = MessageSettingsEnum.PENDING_PAYMENT_RECEIVED.defaultMessage();
@@ -2285,5 +2295,29 @@ public class MessageSettings extends DataObject {
 
     public void setChangePasswordSms(String changePasswordSms) {
         this.changePasswordSms = changePasswordSms;
+    }
+
+    public String getPaymentSentSubject() {
+        return paymentSentSubject;
+    }
+
+    public void setPaymentSentSubject(String paymentSentSubject) {
+        this.paymentSentSubject = paymentSentSubject;
+    }
+
+    public String getPaymentSentMessage() {
+        return paymentSentMessage;
+    }
+
+    public void setPaymentSentMessage(String paymentSentMessage) {
+        this.paymentSentMessage = paymentSentMessage;
+    }
+
+    public String getPaymentSentSms() {
+        return paymentSentSms;
+    }
+
+    public void setPaymentSentSms(String paymentSentSms) {
+        this.paymentSentSms = paymentSentSms;
     }
 }

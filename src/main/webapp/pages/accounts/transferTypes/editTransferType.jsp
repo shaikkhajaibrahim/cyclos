@@ -135,7 +135,10 @@
 					<td class="label"><bean:message key="transferType.maxAmountPerDay"/></td>
 					<td><html:text property="transferType(maxAmountPerDay)" readonly="true" styleClass="small float InputBoxDisabled"/></td>
 				</tr>
-
+                <tr>
+           			<td class="label"><bean:message key="transferType.nameInMessage"/></td>
+           			<td><html:text property="transferType(nameInMessage)" readonly="true" styleClass="checkbox InputBoxDisabled"/></td>
+           		</tr>
 				<tr>
 					<td class="label"><bean:message key="transferType.requiresAuthorization"/></td>
 					<td><html:checkbox property="transferType(requiresAuthorization)" value="true" disabled="true" styleClass="checkbox InputBoxDisabled"/></td>
