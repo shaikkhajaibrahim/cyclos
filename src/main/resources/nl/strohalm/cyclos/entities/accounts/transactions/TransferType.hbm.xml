@@ -26,7 +26,7 @@
 		<property name="requiresAuthorization" column="requires_authorization" type="boolean" not-null="true"/>
 		<property name="allowsScheduledPayments" column="allows_scheduled_payments" type="boolean" not-null="true"/>
 		<property name="name" column="name" type="string" not-null="true" length="100"/>
-        <property name="nameInMessage" column="name_in_message" type="string" not-null="true" length="100"/>
+        <property name="nameInMessage" column="name_in_message" type="string" not-null="false" length="100"/>
 
 
 		<property name="description" column="description" not-null="true" type="text"/>
