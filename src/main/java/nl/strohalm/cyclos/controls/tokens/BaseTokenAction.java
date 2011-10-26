@@ -28,17 +28,34 @@ import nl.strohalm.cyclos.dao.tokens.exceptions.TokenNotFoundException;
 import nl.strohalm.cyclos.entities.access.Channel;
 import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.settings.LocalSettings;
+import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
+import nl.strohalm.cyclos.entities.settings.events.LocalSettingsEvent;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
+import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
 import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
 import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
+import nl.strohalm.cyclos.utils.SettingsHelper;
+import nl.strohalm.cyclos.utils.binding.BeanBinder;
+import nl.strohalm.cyclos.utils.binding.DataBinder;
+import nl.strohalm.cyclos.utils.binding.PropertyBinder;
 import org.apache.struts.action.ActionForward;
 
-public abstract class BaseTokenAction extends BaseFormAction {
+import java.math.BigDecimal;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+public abstract class BaseTokenAction<T> extends BaseFormAction implements LocalSettingsChangeListener {
+
+
+    private DataBinder<T> dataBinder;
+
+    private ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
     TokenService tokenService;
 
@@ -89,7 +106,34 @@ public abstract class BaseTokenAction extends BaseFormAction {
         return context.sendError(errorKey, baseTokenForm.getTokenId());
     }
 
-    abstract ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext actionContext);
+    abstract ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext actionContext) throws Exception;
 
+
+    public DataBinder<T> getDataBinder() {
+        try {
+            lock.writeLock().lock();
+            if (dataBinder == null) {
+                final LocalSettings localSettings = SettingsHelper.getLocalSettings(getServlet().getServletContext());
+                dataBinder = createBinder(localSettings);
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+        return dataBinder;
+    }
+
+    protected DataBinder createBinder(LocalSettings localSettings) {
+        return null;
+    };
+
+    @Override
+    public void onLocalSettingsUpdate(LocalSettingsEvent event) {
+        try {
+            lock.writeLock().lock();
+            dataBinder = null;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
 }
 

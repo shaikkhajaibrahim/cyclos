@@ -22,8 +22,14 @@
 package nl.strohalm.cyclos.controls.tokens;
 
 import nl.strohalm.cyclos.controls.ActionContext;
+import nl.strohalm.cyclos.entities.accounts.SystemAccountOwner;
+import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.settings.LocalSettings;
+import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
 import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
+import nl.strohalm.cyclos.services.transfertypes.TransactionFeePreviewDTO;
+import nl.strohalm.cyclos.utils.binding.DataBinder;
 import org.apache.struts.action.ActionForward;
 
 public class RefundTokenConfirmAction extends BaseTokenAction {
@@ -38,4 +44,6 @@ public class RefundTokenConfirmAction extends BaseTokenAction {
         context.sendMessage("tokens.tokenRefunded", token.getTransactionId());
         return context.getSuccessForward();
     }
+
+
 }

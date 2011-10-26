@@ -80,7 +80,11 @@
             <artifactId>struts-extras</artifactId>
             <version>${struts.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.4</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts-tiles</artifactId>

@@ -48,7 +48,7 @@ public class SenderTokenRedemptionAction extends BaseTokenAction {
 
     @Override
     protected void prepareForm(ActionContext context) throws Exception {
-        super.prepareForm(context);    //To change body of overridden methods use File | Settings | File Templates.
+        super.prepareForm(context);
         String transactionId = context.getRequest().getParameter("token(transactionId)");
         context.getRequest().setAttribute("asBroker", transactionId == null);
 

@@ -30,6 +30,9 @@
 	<definition name="member/_generateToken" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/generateToken.jsp"/>
 	</definition>
+    <definition name="member/_confirmGenerateToken" extends=".memberLayout">
+   		<put name="body" value="/pages/tokens/confirmGenerateToken.jsp"/>
+   	</definition>
 	<definition name="member/_listTokens" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/listTokens.jsp"/>
 	</definition>

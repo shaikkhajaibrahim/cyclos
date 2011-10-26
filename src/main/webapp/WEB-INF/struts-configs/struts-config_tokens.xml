@@ -19,85 +19,95 @@
   ~  */
   -->
 
-<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+        "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
 <struts-config>
 
-	<form-beans>
-        <form-bean name="listTokensForm" type="nl.strohalm.cyclos.controls.tokens.ListTokensForm" />
-        <form-bean name="generateTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
-        <form-bean name="redeemTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
-        <form-bean name="senderTokenRedemptionForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
-        <form-bean name="refundTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
-        <form-bean name="refundTokenConfirmForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm" />
+    <form-beans>
+        <form-bean name="listTokensForm" type="nl.strohalm.cyclos.controls.tokens.ListTokensForm"/>
+        <form-bean name="generateTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
+        <form-bean name="redeemTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
+        <form-bean name="senderTokenRedemptionForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
+        <form-bean name="refundTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
+        <form-bean name="refundTokenConfirmForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
 
     </form-beans>
 
-	<action-mappings type="org.apache.struts.config.SecureActionConfig">
+    <action-mappings type="org.apache.struts.config.SecureActionConfig">
 
-
-		<action
-	    	path="/member/listTokens"
-	    	type="nl.strohalm.cyclos.controls.tokens.ListTokensAction"
-			input="member/_listTokens"
-			name="listTokensForm"
-			scope="session">
-	    	<set-property property="secure" value="true" />
-	   	</action>
-
-		<action
-			path="/member/generateToken"
-			type="nl.strohalm.cyclos.controls.tokens.GenerateTokenAction"
-            name="generateTokenForm"
-            scope="request"
-            input="member/_generateToken">
-
-			<set-property property="secure" value="true" />
-	    	<forward name="success" path="/do/member/listTokens" redirect="true" />
-		</action>
 
         <action
-            path="/member/redeemToken"
-            type="nl.strohalm.cyclos.controls.tokens.RedeemTokenAction"
-            name="redeemTokenForm"
-            scope="request"
-            input="member/_redeemToken">
+                path="/member/listTokens"
+                type="nl.strohalm.cyclos.controls.tokens.ListTokensAction"
+                input="member/_listTokens"
+                name="listTokensForm"
+                scope="session">
+            <set-property property="secure" value="true"/>
+        </action>
 
-            <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/listTokens" redirect="true" />
+        <action
+                path="/member/generateToken"
+                type="nl.strohalm.cyclos.controls.tokens.GenerateTokenAction"
+                name="generateTokenForm"
+                scope="request"
+                input="member/_generateToken">
+
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/confirmGenerateToken" redirect="true"/>
         </action>
         <action
-            path="/member/senderTokenRedemption"
-            type="nl.strohalm.cyclos.controls.tokens.SenderTokenRedemptionAction"
-            name="senderTokenRedemptionForm"
-            scope="request"
-            input="member/_senderTokenRedemption">
-
-            <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/listTokens" redirect="true" />
+                path="/member/confirmGenerateToken"
+                type="nl.strohalm.cyclos.controls.tokens.ConfirmGenerateTokenAction"
+                name="generateTokenForm"
+                scope="request"
+                input="member/_confirmGenerateToken">
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/listTokens" redirect="true"/>
         </action>
 
+        <action
+                path="/member/redeemToken"
+                type="nl.strohalm.cyclos.controls.tokens.RedeemTokenAction"
+                name="redeemTokenForm"
+                scope="request"
+                input="member/_redeemToken">
 
-         <action
-            path="/member/refundToken"
-            type="nl.strohalm.cyclos.controls.tokens.RefundTokenAction"
-            name="refundTokenForm"
-            scope="request"
-            input="member/_refundToken">
-
-            <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/refundTokenConfirm" redirect="true" />
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/listTokens" redirect="true"/>
         </action>
         <action
-            path="/member/refundTokenConfirm"
-            type="nl.strohalm.cyclos.controls.tokens.RefundTokenConfirmAction"
-            name="refundTokenConfirmForm"
-            scope="request"
-            input="member/_refundTokenConfirm">
+                path="/member/senderTokenRedemption"
+                type="nl.strohalm.cyclos.controls.tokens.SenderTokenRedemptionAction"
+                name="senderTokenRedemptionForm"
+                scope="request"
+                input="member/_senderTokenRedemption">
 
-            <set-property property="secure" value="true" />
-            <forward name="success" path="/do/member/listTokens" redirect="true" />
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/listTokens" redirect="true"/>
         </action>
 
-	</action-mappings>
+
+        <action
+                path="/member/refundToken"
+                type="nl.strohalm.cyclos.controls.tokens.RefundTokenAction"
+                name="refundTokenForm"
+                scope="request"
+                input="member/_refundToken">
+
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/refundTokenConfirm" redirect="true"/>
+        </action>
+        <action
+                path="/member/refundTokenConfirm"
+                type="nl.strohalm.cyclos.controls.tokens.RefundTokenConfirmAction"
+                name="refundTokenConfirmForm"
+                scope="request"
+                input="member/_refundTokenConfirm">
+
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/listTokens" redirect="true"/>
+        </action>
+
+    </action-mappings>
 
 </struts-config>

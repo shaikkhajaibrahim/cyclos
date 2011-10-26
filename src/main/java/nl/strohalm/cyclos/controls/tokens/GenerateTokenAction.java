@@ -21,13 +21,19 @@
 
 package nl.strohalm.cyclos.controls.tokens;
 
+import nl.strohalm.cyclos.annotations.Inject;
 import nl.strohalm.cyclos.controls.ActionContext;
+import nl.strohalm.cyclos.entities.accounts.SystemAccountOwner;
+import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
 import nl.strohalm.cyclos.entities.groups.Group;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
 import nl.strohalm.cyclos.entities.settings.events.LocalSettingsEvent;
 import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
+import nl.strohalm.cyclos.services.transfertypes.TransactionFeePreviewDTO;
+import nl.strohalm.cyclos.services.transfertypes.TransactionFeeService;
+import nl.strohalm.cyclos.utils.ActionHelper;
 import nl.strohalm.cyclos.utils.SettingsHelper;
 import nl.strohalm.cyclos.utils.binding.BeanBinder;
 import nl.strohalm.cyclos.utils.binding.DataBinder;
@@ -35,32 +41,26 @@ import nl.strohalm.cyclos.utils.binding.PropertyBinder;
 import org.apache.struts.action.ActionForward;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class GenerateTokenAction extends BaseTokenAction implements LocalSettingsChangeListener {
+public class GenerateTokenAction extends BaseTokenAction<GenerateTokenDTO> {
 
 
-    private DataBinder<GenerateTokenDTO> dataBinder;
-
-    private ReadWriteLock lock = new ReentrantReadWriteLock(true);
-
-
-    ActionForward tokenSubmit(BaseTokenForm form, Member loggedMember, ActionContext context) {
+    ActionForward tokenSubmit(BaseTokenForm form, Member loggedMember, ActionContext context) throws Exception {
         final GenerateTokenDTO generateTokenDTO = getDataBinder().readFromString(form.getValues());
-
         LocalSettings localSettings = settingsService.getLocalSettings();
         Long ttId = context.isBroker() ? localSettings.getBrokerTokenGenerationTransferType()
                 : localSettings.getMemberTokenGenerationTransferType();
-        
         generateTokenDTO.setTransferTypeId(ttId);
         generateTokenDTO.setFrom(loggedMember.getUsername());
         if (!context.isBroker()) {
             generateTokenDTO.setSenderMobilePhone(null);
         }
-        String tokenId =  tokenService.generateToken(generateTokenDTO);
-        context.sendMessage("tokens.tokenGenerated", tokenId);
-        return context.getSuccessForward();
+
+        context.getSession().setAttribute("token", generateTokenDTO);
+        return ActionHelper.redirectWithParams(context.getRequest(), context.getSuccessForward(), Collections.<String, Object>emptyMap());
     }
 
     @Override
@@ -70,32 +70,12 @@ public class GenerateTokenAction extends BaseTokenAction implements LocalSetting
         context.getRequest().setAttribute("token", generateTokenDTO);
     }
 
-    public DataBinder<GenerateTokenDTO> getDataBinder() {
-        try {
-            lock.writeLock().lock();
-            if (dataBinder == null) {
-                final LocalSettings localSettings = SettingsHelper.getLocalSettings(getServlet().getServletContext());
-
-                final BeanBinder<GenerateTokenDTO> binder = BeanBinder.instance(GenerateTokenDTO.class);
-                binder.registerBinder("amount", PropertyBinder.instance(BigDecimal.class, "amount", localSettings.getNumberConverter()));
-                binder.registerBinder("senderMobilePhone", PropertyBinder.instance(String.class, "senderMobilePhone"));
-                binder.registerBinder("recipientMobilePhone", PropertyBinder.instance(String.class, "recipientMobilePhone"));
-
-                dataBinder = binder;
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
-        return dataBinder;
-    }
-
     @Override
-    public void onLocalSettingsUpdate(LocalSettingsEvent event) {
-        try {
-            lock.writeLock().lock();
-            dataBinder = null;
-        } finally {
-            lock.writeLock().unlock();
-        }
+    protected DataBinder createBinder(LocalSettings localSettings) {
+        final BeanBinder<GenerateTokenDTO> binder = BeanBinder.instance(GenerateTokenDTO.class);
+        binder.registerBinder("amount", PropertyBinder.instance(BigDecimal.class, "amount", localSettings.getNumberConverter()));
+        binder.registerBinder("senderMobilePhone", PropertyBinder.instance(String.class, "senderMobilePhone"));
+        binder.registerBinder("recipientMobilePhone", PropertyBinder.instance(String.class, "recipientMobilePhone"));
+        return binder;
     }
 }

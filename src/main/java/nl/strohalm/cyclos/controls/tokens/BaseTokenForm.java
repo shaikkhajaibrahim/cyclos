@@ -22,6 +22,7 @@
 package nl.strohalm.cyclos.controls.tokens;
 
 import nl.strohalm.cyclos.controls.BaseBindingForm;
+import nl.strohalm.cyclos.entities.settings.events.LocalSettingsChangeListener;
 
 import java.util.Map;
 
