@@ -23,8 +23,11 @@ package nl.strohalm.cyclos.entities.tokens;
 
 import nl.strohalm.cyclos.entities.Entity;
 import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
+import nl.strohalm.cyclos.entities.settings.LocalSettings;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Token extends Entity {
 
@@ -46,7 +49,16 @@ public class Token extends Entity {
 
     @Override
     public String toString() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "Token{" +
+                "tokenId='" + tokenId + '\'' +
+                ", senderMobilePhone='" + senderMobilePhone + '\'' +
+                ", recipientMobilePhone='" + recipientMobilePhone + '\'' +
+                ", pin='" + pin + '\'' +
+                ", amount=" + amount +
+                ", status=" + status +
+                ", transferFrom=" + transferFrom +
+                ", transferTo=" + transferTo +
+                '}';
     }
 
     public String getTokenId() {
@@ -111,5 +123,21 @@ public class Token extends Entity {
 
     public void setRecipientMobilePhone(String recipientMobilePhone) {
         this.recipientMobilePhone = recipientMobilePhone;
+    }
+
+    @Override
+    protected void appendVariableValues(Map<String, Object> variables, LocalSettings localSettings) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("sender", getSenderMobilePhone());
+        try {
+            variables.put("amount", localSettings.getUnitsConverter(getTransferFrom().getType().getCurrency().getPattern()).toString(getAmount()));
+        } catch (final Exception e) {
+            variables.put("amount", localSettings.getNumberConverter().toString(getAmount()));
+        }
+        params.put("recipient", getRecipientMobilePhone());
+
+        params.put("tokenId", getTokenId());
+        params.put("pin", getPin());
+        params.put("transactionId", getTransferFrom().getTransactionNumber());
     }
 }

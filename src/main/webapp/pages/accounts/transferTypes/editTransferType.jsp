@@ -164,7 +164,7 @@
 					<td><html:checkbox property="transferType(showScheduledPaymentsToDestination)" value="true" disabled="true" styleClass="checkbox InputBoxDisabled"/></td>
 				</tr>
 				<c:if test="${localSettings.smsNotificationEnabled}">
-					<tr class="toMember" style="display:none">
+					<tr>
 						<td class="label"><bean:message key="transferType.allowSmsNotification"/></td>
 						<td><html:checkbox property="transferType(allowSmsNotification)" value="true" disabled="true" styleClass="checkbox InputBoxDisabled"/></td>
 					</tr>

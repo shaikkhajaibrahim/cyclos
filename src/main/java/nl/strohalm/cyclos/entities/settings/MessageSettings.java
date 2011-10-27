@@ -375,6 +375,10 @@ public class MessageSettings extends DataObject {
         TOKEN_SMS_FAILED(MessageSettingsCategoryEnum.MEMBER,
                         "Voucher not delivered", "Sorry, the voucher you sent have not been delivered"),
 
+        TOKEN_REDEMPTION(MessageSettingsCategoryEnum.MEMBER,
+                        "Voucher was redeemed", "Voucher was redeemed", "Voucher #transactionId# of #amount# was redeemed" +
+                " on behalf of #recipient#. Your balance is #balance#"),
+
         CHANGE_PASSWORD(MessageSettingsCategoryEnum.MEMBER, "Change password", "Your account password change was successful.",
                 "Your account password change was successful.")
         ;
@@ -739,6 +743,11 @@ public class MessageSettings extends DataObject {
 
     private String            tokenSmsFailedSubject                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultSubject();
     private String            tokenSmsFailedMessage                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultMessage();
+
+    private String            tokenRedemptionSubject                              = MessageSettingsEnum.TOKEN_REDEMPTION.defaultSubject();
+    private String            tokenRedemptionMessage                              = MessageSettingsEnum.TOKEN_REDEMPTION.defaultMessage();
+    private String            tokenRedemptionSms                                  = MessageSettingsEnum.TOKEN_REDEMPTION.defaultSms();
+
 
     private String            changePasswordSubject                               = MessageSettingsEnum.CHANGE_PASSWORD.defaultSubject();
     private String            changePasswordMessage                               = MessageSettingsEnum.CHANGE_PASSWORD.defaultMessage();
@@ -2319,5 +2328,29 @@ public class MessageSettings extends DataObject {
 
     public void setPaymentSentSms(String paymentSentSms) {
         this.paymentSentSms = paymentSentSms;
+    }
+
+    public String getTokenRedemptionSubject() {
+        return tokenRedemptionSubject;
+    }
+
+    public void setTokenRedemptionSubject(String tokenRedemptionSubject) {
+        this.tokenRedemptionSubject = tokenRedemptionSubject;
+    }
+
+    public String getTokenRedemptionMessage() {
+        return tokenRedemptionMessage;
+    }
+
+    public void setTokenRedemptionMessage(String tokenRedemptionMessage) {
+        this.tokenRedemptionMessage = tokenRedemptionMessage;
+    }
+
+    public String getTokenRedemptionSms() {
+        return tokenRedemptionSms;
+    }
+
+    public void setTokenRedemptionSms(String tokenRedemptionSms) {
+        this.tokenRedemptionSms = tokenRedemptionSms;
     }
 }

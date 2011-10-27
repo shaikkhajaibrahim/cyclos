@@ -29,28 +29,23 @@ import nl.strohalm.cyclos.entities.accounts.AccountOwner;
 import nl.strohalm.cyclos.entities.accounts.SystemAccountOwner;
 import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.accounts.transactions.TransferType;
-import nl.strohalm.cyclos.entities.accounts.transactions.TransferTypeQuery;
 import nl.strohalm.cyclos.entities.members.Member;
-import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.elements.ElementService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
-import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
-import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
 import nl.strohalm.cyclos.services.transactions.PaymentService;
 import nl.strohalm.cyclos.services.transactions.TransactionContext;
 import nl.strohalm.cyclos.services.transactions.TransferDTO;
 import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
-import nl.strohalm.cyclos.utils.MessageProcessingHelper;
-import nl.strohalm.cyclos.utils.sms.SmsSender;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
 
 public class TokenServiceImpl implements TokenService {
 
@@ -58,7 +53,6 @@ public class TokenServiceImpl implements TokenService {
 
     private PaymentService paymentService;
     private ElementService elementService;
-    private SmsSender smsSender;
     private TransferTypeService transferTypeService;
     private SettingsService settingsService;
 
@@ -71,7 +65,6 @@ public class TokenServiceImpl implements TokenService {
         }
         Transfer transfer = transferToSuspenseAccount(generateTokenDTO, generateTokenDTO.getRecipientMobilePhone());
         Token token = createToken(generateTokenDTO, transfer, tokenId);
-        sendTokenIdBySms(token);
         generatePin(tokenId);
         return token.getTransferFrom().getTransactionNumber();
     }
@@ -169,8 +162,6 @@ public class TokenServiceImpl implements TokenService {
             token.setPin(pin);
             tokenDao.update(token);
         }
-        sendPinBySms(token);
-
     }
 
     @Override
@@ -218,33 +209,6 @@ public class TokenServiceImpl implements TokenService {
                 (long) (Math.random() * Math.pow(10,length+1)), length+1, "0").substring(1, length+1);
     }
 
-    private void sendPinBySms(Token token) {
-        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getTokenPinGeneratedSms());
-    }
-
-    private void sendTokenIdBySms(Token token) {
-        sendSms(token.getRecipientMobilePhone(), token, getMessageSettings().getTokenGeneratedSms());
-    }
-
-    private void sendSms(String smsRecipient, Token token, String smsTemplate) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("sender", token.getSenderMobilePhone());
-        params.put("amount", token.getAmount());
-        params.put("recipient", token.getRecipientMobilePhone());
-
-        params.put("tokenId", token.getTokenId());
-        params.put("pin", token.getPin());
-        params.put("transactionId", token.getTransferFrom().getTransactionNumber());
-        final String sms = MessageProcessingHelper.processVariables(smsTemplate, params);
-        Member creator = (Member) token.getTransferFrom().getFromOwner();
-        MessageSettings messageSettings = settingsService.getMessageSettings();
-        smsSender.send(smsRecipient, sms, creator, messageSettings.getTokenSmsFailedSubject(), messageSettings.getTokenSmsFailedMessage(), token);
-    }
-
-    private MessageSettings getMessageSettings() {
-        return settingsService.getMessageSettings();
-    }
-
     private String createPin() {
         return randomNumber(4);
     }
@@ -255,10 +219,6 @@ public class TokenServiceImpl implements TokenService {
 
     public void setElementService(ElementService elementService) {
         this.elementService = elementService;
-    }
-
-    public void setSmsSender(SmsSender smsSender) {
-        this.smsSender = smsSender;
     }
 
     public void setTokenDao(TokenDAO tokenDao) {

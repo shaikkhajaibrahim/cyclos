@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.strohalm.cyclos.dao.exceptions.EntityNotFoundException;
+import nl.strohalm.cyclos.entities.Entity;
 import nl.strohalm.cyclos.entities.access.Channel;
 import nl.strohalm.cyclos.entities.access.MemberUser;
 import nl.strohalm.cyclos.entities.access.User;
@@ -66,6 +67,7 @@ import nl.strohalm.cyclos.entities.members.messages.Message;
 import nl.strohalm.cyclos.entities.services.ServiceClient;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.MessageSettings;
+import nl.strohalm.cyclos.entities.tokens.Token;
 import nl.strohalm.cyclos.services.access.ChangeLoginPasswordDTO;
 import nl.strohalm.cyclos.services.access.ChannelService;
 import nl.strohalm.cyclos.services.access.exceptions.BlockedCredentialsException;
@@ -84,6 +86,9 @@ import nl.strohalm.cyclos.services.groups.GroupService;
 import nl.strohalm.cyclos.services.preferences.MessageChannel;
 import nl.strohalm.cyclos.services.preferences.PreferenceService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
+import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
+import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
+import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
 import nl.strohalm.cyclos.services.transactions.InvoiceService;
 import nl.strohalm.cyclos.services.transactions.TicketService;
@@ -95,6 +100,7 @@ import nl.strohalm.cyclos.utils.RelationshipHelper;
 import nl.strohalm.cyclos.utils.access.LoggedUser;
 import nl.strohalm.cyclos.utils.conversion.UnitsConverter;
 
+import nl.strohalm.cyclos.utils.sms.SmsSender;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -124,6 +130,9 @@ public class MessageAspect {
     private PaymentObligationService paymentObligationService;
     private SettingsService settingsService;
     private TicketService ticketService;
+    private TokenService tokenService;
+    private TokenMessages tokenMessages;
+    private MessageHelper messageHelper;
     /**
      * Store, for each member, the time in millis when the low units alert was sent. Used to not send the alert twice a day
      */
@@ -131,6 +140,7 @@ public class MessageAspect {
     private Calendar lastPaymentDate;
     private MessageResolver messageResolver;
     private PreferenceService preferenceService;
+    private SmsSender smsSender;
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.transactions.InvoiceService.accept*(..))", returning = "invoice", argNames = "invoice")
     public void acceptedInvoiceNotification(final Invoice invoice) {
@@ -1194,7 +1204,7 @@ public class MessageAspect {
             final boolean sendSmsNotification = payment.getType().isAllowSmsNotification() && channels.contains(MessageChannel.SMS);
             AccountStatus status = null;
             if (sendSmsNotification) {
-                status = accountService.getStatus(new GetTransactionsDTO(payment.getTo()));
+                status = accountService.getStatus(new GetTransactionsDTO(receiver));
             }
             // Process message contents
             final String processedSubject = MessageProcessingHelper.processVariables(subject, localSettings, otherSide.getOwner(), payment);
@@ -1253,11 +1263,40 @@ public class MessageAspect {
         sendRegistrationMessage(member);
     }
 
-    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.registerMemberByWebService*(..)) && args(client, member, remoteAddress)", argNames = "client, member, remoteAddress")
-    public void memberRegisteredWS(ServiceClient client, Member member, String remoteAddress) {
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ElementService.registerMemberByWebService*(..)) && args(*, member, *)", argNames = "member")
+    public void memberRegisteredWS(Member member) {
         sendRegistrationMessage(member);
     }
 
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.tokens.TokenService.generateToken(..))", returning="transactionId", argNames = "transactionId")
+    public void tokenGenerated(String transactionId) {
+        Token token = tokenService.loadTokenByTransactionId(transactionId);
+        tokenMessages().sendGenerateTokenMessages(token);
+        //agent performs payment, so need to inform him separately
+        if (token.getSenderMobilePhone() != null) {
+            paymentReceivedNotification(token.getTransferFrom());
+        }
+    }
+    
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.tokens.TokenService.redeemToken(..)) && args(broker, tokenId, *, *)", argNames = "broker, tokenId")
+    public void tokenRedeemed(Member broker, String tokenId) {
+        tokenMessages().sendRedeemTokenMessages(broker, tokenService.loadTokenById(tokenId));
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.tokens.TokenService.senderRedeemToken(..)) && args(member, senderRedeemTokenData)", argNames = "member, senderRedeemTokenData")
+    public void tokeRedeemedBySender(Member member, SenderRedeemTokenData senderRedeemTokenData) {
+        sendRefundTokenMessage(senderRedeemTokenData);
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.tokens.TokenService.refundToken(..)) && args(member, senderRedeemTokenData)", argNames = "member, senderRedeemTokenData")
+    public void tokenRefunded(Member member, SenderRedeemTokenData senderRedeemTokenData) {
+        sendRefundTokenMessage(senderRedeemTokenData);
+    }
+
+    private void sendRefundTokenMessage(SenderRedeemTokenData senderRedeemTokenData) {
+        Token token = tokenService.loadTokenByTransactionId(senderRedeemTokenData.getTransactionId());
+        paymentReceivedNotification(token.getTransferTo());
+    }
 
     @AfterReturning(pointcut = "(execution(* nl.strohalm.cyclos.services.transactions.InvoiceService.send*(..)) && args(invoice))", argNames = "invoice")
     public void receivedInvoiceNotification(final Invoice invoice) {
@@ -1288,6 +1327,7 @@ public class MessageAspect {
         // Send the message
         messageService.sendFromSystem(message);
     }
+    
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ReferenceService.saveMemberReference(..)) ||" + "execution(* nl.strohalm.cyclos.services.elements.ReferenceService.saveMyReference(..))", argNames = "reference", returning = "reference")
     public void receivedReferenceNotification(final Reference reference) {
@@ -1473,6 +1513,14 @@ public class MessageAspect {
 
     public void setTicketService(final TicketService ticketService) {
         this.ticketService = ticketService;
+    }
+
+    public void setSmsSender(SmsSender smsSender) {
+        this.smsSender = smsSender;
+    }
+
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.elements.ReferenceService.saveTransactionFeedbackByAdmin(..))", returning = "transactionFeedback", argNames = "transactionFeedback")
@@ -2093,32 +2141,29 @@ public class MessageAspect {
 
     private void sendRegistrationMessage(Member member) {
         MessageSettings messageSettings = settingsService.getMessageSettings();
-        sendMemberMessage(messageSettings.getRegisteredSubject(), messageSettings.getRegisteredMessage(), messageSettings.getRegisteredSms(),
+        messageHelper().sendMemberMessage(messageSettings.getRegisteredSubject(), messageSettings.getRegisteredMessage(), messageSettings.getRegisteredSms(),
                 member, Message.Type.REGISTRATION);
     }
 
     private void sendChangePasswordMessage(Member member) {
         MessageSettings messageSettings = settingsService.getMessageSettings();
-        sendMemberMessage(messageSettings.getChangePasswordSubject(), messageSettings.getChangePasswordMessage(), messageSettings.getChangePasswordSms(),
+        messageHelper().sendMemberMessage(messageSettings.getChangePasswordSubject(), messageSettings.getChangePasswordMessage(), messageSettings.getChangePasswordSms(),
                 member, Message.Type.CHANGE_PASSWORD);
 
     }
 
-    private void sendMemberMessage(String subject, String body, String sms, Member member, Message.Type type) {
-        final SendMessageFromSystemDTO message = new SendMessageFromSystemDTO();
-        final LocalSettings localSettings = settingsService.getLocalSettings();
+    MessageHelper messageHelper() {
+        if (messageHelper == null) {
+            messageHelper = new MessageHelper(settingsService, messageService );
+        }
+        return messageHelper;
+    }
 
-        final String processedSubject = MessageProcessingHelper.processVariables(subject, member, localSettings);
-        final String processedBody = MessageProcessingHelper.processVariables(body, member, localSettings);
-        final String processedSms = MessageProcessingHelper.processVariables(sms, member, localSettings);
-
-        message.setType(type);
-        message.setEntity(member);
-        message.setToMember(member);
-        message.setSubject(processedSubject);
-        message.setBody(processedBody);
-        message.setSms(processedSms);
-        messageService.sendFromSystem(message);
+    TokenMessages tokenMessages() {
+        if (tokenMessages == null) {
+            tokenMessages = new TokenMessages(settingsService, smsSender, messageService, accountService);
+        }
+        return tokenMessages;
     }
 
 }
