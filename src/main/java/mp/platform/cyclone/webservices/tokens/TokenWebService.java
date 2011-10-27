@@ -27,6 +27,7 @@ import mp.platform.cyclone.webservices.Permission;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import java.math.BigDecimal;
 
 @WebService
 public interface TokenWebService {
@@ -43,4 +44,8 @@ public interface TokenWebService {
     @WebMethod
     void senderRedeemToken(@WebParam(name = "params") SenderRedeemTokenParameters redeemTokenParameters);
 
+    @Permission( { ServiceOperation.DO_PAYMENT, ServiceOperation.RECEIVE_PAYMENT })
+    @WebMethod
+    BigDecimal getTokenAmount(@WebParam(name = "params") String tokenId);
+    
 }

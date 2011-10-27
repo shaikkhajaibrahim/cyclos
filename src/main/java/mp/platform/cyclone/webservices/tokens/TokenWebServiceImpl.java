@@ -34,7 +34,9 @@ import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
 import mp.platform.cyclone.webservices.WebServiceFaultsEnum;
 
+import javax.jws.WebParam;
 import javax.jws.WebService;
+import java.math.BigDecimal;
 
 @WebService(name = "tokens", serviceName = "tokens")
 public class TokenWebServiceImpl implements TokenWebService {
@@ -94,6 +96,11 @@ public class TokenWebServiceImpl implements TokenWebService {
         } catch (NoTransferTypeException e) {
             throw WebServiceFaultsEnum.INVALID_PARAMETERS.getFault("Cannot perform operation");
         }
+    }
+
+    @Override
+    public BigDecimal getTokenAmount(@WebParam(name = "params") String tokenId) {
+        return tokenService.loadTokenById(tokenId).getAmount();
     }
 
     public void setTokenService(TokenService tokenService) {
