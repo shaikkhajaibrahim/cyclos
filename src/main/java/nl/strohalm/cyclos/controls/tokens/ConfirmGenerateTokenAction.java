@@ -45,7 +45,7 @@ public class ConfirmGenerateTokenAction extends BaseTokenAction<GenerateTokenDTO
     protected void prepareForm(ActionContext context) throws Exception {
 
         final GenerateTokenDTO generateTokenDTO = (GenerateTokenDTO) context.getSession().getAttribute("token");
-        Long ttId = context.isBroker() ? settingsService.getLocalSettings().getBrokerSenderTokenRedemptionTransferType()
+        Long ttId = context.isBroker() ? settingsService.getLocalSettings().getBrokerTokenGenerationTransferType()
                 : settingsService.getLocalSettings().getMemberTokenGenerationTransferType();
         TransferType tt = transferTypeService.load(ttId);
 

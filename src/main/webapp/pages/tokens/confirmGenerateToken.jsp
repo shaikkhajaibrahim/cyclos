@@ -22,7 +22,7 @@
                             <cyclos:escapeHTML><bean:message key="tokens.generateTokenConfirm.header"/></cyclos:escapeHTML>
                         </td>
                     </tr>
-                    <c:if test="${not empty senderMobilePhone}">
+                    <c:if test="${not empty token.senderMobilePhone}">
                     <tr>
                         <td class="headerLabel" width="35%"><bean:message key='tokens.generateToken.tokenSender'/></td>
                         <td>
