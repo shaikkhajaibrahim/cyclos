@@ -127,17 +127,16 @@ public class Token extends Entity {
 
     @Override
     protected void appendVariableValues(Map<String, Object> variables, LocalSettings localSettings) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("sender", getSenderMobilePhone());
+        variables.put("sender", getSenderMobilePhone());
         try {
             variables.put("amount", localSettings.getUnitsConverter(getTransferFrom().getType().getCurrency().getPattern()).toString(getAmount()));
         } catch (final Exception e) {
             variables.put("amount", localSettings.getNumberConverter().toString(getAmount()));
         }
-        params.put("recipient", getRecipientMobilePhone());
+        variables.put("recipient", getRecipientMobilePhone());
 
-        params.put("tokenId", getTokenId());
-        params.put("pin", getPin());
-        params.put("transactionId", getTransferFrom().getTransactionNumber());
+        variables.put("tokenId", getTokenId());
+        variables.put("pin", getPin());
+        variables.put("transactionId", getTransferFrom().getTransactionNumber());
     }
 }
