@@ -22,6 +22,7 @@
 package nl.strohalm.cyclos.entities.tokens;
 
 import nl.strohalm.cyclos.entities.Entity;
+import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.accounts.transactions.Transfer;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 
@@ -30,6 +31,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Token extends Entity {
+
+    public static enum Relationships implements Relationship {
+         FROM("transferFrom"), TO("transferTo");
+         private final String name;
+
+         private Relationships(final String name) {
+             this.name = name;
+         }
+
+         public String getName() {
+             return name;
+         }
+     }
 
     private String tokenId;
 

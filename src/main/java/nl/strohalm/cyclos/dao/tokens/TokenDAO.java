@@ -25,6 +25,7 @@ import nl.strohalm.cyclos.dao.BaseDAO;
 import nl.strohalm.cyclos.dao.DeletableDAO;
 import nl.strohalm.cyclos.dao.InsertableDAO;
 import nl.strohalm.cyclos.dao.UpdatableDAO;
+import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.tokens.Token;
 
 import java.util.Calendar;
@@ -32,7 +33,7 @@ import java.util.List;
 
 public interface TokenDAO extends BaseDAO<Token>, InsertableDAO<Token>, UpdatableDAO<Token>, DeletableDAO<Token> {
 
-    Token loadByTokenId(String tokenId);
+    Token loadByTokenId(String tokenId, Relationship... rel);
 
     List<Token> getTokensToExpire(Calendar time);
 

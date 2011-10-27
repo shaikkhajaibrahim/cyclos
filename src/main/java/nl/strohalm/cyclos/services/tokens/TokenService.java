@@ -18,6 +18,7 @@
  */
 package nl.strohalm.cyclos.services.tokens;
 
+import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.access.User;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.tokens.Token;
@@ -44,7 +45,7 @@ public interface TokenService extends Service {
 
     List<Token> getUserTokens(User user);
 
-    Token loadTokenById(String tokenId);
+    Token loadTokenById(String tokenId, Relationship... relationship);
 
     Token loadTokenByTransactionId(String tokenId);
 

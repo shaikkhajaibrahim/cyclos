@@ -73,8 +73,19 @@
                 input="member/_redeemToken">
 
             <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/confirmRedeemToken" redirect="true"/>
+        </action>
+        <action
+                path="/member/confirmRedeemToken"
+                type="nl.strohalm.cyclos.controls.tokens.ConfirmRedeemTokenAction"
+                name="redeemTokenForm"
+                scope="request"
+                input="member/_confirmRedeemToken">
+            <set-property property="secure" value="true"/>
             <forward name="success" path="/do/member/listTokens" redirect="true"/>
         </action>
+
+
         <action
                 path="/member/senderTokenRedemption"
                 type="nl.strohalm.cyclos.controls.tokens.SenderTokenRedemptionAction"

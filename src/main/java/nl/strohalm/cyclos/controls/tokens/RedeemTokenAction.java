@@ -23,16 +23,23 @@ package nl.strohalm.cyclos.controls.tokens;
 
 import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RedeemTokenAction extends BaseTokenAction {
 
     @Override
     ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) {
-        String pin = (String) token.getToken("pin");
-        tokenService.redeemToken(loggedMember, token.getTokenId(), pin , settingsService.getLocalSettings().getRefundTokenTransferType());
-        context.sendMessage("tokens.tokenRedeemed", token.getTokenId());
-        return context.getSuccessForward();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("token(pin)", token.getPin());
+        params.put("token(tokenId)", token.getTokenId());
+        return ActionHelper.redirectWithParams(context.getRequest(), context.getSuccessForward(), 
+                params);
+
     }
 
 }

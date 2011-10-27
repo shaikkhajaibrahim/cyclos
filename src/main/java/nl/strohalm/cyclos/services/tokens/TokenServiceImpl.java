@@ -22,6 +22,7 @@
 package nl.strohalm.cyclos.services.tokens;
 
 import nl.strohalm.cyclos.dao.tokens.TokenDAO;
+import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.access.Channel;
 import nl.strohalm.cyclos.entities.access.PrincipalType;
 import nl.strohalm.cyclos.entities.access.User;
@@ -165,8 +166,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token loadTokenById(String tokenId) {
-        return tokenDao.loadByTokenId(tokenId);
+    public Token loadTokenById(String tokenId, Relationship... rel ) {
+        return tokenDao.loadByTokenId(tokenId, rel);
     }
 
     @Override

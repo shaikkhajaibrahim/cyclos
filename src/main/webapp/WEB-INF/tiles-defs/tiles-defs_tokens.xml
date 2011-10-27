@@ -39,6 +39,9 @@
     <definition name="member/_redeemToken" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/redeemToken.jsp"/>
 	</definition>
+    <definition name="member/_confirmRedeemToken" extends=".memberLayout">
+   		<put name="body" value="/pages/tokens/confirmRedeemToken.jsp"/>
+   	</definition>
     <definition name="member/_senderTokenRedemption" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/senderTokenRedemption.jsp"/>
 	</definition>
