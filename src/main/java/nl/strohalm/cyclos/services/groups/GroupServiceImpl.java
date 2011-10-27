@@ -1054,6 +1054,11 @@ public class GroupServiceImpl implements GroupService, ApplicationContextAware {
             final List<MemberGroup> managesGroups = new ArrayList<MemberGroup>(baseAdminGroup.getManagesGroups());
             adminGroup.setManagesGroups(managesGroups);
 
+            // Manages groups
+            final List<AdminGroup> adminGroups = new ArrayList<AdminGroup>(baseAdminGroup.getManagesAdminGroups());
+            adminGroup.setManagesAdminGroups(adminGroups) ;
+
+
             // View information of
             final List<SystemAccountType> viewInformationOf = new ArrayList<SystemAccountType>(baseAdminGroup.getViewInformationOf());
             adminGroup.setViewInformationOf(viewInformationOf);
@@ -1851,6 +1856,7 @@ public class GroupServiceImpl implements GroupService, ApplicationContextAware {
                 adminCustomField.getGroups().remove(adminGroup);
                 customFieldDao.update(adminCustomField);
             }
+
         }
 
         if (group instanceof MemberGroup) {
@@ -1917,6 +1923,7 @@ public class GroupServiceImpl implements GroupService, ApplicationContextAware {
                 final AdminGroup currentAdminGroup = ((AdminGroup) currentGroup);
                 adminGroup.setTransferTypesAsMember(new ArrayList<TransferType>(currentAdminGroup.getTransferTypesAsMember()));
                 adminGroup.setManagesGroups(new ArrayList<MemberGroup>(currentAdminGroup.getManagesGroups()));
+                adminGroup.setManagesAdminGroups(new ArrayList<AdminGroup>(currentAdminGroup.getManagesAdminGroups()));
                 adminGroup.setViewConnectedAdminsOf(new ArrayList<AdminGroup>(currentAdminGroup.getViewConnectedAdminsOf()));
                 adminGroup.setViewInformationOf(new ArrayList<SystemAccountType>(currentAdminGroup.getViewInformationOf()));
                 adminGroup.setViewAdminRecordTypes(new ArrayList<MemberRecordType>(currentAdminGroup.getViewAdminRecordTypes()));
