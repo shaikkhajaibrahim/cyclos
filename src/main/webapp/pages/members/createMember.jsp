@@ -53,6 +53,11 @@
 			<td colspan="2"><input type="text" class="InputBoxDisabled large" readonly="true" value="${group.name}"/></td>
         </tr>
 	</c:if>
+	<c:if test="${isPublic}">
+		<tr>
+			<td class="standaloneContents" colspan="3"  width="100%" class="label"><bean:message key="createMember.welcomeRegistrationMessage"/></td>
+        </tr>
+	</c:if>
 	<c:if test="${not accessSettings.usernameGenerated}">
 		<tr>
 			<td width="30%" class="label"><bean:message key="login.username"/></td>
