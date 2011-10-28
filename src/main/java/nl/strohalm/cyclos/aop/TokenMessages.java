@@ -53,7 +53,7 @@ public class TokenMessages {
     void sendRedeemTokenMessages(Member member, Token token) {
         messageHelper.sendMemberMessage(messageSettings().getTokenRedemptionSubject(), messageSettings().getTokenRedemptionMessage(),
                 messageSettings().getTokenRedemptionSms(), member, Message.Type.TOKEN, token, accountService.getStatus(new GetTransactionsDTO(token.getTransferFrom().getFrom())));
-        sendSms(token.getRecipientMobilePhone(), token, messageSettings().getTokenRedemptionSms(), false);
+        sendSms(token.getRecipientMobilePhone(), token, messageSettings().getTokenRedeemedRecipientSms(), false);
     }
 
     void sendGenerateTokenMessages(Token token) {

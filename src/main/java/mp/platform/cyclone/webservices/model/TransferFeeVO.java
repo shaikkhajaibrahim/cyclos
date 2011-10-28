@@ -38,15 +38,18 @@ public class TransferFeeVO implements Serializable {
 
     private Payer payer;
 
+    private boolean external;
+
     public TransferFeeVO() {
     }
 
-    public TransferFeeVO(String name, Long id, BigDecimal amount, String transactionNumber, Payer payer) {
+    public TransferFeeVO(String name, Long id, BigDecimal amount, String transactionNumber, Payer payer, boolean external) {
         this.name = name;
         this.id = id;
         this.amount = amount;
         this.transactionNumber = transactionNumber;
         this.payer = payer;
+        this.external = external;
     }
 
     public String getName() {
@@ -87,5 +90,13 @@ public class TransferFeeVO implements Serializable {
 
     public void setPayer(Payer payer) {
         this.payer = payer;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 }

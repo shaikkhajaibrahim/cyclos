@@ -320,7 +320,8 @@ public class AccountHelper {
 
     private TransferFeeVO toTransferFeeVO(Transfer tr) {
         TransferFeeVO.Payer payer = TransferFeeVO.Payer.valueOf(tr.getTransactionFee().getPayer().name());
-        return new TransferFeeVO(tr.getTransactionFee().getName(), tr.getId(), tr.getAmount(), tr.getTransactionNumber(), payer);
+        return new TransferFeeVO(
+                tr.getTransactionFee().getName(), tr.getId(), tr.getAmount(), tr.getTransactionNumber(), payer, tr.getTransactionFee().isExternal());
     }
 
     /**

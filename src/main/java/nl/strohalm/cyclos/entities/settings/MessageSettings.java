@@ -741,7 +741,7 @@ public class MessageSettings extends DataObject {
     private String            smsMessagePrefix                                    = MessageSettingsEnum.SMS_MESSAGE_PREFIX.defaultMessage();
 
     private String            tokenGeneratedSms                                   = MessageSettingsEnum.TOKEN_GENERATED_SMS.defaultMessage();
-    private String            tokenRedeemedSms                                    = MessageSettingsEnum.TOKEN_REDEEMED_SMS.defaultMessage();
+    private String            tokenRedeemedRecipientSms                           = MessageSettingsEnum.TOKEN_REDEEMED_SMS.defaultMessage();
 
     private String            tokenPinGeneratedSms                                = MessageSettingsEnum.TOKEN_PIN_GENERATED_SMS.defaultMessage();
 
@@ -2358,11 +2358,11 @@ public class MessageSettings extends DataObject {
         this.tokenRedemptionSms = tokenRedemptionSms;
     }
 
-    public String getTokenRedeemedSms() {
-        return tokenRedeemedSms;
+    public String getTokenRedeemedRecipientSms() {
+        return tokenRedeemedRecipientSms;
     }
 
-    public void setTokenRedeemedSms(String tokenRedeemedSms) {
-        this.tokenRedeemedSms = tokenRedeemedSms;
+    public void getTokenRedeemedRecipientSms(String tokenRedeemedSms) {
+        this.tokenRedeemedRecipientSms = tokenRedeemedSms;
     }
 }
