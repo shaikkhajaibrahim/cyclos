@@ -2362,7 +2362,7 @@ public class MessageSettings extends DataObject {
         return tokenRedeemedRecipientSms;
     }
 
-    public void getTokenRedeemedRecipientSms(String tokenRedeemedSms) {
+    public void setTokenRedeemedRecipientSms(String tokenRedeemedSms) {
         this.tokenRedeemedRecipientSms = tokenRedeemedSms;
     }
 }
