@@ -60,11 +60,14 @@
 						<td class="headerLabel"><bean:message key="payment.confirmation.appliedFees"/></td>
 						<td>
 							<c:forEach var="fee" items="${fees}">
-								<div>
+                                <c:if test="${fee.key.external}">
+
+                                <div>
 									<span style="font-style:italic">${fee.key.name}</span>.&nbsp;
 									<span class="label"><bean:message key='transfer.amount'/>:</span>
 									<cyclos:format number="${fee.value}" unitsPattern="${unitsPattern}"/>
 								</div>
+                                </c:if>
 							</c:forEach>
 						</td>
 					</tr>            	

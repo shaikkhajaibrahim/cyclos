@@ -51,7 +51,7 @@
                                     key="tokens.redeemTokenConfirm.appliedFees"/></td>
                             <td>
                                 <c:forEach var="fee" items="${fees}">
-                                    <c:if test="${fee.key.payer == 'SOURCE'}">
+                                    <c:if test="${fee.key.external}">
                                         <div>
                                             <span style="font-style:italic">${fee.key.name}</span>.&nbsp;
                                             <span class="label"><bean:message key='tokens.redeemToken.amount'/>:</span>

@@ -151,4 +151,7 @@ public class SimpleTransactionFee extends TransactionFee {
         this.toFixedMember = toFixedMember;
     }
 
+    public boolean isExternal() {
+        return getPayer() != Subject.SYSTEM || receiver != Subject.SYSTEM;
+    }
 }

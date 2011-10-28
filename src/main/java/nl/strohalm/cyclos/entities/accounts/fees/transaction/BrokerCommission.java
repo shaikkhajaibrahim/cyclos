@@ -122,4 +122,8 @@ public class BrokerCommission extends TransactionFee {
         this.whichBroker = whichBroker;
     }
 
+    @Override
+    public boolean isExternal() {
+        return true;
+    }
 }

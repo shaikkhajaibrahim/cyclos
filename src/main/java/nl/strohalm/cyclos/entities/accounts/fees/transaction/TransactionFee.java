@@ -342,8 +342,11 @@ public abstract class TransactionFee extends Entity {
         this.value = value;
     }
 
+    public abstract  boolean isExternal();
+
     @Override
     public String toString() {
         return getId() + " - " + name;
     }
+
 }
