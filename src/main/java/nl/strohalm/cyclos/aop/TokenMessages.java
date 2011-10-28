@@ -34,9 +34,9 @@ public class TokenMessages {
     private SettingsService settingsService;
 
     private SmsSender smsSender;
-    
+
     private AccountService accountService;
-    
+
     private MessageHelper messageHelper;
 
     public TokenMessages(SettingsService settingsService, SmsSender smsSender, MessageService messageService, AccountService accountService) {
@@ -45,7 +45,7 @@ public class TokenMessages {
         this.accountService = accountService;
         this.messageHelper = new MessageHelper(settingsService, messageService);
     }
-    
+
     MessageSettings messageSettings() {
         return settingsService.getMessageSettings();
     }
@@ -53,7 +53,7 @@ public class TokenMessages {
     void sendRedeemTokenMessages(Member member, Token token) {
         messageHelper.sendMemberMessage(messageSettings().getTokenRedemptionSubject(), messageSettings().getTokenRedemptionMessage(),
                 messageSettings().getTokenRedemptionSms(), member, Message.Type.TOKEN, token, accountService.getStatus(new GetTransactionsDTO(token.getTransferFrom().getFrom())));
-
+        sendSms(token.getRecipientMobilePhone(), token, messageSettings().getTokenRedemptionSms(), false);
     }
 
     void sendGenerateTokenMessages(Token token) {
@@ -72,13 +72,15 @@ public class TokenMessages {
     }
 
     private void sendSms(String smsRecipient, Token token, String smsTemplate, boolean sendingFailed) {
-        final String sms = MessageProcessingHelper.processVariables(smsTemplate, token,  settingsService.getLocalSettings());
-        Member creator = (Member) token.getTransferFrom().getFromOwner();
-        MessageSettings messageSettings = settingsService.getMessageSettings();
-        if (sendingFailed) {
-            smsSender.send(smsRecipient, sms, creator, messageSettings.getTokenSmsFailedSubject(), messageSettings.getTokenSmsFailedMessage(), token);
-        } else {
-            smsSender.send(smsRecipient, sms);
+        if (settingsService.getLocalSettings().isSmsNotificationEnabled()) {
+            final String sms = MessageProcessingHelper.processVariables(smsTemplate, token, settingsService.getLocalSettings());
+            Member creator = (Member) token.getTransferFrom().getFromOwner();
+            MessageSettings messageSettings = settingsService.getMessageSettings();
+            if (sendingFailed) {
+                smsSender.send(smsRecipient, sms, creator, messageSettings.getTokenSmsFailedSubject(), messageSettings.getTokenSmsFailedMessage(), token);
+            } else {
+                smsSender.send(smsRecipient, sms);
+            }
         }
     }
 
