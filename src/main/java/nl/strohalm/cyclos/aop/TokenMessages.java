@@ -53,6 +53,7 @@ public class TokenMessages {
     void sendRedeemTokenMessages(Member member, Token token) {
         messageHelper.sendMemberMessage(messageSettings().getTokenRedemptionSubject(), messageSettings().getTokenRedemptionMessage(),
                 messageSettings().getTokenRedemptionSms(), member, Message.Type.TOKEN, token, accountService.getStatus(new GetTransactionsDTO(token.getTransferFrom().getFrom())));
+
     }
 
     void sendGenerateTokenMessages(Token token) {
@@ -63,18 +64,22 @@ public class TokenMessages {
     private void sendPinBySms(Token token) {
 //1. BlueCash Voucher sent to 234XXXXXXXXXX. Transaction ID: XXXXXXXXXXXX, Amount: NX,XXX.XX Please send Voucher PIN XXXX to Recipient. Your balance is NX,XXX.XX
         //TODO: separate handling for user
-        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getTokenPinGeneratedSms());
+        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getTokenPinGeneratedSms(), true);
     }
 
     private void sendTokenIdBySms(Token token) {
-        sendSms(token.getRecipientMobilePhone(), token, getMessageSettings().getTokenGeneratedSms());
+        sendSms(token.getRecipientMobilePhone(), token, getMessageSettings().getTokenGeneratedSms(), true);
     }
 
-    private void sendSms(String smsRecipient, Token token, String smsTemplate) {
+    private void sendSms(String smsRecipient, Token token, String smsTemplate, boolean sendingFailed) {
         final String sms = MessageProcessingHelper.processVariables(smsTemplate, token,  settingsService.getLocalSettings());
         Member creator = (Member) token.getTransferFrom().getFromOwner();
         MessageSettings messageSettings = settingsService.getMessageSettings();
-        smsSender.send(smsRecipient, sms, creator, messageSettings.getTokenSmsFailedSubject(), messageSettings.getTokenSmsFailedMessage(), token);
+        if (sendingFailed) {
+            smsSender.send(smsRecipient, sms, creator, messageSettings.getTokenSmsFailedSubject(), messageSettings.getTokenSmsFailedMessage(), token);
+        } else {
+            smsSender.send(smsRecipient, sms);
+        }
     }
 
     private MessageSettings getMessageSettings() {

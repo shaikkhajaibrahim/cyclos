@@ -40,6 +40,8 @@ import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
 import nl.strohalm.cyclos.services.tokens.exceptions.NoTransferTypeException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
 import nl.strohalm.cyclos.services.transactions.exceptions.NotEnoughCreditsException;
+import nl.strohalm.cyclos.services.transfertypes.TransactionFeeService;
+import nl.strohalm.cyclos.services.transfertypes.TransferTypeService;
 import nl.strohalm.cyclos.utils.SettingsHelper;
 import nl.strohalm.cyclos.utils.binding.BeanBinder;
 import nl.strohalm.cyclos.utils.binding.DataBinder;
@@ -76,6 +78,20 @@ public abstract class BaseTokenAction<T> extends BaseFormAction implements Local
     @Inject
     public void setElementService(ElementService elementService) {
         this.elementService = elementService;
+    }
+
+    TransactionFeeService transactionFeeService;
+
+    TransferTypeService transferTypeService;
+
+    @Inject
+    public void setTransactionFeeService(TransactionFeeService transactionFeeService) {
+        this.transactionFeeService = transactionFeeService;
+    }
+
+    @Inject
+    public void setTransferTypeService(TransferTypeService transferTypeService) {
+        this.transferTypeService = transferTypeService;
     }
 
     Member loadLoggedMember(ActionContext actionContext) {

@@ -19,19 +19,6 @@ import java.math.BigDecimal;
 
 public class ConfirmGenerateTokenAction extends BaseTokenAction<GenerateTokenDTO> {
 
-    TransactionFeeService transactionFeeService;
-
-    TransferTypeService transferTypeService;
-
-    @Inject
-    public void setTransactionFeeService(TransactionFeeService transactionFeeService) {
-        this.transactionFeeService = transactionFeeService;
-    }
-
-    @Inject
-    public void setTransferTypeService(TransferTypeService transferTypeService) {
-        this.transferTypeService = transferTypeService;
-    }
 
     ActionForward tokenSubmit(BaseTokenForm form, Member loggedMember, ActionContext context) {
         final GenerateTokenDTO generateTokenDTO = (GenerateTokenDTO) context.getSession().getAttribute("token");

@@ -45,6 +45,9 @@
     <definition name="member/_senderTokenRedemption" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/senderTokenRedemption.jsp"/>
 	</definition>
+    <definition name="member/_confirmSenderTokenRedemption" extends=".memberLayout">
+		<put name="body" value="/pages/tokens/confirmSenderTokenRedemption.jsp"/>
+	</definition>
     <definition name="member/_refundToken" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/refundToken.jsp"/>
 	</definition>

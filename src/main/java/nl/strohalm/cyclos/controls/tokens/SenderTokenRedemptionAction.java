@@ -25,25 +25,22 @@ import nl.strohalm.cyclos.controls.ActionContext;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
+import nl.strohalm.cyclos.utils.ActionHelper;
 import org.apache.struts.action.ActionForward;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SenderTokenRedemptionAction extends BaseTokenAction {
 
-
     @Override
-    ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext actionContext) {
-        SenderRedeemTokenData senderRedeemTokenData = new SenderRedeemTokenData();
-        senderRedeemTokenData.setPin(token.getPin());
-        senderRedeemTokenData.setTransactionId(token.getTransactionId());
-        LocalSettings localSettings = settingsService.getLocalSettings();
-        Long ttId = actionContext.isBroker() ?
-                localSettings.getBrokerSenderTokenRedemptionTransferType()
-                : localSettings.getMemberSenderTokenRedemptionTransferType();
+    ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("token(pin)", token.getPin());
+        params.put("token(transactionId)", token.getTransactionId());
+        return ActionHelper.redirectWithParams(context.getRequest(), context.getSuccessForward(),
+                params);
 
-        senderRedeemTokenData.setTransferTypeId(ttId);
-
-        tokenService.senderRedeemToken(loggedMember, senderRedeemTokenData);
-        return actionContext.getSuccessForward();
     }
 
     @Override
@@ -53,4 +50,5 @@ public class SenderTokenRedemptionAction extends BaseTokenAction {
         context.getRequest().setAttribute("asBroker", transactionId == null);
 
     }
+
 }

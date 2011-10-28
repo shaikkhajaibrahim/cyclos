@@ -14,20 +14,6 @@ import org.apache.struts.action.ActionForward;
 
 public class ConfirmRedeemTokenAction extends BaseTokenAction<GenerateTokenDTO> {
 
-    TransactionFeeService transactionFeeService;
-
-    TransferTypeService transferTypeService;
-
-    @Inject
-    public void setTransactionFeeService(TransactionFeeService transactionFeeService) {
-        this.transactionFeeService = transactionFeeService;
-    }
-
-    @Inject
-    public void setTransferTypeService(TransferTypeService transferTypeService) {
-        this.transferTypeService = transferTypeService;
-    }
-
     @Override
     ActionForward tokenSubmit(BaseTokenForm token, Member loggedMember, ActionContext context) throws Exception {
         String pin = (String) token.getToken("pin");

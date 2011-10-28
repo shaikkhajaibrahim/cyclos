@@ -94,9 +94,17 @@
                 input="member/_senderTokenRedemption">
 
             <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/member/confirmSenderTokenRedemption" redirect="true"/>
+        </action>
+        <action
+                path="/member/confirmSenderTokenRedemption"
+                type="nl.strohalm.cyclos.controls.tokens.ConfirmSenderTokenRedemptionAction"
+                name="senderTokenRedemptionForm"
+                scope="request"
+                input="member/_confirmSenderTokenRedemption">
+            <set-property property="secure" value="true"/>
             <forward name="success" path="/do/member/listTokens" redirect="true"/>
         </action>
-
 
         <action
                 path="/member/refundToken"
