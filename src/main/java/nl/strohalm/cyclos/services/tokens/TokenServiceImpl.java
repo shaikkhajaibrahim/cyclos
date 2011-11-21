@@ -60,18 +60,21 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String generateToken(GenerateTokenDTO generateTokenDTO) {
         String tokenId = generateTokenID();
+        boolean ifSendNotification = true;
         if (generateTokenDTO.getSenderMobilePhone() == null) {
             //FIXME what if username != mobile
+            //sender is not set for user transaction and set if initiated by agent
+            ifSendNotification = false; //notification send only to agent
             generateTokenDTO.setSenderMobilePhone(generateTokenDTO.getFrom());
         }
         Transfer transfer = transferToSuspenseAccount(generateTokenDTO, generateTokenDTO.getRecipientMobilePhone());
-        Token token = createToken(generateTokenDTO, transfer, tokenId);
+        Token token = createToken(generateTokenDTO, transfer, tokenId, ifSendNotification);
         generatePin(tokenId);
         return token.getTransferFrom().getTransactionNumber();
     }
 
 
-    private Token createToken(GenerateTokenDTO generateTokenDTO, Transfer transfer, String tokenId) {
+    private Token createToken(GenerateTokenDTO generateTokenDTO, Transfer transfer, String tokenId, boolean ifSendNotification) {
         Token token = new Token();
         token.setTokenId(tokenId);
         token.setTransferFrom(transfer);
@@ -79,6 +82,7 @@ public class TokenServiceImpl implements TokenService {
         token.setStatus(Status.ISSUED);
         token.setSenderMobilePhone(generateTokenDTO.getSenderMobilePhone());
         token.setRecipientMobilePhone(generateTokenDTO.getRecipientMobilePhone());
+        token.setIfSendNotification(ifSendNotification);
         return tokenDao.insert(token);
     }
 

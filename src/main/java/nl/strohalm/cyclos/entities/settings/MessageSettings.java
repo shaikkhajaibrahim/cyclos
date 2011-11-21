@@ -383,7 +383,11 @@ public class MessageSettings extends DataObject {
                 " on behalf of #recipient#. Your balance is #balance#"),
 
         CHANGE_PASSWORD(MessageSettingsCategoryEnum.MEMBER, "Change password", "Your account password change was successful.",
-                "Your account password change was successful.")
+                "Your account password change was successful."),
+
+        CHANGE_PASSWORD_BY_ADMIN(MessageSettingsCategoryEnum.MEMBER, "Changed password by admin",
+                "Your new password is #password#. Please note that you will be required to change your password on next logon.",
+                "Your new password is #password#. Please note that you will be required to change your password on next logon.")
         ;
 
         private String                      defaultSubject;
@@ -756,6 +760,10 @@ public class MessageSettings extends DataObject {
     private String            changePasswordSubject                               = MessageSettingsEnum.CHANGE_PASSWORD.defaultSubject();
     private String            changePasswordMessage                               = MessageSettingsEnum.CHANGE_PASSWORD.defaultMessage();
     private String            changePasswordSms                                   = MessageSettingsEnum.CHANGE_PASSWORD.defaultSms();
+
+    private String            changePasswordByAdminSubject                        = MessageSettingsEnum.CHANGE_PASSWORD_BY_ADMIN.defaultSubject();
+    private String            changePasswordByAdminMessage                        = MessageSettingsEnum.CHANGE_PASSWORD_BY_ADMIN.defaultMessage();
+    private String            changePasswordByAdminSms                            = MessageSettingsEnum.CHANGE_PASSWORD_BY_ADMIN.defaultSms();
 
 
     public String getAccountFeeReceivedMessage() {
@@ -2364,5 +2372,29 @@ public class MessageSettings extends DataObject {
 
     public void setTokenRedeemedRecipientSms(String tokenRedeemedSms) {
         this.tokenRedeemedRecipientSms = tokenRedeemedSms;
+    }
+
+    public String getChangePasswordByAdminSubject() {
+        return changePasswordByAdminSubject;
+    }
+
+    public void setChangePasswordByAdminSubject(String changePasswordByAdminSubject) {
+        this.changePasswordByAdminSubject = changePasswordByAdminSubject;
+    }
+
+    public String getChangePasswordByAdminMessage() {
+        return changePasswordByAdminMessage;
+    }
+
+    public void setChangePasswordByAdminMessage(String changePasswordByAdminMessage) {
+        this.changePasswordByAdminMessage = changePasswordByAdminMessage;
+    }
+
+    public String getChangePasswordByAdminSms() {
+        return changePasswordByAdminSms;
+    }
+
+    public void setChangePasswordByAdminSms(String changePasswordByAdminSms) {
+        this.changePasswordByAdminSms = changePasswordByAdminSms;
     }
 }

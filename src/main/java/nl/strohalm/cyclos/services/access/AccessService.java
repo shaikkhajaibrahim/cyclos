@@ -357,6 +357,13 @@ public interface AccessService extends Service {
     void resetPassword(MemberUser user);
 
     /**
+     * Reset an user's password, sending it by mail
+     */
+    @AdminAction(@Permission(module = "adminMemberAccess", operation = "resetPassword"))
+    @PathToMember("user.element")
+    void resetPasswordOnly(ChangeLoginPasswordDTO params);
+
+    /**
      * Unblocks the security code of given card
      */
     @AdminAction(@Permission(module = "adminMemberCards", operation = "unblockSecurityCode"))

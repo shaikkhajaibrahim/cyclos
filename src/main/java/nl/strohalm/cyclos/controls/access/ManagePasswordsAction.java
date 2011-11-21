@@ -83,6 +83,7 @@ public class ManagePasswordsAction extends BaseAction {
 
         boolean canChangePassword = false;
         boolean canResetPassword = false;
+        boolean canResetPasswordOnly = false;
         boolean canManageTransactionPassword = false;
 
         final boolean tpUsed = groupSettings.getTransactionPassword() != null && groupSettings.getTransactionPassword().isUsed();
@@ -92,6 +93,8 @@ public class ManagePasswordsAction extends BaseAction {
             canChangePassword = getPermissionService().checkPermission("adminMemberAccess", "changePassword");
             // Only can reset if send password by mail is enabled
             canResetPassword = sendPasswordByEmail && getPermissionService().checkPermission("adminMemberAccess", "resetPassword");
+            // Only can reset if send password by SMS is enabled
+            canResetPasswordOnly = getPermissionService().checkPermission("adminMemberAccess", "resetPassword");
             // Only can change TP if it is used
             canManageTransactionPassword = tpUsed && getPermissionService().checkPermission("adminMemberAccess", "transactionPassword");
         } else if (context.isMember()) {
@@ -115,6 +118,7 @@ public class ManagePasswordsAction extends BaseAction {
         request.setAttribute("ofOperator", user instanceof OperatorUser);
         request.setAttribute("user", user);
         request.setAttribute("canChangePassword", canChangePassword);
+        request.setAttribute("canResetPasswordOnly", canResetPasswordOnly);
         request.setAttribute("canResetPassword", canResetPassword);
         request.setAttribute("canManageTransactionPassword", canManageTransactionPassword);
         return context.getInputForward();

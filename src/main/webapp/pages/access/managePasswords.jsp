@@ -25,6 +25,24 @@
 	</c:if>
 </c:if>
 
+<c:if test="${canResetPasswordOnly}">
+	<script>
+		var resetConfirmation = "<cyclos:escapeJS><bean:message key="changePassword.resetAndSend.confirmation" /></cyclos:escapeJS>";
+	</script>
+	<ssl:form styleId="resetPasswordForm" action="${actionPrefix}/resetPassword" method="post">
+		<html:hidden property="userId" value="${user.id}" />
+		<table class="defaultTableContentHidden">
+			<tr>
+				<td align="right">
+					<span class="label"><bean:message key="changePassword.resetPassword" /></span>
+					<input type="submit" class="button" id="resetPasswordButton" value="<bean:message key="global.submit"/>"/>
+				</td>
+			</tr>
+	</table>
+	</ssl:form>
+</c:if>
+
+
 <c:if test="${canResetPassword}">
 	<script>
 		var resetConfirmation = "<cyclos:escapeJS><bean:message key="changePassword.resetAndSend.confirmation" /></cyclos:escapeJS>";

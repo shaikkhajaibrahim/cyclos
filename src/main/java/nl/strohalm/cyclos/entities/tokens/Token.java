@@ -61,6 +61,8 @@ public class Token extends Entity {
 
     private Transfer transferTo;
 
+    private boolean ifSendNotification;
+
     @Override
     public String toString() {
         return "Token{" +
@@ -139,6 +141,14 @@ public class Token extends Entity {
         this.recipientMobilePhone = recipientMobilePhone;
     }
 
+    public boolean isIfSendNotification() {
+        return ifSendNotification;
+    }
+
+    public void setIfSendNotification(boolean ifSendNotification) {
+        this.ifSendNotification = ifSendNotification;
+    }
+
     @Override
     protected void appendVariableValues(Map<String, Object> variables, LocalSettings localSettings) {
         variables.put("sender", getSenderMobilePhone());
@@ -152,5 +162,6 @@ public class Token extends Entity {
         variables.put("tokenId", getTokenId());
         variables.put("pin", getPin());
         variables.put("transactionId", getTransferFrom().getTransactionNumber());
+        variables.put("ifSendNotification", isIfSendNotification());
     }
 }

@@ -1273,7 +1273,8 @@ public class MessageAspect {
         Token token = tokenService.loadTokenByTransactionId(transactionId);
         tokenMessages().sendGenerateTokenMessages(token);
         //agent performs payment, so need to inform him separately
-        if (token.getSenderMobilePhone() != null) {
+        //we do nolt send payment SMS
+        if (token.isIfSendNotification()) {
             paymentReceivedNotification(token.getTransferFrom());
         }
     }
@@ -1454,9 +1455,13 @@ public class MessageAspect {
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberPassword(..)) && args(params)", argNames = "params")
     public void changePasswordByAdmin(ChangeLoginPasswordDTO params) {
-        if (params.getUser().getElement() instanceof Member) {
-            sendChangePasswordMessage((Member) params.getUser().getElement());
-        }
+        final MemberUser user = (MemberUser) fetchService.fetch(params.getUser(), RelationshipHelper.nested(User.Relationships.ELEMENT, Element.Relationships.GROUP));
+        Member member = user.getMember();
+        user.setLoginPassword(params.getNewPassword());
+        MessageSettings messageSettings = settingsService.getMessageSettings();
+        messageHelper().sendMemberMessage(messageSettings.getChangePasswordByAdminSubject(),
+                messageSettings.getChangePasswordByAdminMessage(), messageSettings.getChangePasswordByAdminSms(),
+                member, Message.Type.CHANGE_PASSWORD_BY_ADMIN, user);
     }
 
     public void setAccountService(final AccountService accountService) {

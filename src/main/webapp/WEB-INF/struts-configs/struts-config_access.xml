@@ -4,6 +4,7 @@
         <form-bean name="loginForm" type="nl.strohalm.cyclos.controls.access.LoginForm" />
         <form-bean name="changePasswordForm" type="nl.strohalm.cyclos.controls.access.ChangePasswordForm" />
         <form-bean name="resetAndSendPasswordForm" type="nl.strohalm.cyclos.controls.access.ResetAndSendPasswordForm" />
+        <form-bean name="resetPasswordForm" type="nl.strohalm.cyclos.controls.access.ResetPasswordForm" />
         <form-bean name="allowUserLoginForm" type="nl.strohalm.cyclos.controls.access.AllowUserLoginForm" />
         <form-bean name="disconnectUserForm" type="nl.strohalm.cyclos.controls.access.DisconnectUserForm" />
         <form-bean name="listConnectedUsersForm" type="nl.strohalm.cyclos.controls.access.ListConnectedUsersForm" />
@@ -115,7 +116,17 @@
 			<set-property property="secure" value="true" />
 			<forward name="success" redirect="true" path="/do/admin/managePasswords"/>
 		</action>
-	   	
+
+
+        <action
+            path="/admin/resetPassword"
+            type="nl.strohalm.cyclos.controls.access.ResetPasswordAction"
+            name="resetPasswordForm"
+            scope="request">
+            <set-property property="secure" value="true" />
+            <forward name="success" redirect="true" path="/do/admin/managePasswords"/>
+        </action>
+
 		<action 
 			path="/admin/allowUserLogin" 
 			type="nl.strohalm.cyclos.controls.access.AllowUserLoginAction"

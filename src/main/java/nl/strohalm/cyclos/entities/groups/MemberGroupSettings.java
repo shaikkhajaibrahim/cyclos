@@ -108,6 +108,7 @@ public class MemberGroupSettings extends DataObject {
 
     // Registration
     private boolean               sendPasswordByEmail        = true;
+    private boolean               sendPasswordBySms          = true;
 
     private TimePeriod            expireMembersAfter         = null;
 
@@ -262,6 +263,10 @@ public class MemberGroupSettings extends DataObject {
         return sendPasswordByEmail;
     }
 
+    public boolean isSendPasswordBySms() {
+        return sendPasswordBySms;
+    }
+
     public boolean isViewLoansByGroup() {
         return viewLoansByGroup;
     }
@@ -352,6 +357,10 @@ public class MemberGroupSettings extends DataObject {
 
     public void setSendPasswordByEmail(final boolean sendPasswordByMail) {
         sendPasswordByEmail = sendPasswordByMail;
+    }
+
+    public void setSendPasswordBySms(final boolean sendPasswordBySms) {
+        this.sendPasswordBySms = sendPasswordBySms;
     }
 
     public void setSmsAdditionalCharged(final int smsAdditionalCharged) {

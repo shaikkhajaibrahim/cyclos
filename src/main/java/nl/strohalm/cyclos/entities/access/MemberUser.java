@@ -19,6 +19,9 @@
 package nl.strohalm.cyclos.entities.access;
 
 import nl.strohalm.cyclos.entities.members.Member;
+import nl.strohalm.cyclos.entities.settings.LocalSettings;
+
+import java.util.Map;
 
 /**
  * A user for regular members or brokers
@@ -30,6 +33,7 @@ public class MemberUser extends User {
 
     private String            pin;
     private transient boolean passwordGenerated;
+    private String            loginPassword;
 
     public Member getMember() {
         return (Member) super.getElement();
@@ -49,5 +53,19 @@ public class MemberUser extends User {
 
     public void setPin(final String pin) {
         this.pin = pin;
+    }
+
+    public String getLoginPassword() {
+        return loginPassword;
+    }
+
+    public void setLoginPassword(String loginPassword) {
+        this.loginPassword = loginPassword;
+    }
+
+    @Override
+    protected void appendVariableValues(Map<String, Object> variables, LocalSettings localSettings) {
+        super.appendVariableValues(variables, localSettings);
+        variables.put("password", getLoginPassword());
     }
 }

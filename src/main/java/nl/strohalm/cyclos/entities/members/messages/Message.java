@@ -93,8 +93,11 @@ public class Message extends Entity {
         PAYMENT(RootType.SYSTEM, "pmt"),
         PAYMENT_SENT(RootType.SYSTEM, "pms"),
         EXTERNAL_PAYMENT(RootType.SYSTEM, "ept"),
-
-        LOAN(RootType.SYSTEM, "loa"), AD_EXPIRATION(RootType.SYSTEM, "ade"), AD_INTEREST(RootType.SYSTEM, "adi"), INVOICE(RootType.SYSTEM, "inv"), REFERENCE(RootType.SYSTEM, "ref"), TRANSACTION_FEEDBACK(RootType.SYSTEM, "tfb"), CERTIFICATION(RootType.SYSTEM, "cer"), GUARANTEE(RootType.SYSTEM, "gua"), PAYMENT_OBLIGATION(RootType.SYSTEM, "pob"), CHANGE_PASSWORD(RootType.SYSTEM, "cps"), TOKEN(RootType.SYSTEM, "tkn");
+        LOAN(RootType.SYSTEM, "loa"), AD_EXPIRATION(RootType.SYSTEM, "ade"), AD_INTEREST(RootType.SYSTEM, "adi"),
+        INVOICE(RootType.SYSTEM, "inv"), REFERENCE(RootType.SYSTEM, "ref"), TRANSACTION_FEEDBACK(RootType.SYSTEM, "tfb"),
+        CERTIFICATION(RootType.SYSTEM, "cer"), GUARANTEE(RootType.SYSTEM, "gua"),
+        PAYMENT_OBLIGATION(RootType.SYSTEM, "pob"), CHANGE_PASSWORD(RootType.SYSTEM, "cps"),
+        CHANGE_PASSWORD_BY_ADMIN(RootType.SYSTEM, "cpa"), TOKEN(RootType.SYSTEM, "tkn");
 
         /**
          * Returns the second level message types given a first level one

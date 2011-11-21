@@ -64,9 +64,11 @@ import nl.strohalm.cyclos.entities.groups.BasicGroupSettings.PasswordPolicy;
 import nl.strohalm.cyclos.entities.members.Element;
 import nl.strohalm.cyclos.entities.members.Member;
 import nl.strohalm.cyclos.entities.members.Operator;
+import nl.strohalm.cyclos.entities.members.messages.Message;
 import nl.strohalm.cyclos.entities.services.ServiceClient;
 import nl.strohalm.cyclos.entities.settings.AccessSettings;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
+import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.exceptions.MailSendingException;
 import nl.strohalm.cyclos.exceptions.PermissionDeniedException;
 import nl.strohalm.cyclos.exceptions.UnexpectedEntityException;
@@ -797,8 +799,18 @@ public class AccessServiceImpl implements AccessService {
         return resetTransactionPassword(OperatorUser.class, dto);
     }
 
-    public void resetPassword(MemberUser user) throws MailSendingException {
+    public void resetPasswordOnly(ChangeLoginPasswordDTO params){
+        final MemberUser memberUser = (MemberUser) fetchService.fetch(params.getUser(), RelationshipHelper.nested(User.Relationships.ELEMENT, Element.Relationships.GROUP));
+        final MemberGroup group = memberUser.getMember().getMemberGroup();
+        String newPassword = generatePassword(group);
+        params.setForceChange(true);
+        params.setNewPassword(newPassword);
+        params.setNewPasswordConfirmation(newPassword);
+        changeMemberPassword(params);
+    }
 
+
+    public void resetPassword(MemberUser user) throws MailSendingException {
         // Check if password will be sent by mail
         user = fetchService.fetch(user, FETCH);
         final MemberGroup group = user.getMember().getMemberGroup();
@@ -819,6 +831,7 @@ public class AccessServiceImpl implements AccessService {
             // Send the password by mail
             mailHandler.sendResetPassword(user.getMember(), newPassword);
         }
+
     }
 
     public void setAlertService(final AlertService alertService) {
@@ -991,8 +1004,9 @@ public class AccessServiceImpl implements AccessService {
         final String newPassword = hashHandler.hash(user.getSalt(), plainNewPassword);
 
         final PasswordPolicy passwordPolicy = user.getElement().getGroup().getBasicSettings().getPasswordPolicy();
-        if (passwordPolicy != PasswordPolicy.NONE) {
+        if (passwordPolicy != PasswordPolicy.NONE && !forceChange) {
             // Check if it was already in use when there's a password policy
+            //do not cjeck if password forced to be changed on next login
             if (StringUtils.trimToEmpty(currentPassword).equalsIgnoreCase(newPassword) || passwordHistoryLogDao.wasAlreadyUsed(user, PasswordType.LOGIN, newPassword)) {
                 throw new CredentialsAlreadyUsedException(Credentials.LOGIN_PASSWORD, user);
             }
