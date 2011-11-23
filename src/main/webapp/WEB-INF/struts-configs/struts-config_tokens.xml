@@ -30,8 +30,9 @@
         <form-bean name="senderTokenRedemptionForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
         <form-bean name="refundTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
         <form-bean name="refundTokenConfirmForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
-
-    </form-beans>
+        <form-bean name="resetPinTokenForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
+        <form-bean name="resetPinTokenConfirmForm" type="nl.strohalm.cyclos.controls.tokens.BaseTokenForm"/>
+      </form-beans>
 
     <action-mappings type="org.apache.struts.config.SecureActionConfig">
 
@@ -125,6 +126,26 @@
 
             <set-property property="secure" value="true"/>
             <forward name="success" path="/do/member/listTokens" redirect="true"/>
+        </action>
+
+        <action
+                path="/admin/resetPinToken"
+                type="nl.strohalm.cyclos.controls.tokens.ResetPinTokenAction"
+                name="resetPinTokenForm"
+                scope="request"
+                input="admin/_resetPinToken">
+
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/admin/confirmResetPinToken" redirect="true"/>
+        </action>
+        <action
+                path="/admin/confirmResetPinToken"
+                type="nl.strohalm.cyclos.controls.tokens.ConfirmResetPinTokenAction"
+                name="resetPinTokenForm"
+                scope="request"
+                input="admin/_confirmResetPinToken">
+            <set-property property="secure" value="true"/>
+            <forward name="success" path="/do/admin/resetPinToken" redirect="true"/>
         </action>
 
     </action-mappings>

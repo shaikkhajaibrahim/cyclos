@@ -87,6 +87,7 @@ import nl.strohalm.cyclos.services.preferences.MessageChannel;
 import nl.strohalm.cyclos.services.preferences.PreferenceService;
 import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.tokens.GenerateTokenDTO;
+import nl.strohalm.cyclos.services.tokens.ResetPinTokenData;
 import nl.strohalm.cyclos.services.tokens.SenderRedeemTokenData;
 import nl.strohalm.cyclos.services.tokens.TokenService;
 import nl.strohalm.cyclos.services.transactions.DoExternalPaymentDTO;
@@ -1289,6 +1290,12 @@ public class MessageAspect {
         sendRefundTokenMessage(senderRedeemTokenData);
     }
 
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.tokens.TokenService.resetPinToken(..)) && args(resetPinTokenData)", argNames = "resetPinTokenData")
+    public void tokenPinResetByAdmin(ResetPinTokenData resetPinTokenData) {
+        Token token = tokenService.loadTokenByTransactionId(resetPinTokenData.getTransactionId());
+        tokenMessages().sendResetPinTokenMessages(token);
+    }
+
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.tokens.TokenService.refundToken(..)) && args(member, senderRedeemTokenData)", argNames = "member, senderRedeemTokenData")
     public void tokenRefunded(Member member, SenderRedeemTokenData senderRedeemTokenData) {
         sendRefundTokenMessage(senderRedeemTokenData);
@@ -1451,6 +1458,11 @@ public class MessageAspect {
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberCredentialsByWebService(..)) && args(memberUser, client, newCredentials)", argNames = "memberUser, client, newCredentials")
     public void changePasswordByWebService(MemberUser memberUser, ServiceClient client, String newCredentials) {
         sendChangePasswordMessage(memberUser.getMember());
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.resetPasswordOnly(..)) && args(params)", argNames = "params")
+    public void resetPasswordByAdmin(ChangeLoginPasswordDTO params) {
+        changePasswordByAdmin(params);
     }
 
     @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.changeMemberPassword(..)) && args(params)", argNames = "params")

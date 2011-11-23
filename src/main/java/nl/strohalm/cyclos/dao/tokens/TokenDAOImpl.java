@@ -27,6 +27,7 @@ import nl.strohalm.cyclos.dao.tokens.exceptions.TokenNotFoundException;
 import nl.strohalm.cyclos.entities.Relationship;
 import nl.strohalm.cyclos.entities.tokens.Status;
 import nl.strohalm.cyclos.entities.tokens.Token;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -44,6 +45,7 @@ public class TokenDAOImpl extends BaseDAOImpl<Token> implements TokenDAO {
         }
         return getFetchDao().fetch(token.get(0), relationship);
     }
+
 
     @Override
     public Token loadByTransactionId(String transactionId) {

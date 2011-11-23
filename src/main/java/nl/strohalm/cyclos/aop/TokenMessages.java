@@ -61,6 +61,10 @@ public class TokenMessages {
         sendTokenIdBySms(token);
     }
 
+    void sendResetPinTokenMessages(Token token){
+        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getResetTokenPinGeneratedSms(), true);
+    }
+
     private void sendPinBySms(Token token) {
 //1. BlueCash Voucher sent to 234XXXXXXXXXX. Transaction ID: XXXXXXXXXXXX, Amount: NX,XXX.XX Please send Voucher PIN XXXX to Recipient. Your balance is NX,XXX.XX
         //TODO: separate handling for user

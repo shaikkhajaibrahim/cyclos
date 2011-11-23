@@ -40,6 +40,8 @@ public interface TokenService extends Service {
 
     void senderRedeemToken(Member member, SenderRedeemTokenData senderRedeemTokenData);
 
+    void resetPinToken(ResetPinTokenData resetPinTokenData);
+
    // @SystemAction
     void processExpiredTokens(Calendar time);
 
@@ -51,4 +53,6 @@ public interface TokenService extends Service {
 
    // @BrokerAction
     void refundToken(Member member, SenderRedeemTokenData senderRedeemTokenData);
+
+
 }

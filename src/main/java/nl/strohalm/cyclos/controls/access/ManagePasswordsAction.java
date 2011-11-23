@@ -82,6 +82,7 @@ public class ManagePasswordsAction extends BaseAction {
         }
 
         boolean canChangePassword = false;
+        boolean canChangePasswordManually = false;
         boolean canResetPassword = false;
         boolean canResetPasswordOnly = false;
         boolean canManageTransactionPassword = false;
@@ -91,6 +92,8 @@ public class ManagePasswordsAction extends BaseAction {
         // Determine which the actions can be performed
         if (context.isAdmin()) {
             canChangePassword = getPermissionService().checkPermission("adminMemberAccess", "changePassword");
+            // If can change password manually in form - subpermission for changePassword
+            canChangePasswordManually = getPermissionService().checkPermission("adminMemberAccess", "changePasswordManually");
             // Only can reset if send password by mail is enabled
             canResetPassword = sendPasswordByEmail && getPermissionService().checkPermission("adminMemberAccess", "resetPassword");
             // Only can reset if send password by SMS is enabled
@@ -118,6 +121,7 @@ public class ManagePasswordsAction extends BaseAction {
         request.setAttribute("ofOperator", user instanceof OperatorUser);
         request.setAttribute("user", user);
         request.setAttribute("canChangePassword", canChangePassword);
+        request.setAttribute("canChangePasswordManually", canChangePasswordManually);
         request.setAttribute("canResetPasswordOnly", canResetPasswordOnly);
         request.setAttribute("canResetPassword", canResetPassword);
         request.setAttribute("canManageTransactionPassword", canManageTransactionPassword);

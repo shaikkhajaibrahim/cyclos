@@ -38,6 +38,7 @@ import nl.strohalm.cyclos.services.settings.SettingsService;
 import nl.strohalm.cyclos.services.tokens.exceptions.BadStatusForRedeem;
 import nl.strohalm.cyclos.services.tokens.exceptions.InvalidPinException;
 import nl.strohalm.cyclos.services.tokens.exceptions.RefundNonExpiredToken;
+import nl.strohalm.cyclos.services.tokens.exceptions.WrongTokenStateForPinReset;
 import nl.strohalm.cyclos.services.transactions.PaymentService;
 import nl.strohalm.cyclos.services.transactions.TransactionContext;
 import nl.strohalm.cyclos.services.transactions.TransferDTO;
@@ -129,11 +130,21 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public void senderRedeemToken(Member member, SenderRedeemTokenData senderRedeemTokenData) {
-        Token token = tokenDao.loadByTransactionId(senderRedeemTokenData.getTransactionId());
+        Token token = loadTokenByTransactionId(senderRedeemTokenData.getTransactionId());
         validatePin(token, senderRedeemTokenData.getPin());
         Long tokenTypeId = senderRedeemTokenData.getTransferTypeId();
         token.setTransferTo(redeemToken(token, tokenTypeId, member, Status.ISSUED, Status.SENDER_REMITTED));
         token.setStatus(Status.SENDER_REMITTED);
+        tokenDao.update(token);
+    }
+
+    @Override
+    public void resetPinToken(ResetPinTokenData resetPinTokenData) {
+        Token token = loadTokenByTransactionId(resetPinTokenData.getTransactionId());
+        if(token.getStatus() != Status.ISSUED){
+           throw new WrongTokenStateForPinReset();
+        }
+        token.setPin(randomNumber(4));
         tokenDao.update(token);
     }
 
@@ -176,7 +187,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public void refundToken(Member member, SenderRedeemTokenData senderRedeemTokenData) {
-        Token token = tokenDao.loadByTransactionId(senderRedeemTokenData.getTransactionId());
+        Token token = loadTokenByTransactionId(senderRedeemTokenData.getTransactionId());
         validatePin(token, senderRedeemTokenData.getPin());
         if (token.getStatus() != Status.EXPIRED) {
             throw new RefundNonExpiredToken();
@@ -204,9 +215,15 @@ public class TokenServiceImpl implements TokenService {
         return randomNumber(12);
     }
 
+
+    public String padTransactionId(String transactionId){
+        return "0000000".substring(transactionId.length()) + transactionId;
+    }
+
     @Override
     public Token loadTokenByTransactionId(String tokenId) {
-        return tokenDao.loadByTransactionId(tokenId);
+        String paddedTransactionId = padTransactionId(tokenId);
+        return tokenDao.loadByTransactionId(paddedTransactionId);
     }
 
     private String randomNumber(int length) {

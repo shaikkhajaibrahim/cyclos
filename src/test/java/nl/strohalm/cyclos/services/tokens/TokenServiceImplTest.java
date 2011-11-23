@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TokenServiceImplTest {
@@ -33,6 +34,19 @@ public class TokenServiceImplTest {
     public void shouldGenerateUserName() {
         String tokenId = new TokenServiceImpl().generateTokenID();
         assertTrue(Pattern.matches("\\d{12}", tokenId));
+    }
+
+
+    @Test
+    public void shouldPadTransactionId() {
+        String trId = "1234";
+        assertEquals("0001234", new TokenServiceImpl().padTransactionId(trId));
+    }
+
+    @Test
+    public void shouldNotPadTransactionId() {
+        String trId = "1234567";
+        assertEquals("1234567", new TokenServiceImpl().padTransactionId(trId));
     }
 
 }

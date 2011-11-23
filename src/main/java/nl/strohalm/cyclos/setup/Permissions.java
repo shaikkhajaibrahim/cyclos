@@ -73,7 +73,7 @@ public class Permissions {
         buildModule(modules, Module.Type.ADMIN_SYSTEM, "systemInfoTexts", "manage", "view");
 
         buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMembers", "view", "register", "managePending", "changeProfile", "changeName", "changeUsername", "remove", "changeGroup", "import");
-        buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberAccess", "changePassword", "resetPassword", "transactionPassword", "disconnect", "disconnectOperator", "enableLogin", "changePin", "unblockPin", "changeChannelsAccess");
+        buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberAccess", "changePassword", "resetPassword", "changePasswordManually", "transactionPassword", "disconnect", "disconnectOperator", "enableLogin", "changePin", "unblockPin", "changeChannelsAccess");
         buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberBrokerings", "changeBroker", "viewMembers", "viewLoans", "manageCommissions");
         buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberAccounts", "information", "authorizedInformation", "scheduledInformation"
                 //

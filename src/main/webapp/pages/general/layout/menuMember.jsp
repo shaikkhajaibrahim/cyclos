@@ -67,10 +67,9 @@
 	<cyclos:menu key="menu.member.tokens">
 		<cyclos:menu url="/do/member/listTokens" key="menu.member.tokens.list" />
 		<c:if test="${isBroker}">
-			<cyclos:menu url="/do/member/redeemToken" key="menu.member.tokens.redeem" />
+		    <cyclos:menu url="/do/member/redeemToken" key="menu.member.tokens.redeem" />
             <cyclos:menu url="/do/member/refundToken" key="menu.member.tokens.refund" />
             <cyclos:menu url="/do/member/senderTokenRedemption" key="menu.member.tokens.senderTokenRedemption" />
-
 		</c:if>
 	</cyclos:menu>
 

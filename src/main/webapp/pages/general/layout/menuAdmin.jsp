@@ -37,6 +37,11 @@
 	<cyclos:menu url="/do/admin/searchLoans" key="menu.admin.accounts.loans" module="adminMemberLoans" operation="view" />
 	<cyclos:menu url="/do/admin/searchLoanPayments" key="menu.admin.accounts.loanPayments" module="adminMemberLoans" operation="view" />
 </cyclos:menu>
+
+<cyclos:menu key="menu.member.tokens">
+	<cyclos:menu url="/do/admin/resetPinToken" key="menu.admin.tokens.resetPin" />
+</cyclos:menu>
+
 <cyclos:menu key="menu.admin.bookkeeping">
 	<cyclos:menu url="/do/admin/listExternalAccounts" key="menu.admin.bookkeeping.accounts" module="systemExternalAccounts" operation="view" />
 	<cyclos:menu url="/do/admin/overviewExternalAccounts" key="menu.admin.bookkeeping.overview" module="systemExternalAccounts" operation="details" />	

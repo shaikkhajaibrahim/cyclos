@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
  * @author luis
  */
 public class MessageSettings extends DataObject {
+
     public enum MessageSettingsCategoryEnum {
         GENERAL, MEMBER, ADMIN;
     }
@@ -374,6 +375,8 @@ public class MessageSettings extends DataObject {
 
 
         TOKEN_PIN_GENERATED_SMS(MessageSettingsCategoryEnum.GENERAL, "PIN #pin# was generated for token #transactionId# for #recipient#"),
+
+        TOKEN_RESET_PIN_GENERATED_SMS(MessageSettingsCategoryEnum.GENERAL, "New PIN #pin# was re-generated for token #transactionId# for #recipient#"),
 
         TOKEN_SMS_FAILED(MessageSettingsCategoryEnum.MEMBER,
                         "Voucher not delivered", "Sorry, the voucher you sent have not been delivered"),
@@ -748,6 +751,7 @@ public class MessageSettings extends DataObject {
     private String            tokenRedeemedRecipientSms                           = MessageSettingsEnum.TOKEN_REDEEMED_RECIPIENT_SMS.defaultMessage();
 
     private String            tokenPinGeneratedSms                                = MessageSettingsEnum.TOKEN_PIN_GENERATED_SMS.defaultMessage();
+    private String            resetTokenPinGeneratedSms                           = MessageSettingsEnum.TOKEN_RESET_PIN_GENERATED_SMS.defaultMessage();
 
     private String            tokenSmsFailedSubject                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultSubject();
     private String            tokenSmsFailedMessage                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultMessage();
@@ -1500,6 +1504,10 @@ public class MessageSettings extends DataObject {
 
     public String getTransactionFeedbackRequestSubject() {
         return transactionFeedbackRequestSubject;
+    }
+
+    public String getResetTokenPinGeneratedSms() {
+        return resetTokenPinGeneratedSms;
     }
 
     public void setAccountFeeReceivedMessage(final String accountFeeReceivedMessage) {
@@ -2396,5 +2404,9 @@ public class MessageSettings extends DataObject {
 
     public void setChangePasswordByAdminSms(String changePasswordByAdminSms) {
         this.changePasswordByAdminSms = changePasswordByAdminSms;
+    }
+
+    public void setResetTokenPinGeneratedSms(String resetTokenPinGeneratedSms) {
+        this.resetTokenPinGeneratedSms = resetTokenPinGeneratedSms;
     }
 }

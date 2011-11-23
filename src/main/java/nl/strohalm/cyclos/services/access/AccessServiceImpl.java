@@ -997,7 +997,7 @@ public class AccessServiceImpl implements AccessService {
 
         final String currentPassword = user.getPassword();
         final String hashedOldPassword = hashHandler.hash(user.getSalt(), oldPassword);
-        if (StringUtils.isNotEmpty(oldPassword) && !hashedOldPassword.equalsIgnoreCase(currentPassword)) {
+        if (!forceChange && StringUtils.isNotEmpty(oldPassword) && !hashedOldPassword.equalsIgnoreCase(currentPassword)) {
             throw new InvalidCredentialsException(Credentials.LOGIN_PASSWORD, user);
         }
 
@@ -1013,7 +1013,9 @@ public class AccessServiceImpl implements AccessService {
         }
 
         // Ensure the login password is not equals to the pin or transaction password
-        if (newPassword.equalsIgnoreCase(user.getTransactionPassword()) || (user instanceof MemberUser && newPassword.equalsIgnoreCase(((MemberUser) user).getPin()))) {
+        if (!forceChange &&
+                (newPassword.equalsIgnoreCase(user.getTransactionPassword()) ||
+                        (user instanceof MemberUser && newPassword.equalsIgnoreCase(((MemberUser) user).getPin())))) {
             throw new ValidationException("changePassword.error.sameAsTransactionPasswordOrPin");
         }
 
@@ -1042,6 +1044,7 @@ public class AccessServiceImpl implements AccessService {
     }
 
     private User changePassword(User user, final String plainPassword, final boolean forceChange) {
+
         // Before changing, ensure that the new password is valid
         final ValidationError validationResult = new LoginPasswordValidation(user.getElement()).validate(user, "password", plainPassword);
         if (validationResult != null) {
@@ -1053,7 +1056,8 @@ public class AccessServiceImpl implements AccessService {
         final String currentPassword = user.getPassword();
 
         final PasswordPolicy passwordPolicy = user.getElement().getGroup().getBasicSettings().getPasswordPolicy();
-        if (passwordPolicy != null && passwordPolicy != PasswordPolicy.NONE) {
+        if (!forceChange &&
+            passwordPolicy != null && passwordPolicy != PasswordPolicy.NONE) {
             // Check if it was already in use when there's a password policy
             if (StringUtils.trimToEmpty(currentPassword).equalsIgnoreCase(password) || passwordHistoryLogDao.wasAlreadyUsed(user, PasswordType.LOGIN, password)) {
                 throw new CredentialsAlreadyUsedException(Credentials.LOGIN_PASSWORD, user);
@@ -1062,7 +1066,7 @@ public class AccessServiceImpl implements AccessService {
 
         // Ensure the login password is not equals to the pin or transaction password
         final String pin = user instanceof MemberUser ? ((MemberUser) user).getPin() : null;
-        if (password.equalsIgnoreCase(pin) || password.equalsIgnoreCase(user.getTransactionPassword())) {
+        if (!forceChange && (password.equalsIgnoreCase(pin) || password.equalsIgnoreCase(user.getTransactionPassword()))) {
             throw new ValidationException("changePassword.error.sameAsTransactionPasswordOrPin");
         }
 

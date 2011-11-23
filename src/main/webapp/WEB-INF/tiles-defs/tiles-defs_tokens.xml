@@ -54,4 +54,11 @@
     <definition name="member/_refundTokenConfirm" extends=".memberLayout">
 		<put name="body" value="/pages/tokens/refundTokenConfirm.jsp"/>
 	</definition>
+    <definition name="admin/_resetPinToken" extends=".adminLayout">
+		<put name="body" value="/pages/tokens/resetPinToken.jsp"/>
+	</definition>
+    <definition name="admin/_confirmResetPinToken" extends=".adminLayout">
+		<put name="body" value="/pages/tokens/confirmResetPinToken.jsp"/>
+	</definition>
+
 </tiles-definitions>
