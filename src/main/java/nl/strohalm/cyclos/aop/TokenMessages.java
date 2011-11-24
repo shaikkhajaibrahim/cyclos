@@ -51,8 +51,8 @@ public class TokenMessages {
     }
 
     void sendRedeemTokenMessages(Member member, Token token) {
-        messageHelper.sendMemberMessage(messageSettings().getTokenRedemptionSubject(), messageSettings().getTokenRedemptionMessage(),
-                messageSettings().getTokenRedemptionSms(), member, Message.Type.TOKEN, token, accountService.getStatus(new GetTransactionsDTO(token.getTransferFrom().getFrom())));
+//        messageHelper.sendMemberMessage(messageSettings().getTokenRedemptionSubject(), messageSettings().getTokenRedemptionMessage(),
+//        messageSettings().getTokenRedemptionSms(), member, Message.Type.TOKEN, token, accountService.getStatus(new GetTransactionsDTO(token.getTransferFrom().getFrom())));
         sendSms(token.getRecipientMobilePhone(), token, messageSettings().getTokenRedeemedRecipientSms(), false);
     }
 
@@ -62,7 +62,7 @@ public class TokenMessages {
     }
 
     void sendResetPinTokenMessages(Token token){
-        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getResetTokenPinGeneratedSms(), true);
+        sendSms(token.getSenderMobilePhone(), token, getMessageSettings().getTokenResetPinGeneratedSms(), true);
     }
 
     private void sendPinBySms(Token token) {

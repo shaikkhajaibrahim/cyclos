@@ -484,13 +484,15 @@ public class LocalSettings extends DataObject {
     private int                                           tokenExpirationInDays;
     private Long                                          memberTokenGenerationTransferType;
     private Long                                          brokerTokenGenerationTransferType;
-    private Long                                          redeemTokenTransferType;
+    private Long                                          brokerRedeemTokenTransferType;
+    private Long                                          memberRedeemTokenTransferType;
     private Long                                          memberSenderTokenRedemptionTransferType;
     private Long                                          brokerSenderTokenRedemptionTransferType;
     private Long                                          refundTokenTransferType;
     private Long                                          expireTokenTransferType;
     public static final String[] TOKEN_TRANSFER_TYPE_SETTINGS = new String[]{"memberTokenGenerationTransferType","brokerTokenGenerationTransferType",
-                    "redeemTokenTransferType",
+                    "memberRedeemTokenTransferType",
+                    "brokerRedeemTokenTransferType",
                     "memberSenderTokenRedemptionTransferType",
                     "brokerSenderTokenRedemptionTransferType",
                     "refundTokenTransferType",
@@ -1137,12 +1139,12 @@ public class LocalSettings extends DataObject {
         this.brokerTokenGenerationTransferType = brokerTokenGenerationTransferType;
     }
 
-    public Long getRedeemTokenTransferType() {
-        return redeemTokenTransferType;
+    public Long getBrokerRedeemTokenTransferType() {
+        return brokerRedeemTokenTransferType;
     }
 
-    public void setRedeemTokenTransferType(Long redeemTokenTransferType) {
-        this.redeemTokenTransferType = redeemTokenTransferType;
+    public void setBrokerRedeemTokenTransferType(Long brokerRedeemTokenTransferType) {
+        this.brokerRedeemTokenTransferType = brokerRedeemTokenTransferType;
     }
 
     public Long getMemberSenderTokenRedemptionTransferType() {
@@ -1175,5 +1177,13 @@ public class LocalSettings extends DataObject {
 
     public void setExpireTokenTransferType(Long expireTokenTransferType) {
         this.expireTokenTransferType = expireTokenTransferType;
+    }
+
+    public Long getMemberRedeemTokenTransferType() {
+        return memberRedeemTokenTransferType;
+    }
+
+    public void setMemberRedeemTokenTransferType(Long memberRedeemTokenTransferType) {
+        this.memberRedeemTokenTransferType = memberRedeemTokenTransferType;
     }
 }

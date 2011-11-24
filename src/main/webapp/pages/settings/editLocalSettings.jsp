@@ -419,9 +419,19 @@
                             </td>
                         </tr>
                        <tr>
-                            <td class="label"><bean:message key="settings.local.tokens.redeemTokenTransferType"/></td>
+                            <td class="label"><bean:message key="settings.local.tokens.memberRedeemTokenTransferType"/></td>
                             <td>
-                            <html:select property="setting(redeemTokenTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                            <html:select property="setting(memberRedeemTokenTransferType)" styleClass="InputBoxDisabled" disabled="true">
+                                <c:forEach var="transferType" items="${transferTypes}">
+                                    <html:option value="${transferType.id}">${transferType.name}</html:option>
+                                </c:forEach>
+                            </html:select>
+                            </td>
+                       </tr>
+                       <tr>
+                            <td class="label"><bean:message key="settings.local.tokens.brokerRedeemTokenTransferType"/></td>
+                            <td>
+                            <html:select property="setting(brokerRedeemTokenTransferType)" styleClass="InputBoxDisabled" disabled="true">
                                 <c:forEach var="transferType" items="${transferTypes}">
                                     <html:option value="${transferType.id}">${transferType.name}</html:option>
                                 </c:forEach>

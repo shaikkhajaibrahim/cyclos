@@ -751,7 +751,7 @@ public class MessageSettings extends DataObject {
     private String            tokenRedeemedRecipientSms                           = MessageSettingsEnum.TOKEN_REDEEMED_RECIPIENT_SMS.defaultMessage();
 
     private String            tokenPinGeneratedSms                                = MessageSettingsEnum.TOKEN_PIN_GENERATED_SMS.defaultMessage();
-    private String            resetTokenPinGeneratedSms                           = MessageSettingsEnum.TOKEN_RESET_PIN_GENERATED_SMS.defaultMessage();
+    private String            tokenResetPinGeneratedSms                           = MessageSettingsEnum.TOKEN_RESET_PIN_GENERATED_SMS.defaultMessage();
 
     private String            tokenSmsFailedSubject                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultSubject();
     private String            tokenSmsFailedMessage                               = MessageSettingsEnum.TOKEN_SMS_FAILED.defaultMessage();
@@ -1506,8 +1506,8 @@ public class MessageSettings extends DataObject {
         return transactionFeedbackRequestSubject;
     }
 
-    public String getResetTokenPinGeneratedSms() {
-        return resetTokenPinGeneratedSms;
+    public String getTokenResetPinGeneratedSms() {
+        return tokenResetPinGeneratedSms;
     }
 
     public void setAccountFeeReceivedMessage(final String accountFeeReceivedMessage) {
@@ -2406,7 +2406,7 @@ public class MessageSettings extends DataObject {
         this.changePasswordByAdminSms = changePasswordByAdminSms;
     }
 
-    public void setResetTokenPinGeneratedSms(String resetTokenPinGeneratedSms) {
-        this.resetTokenPinGeneratedSms = resetTokenPinGeneratedSms;
+    public void setTokenResetPinGeneratedSms(String tokenResetPinGeneratedSms) {
+        this.tokenResetPinGeneratedSms = tokenResetPinGeneratedSms;
     }
 }
