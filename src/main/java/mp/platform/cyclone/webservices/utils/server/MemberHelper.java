@@ -77,6 +77,7 @@ public class MemberHelper {
     private GroupService       groupService;
     private ChannelHelper      channelHelper;
     private AccessService      accessService;
+    private static final String FORCED_PIN_CHANGE = "forcePinChange";
 
     /**
      * Throws an invalid-channel fault if the current client's channel is not enabled for the given member
@@ -374,6 +375,11 @@ public class MemberHelper {
         } else {
             final List<FieldValueVO> empty = Collections.emptyList();
             vo.setFields(empty);
+        }
+        //small hook: add information about enforcement to change PIN
+        if(member.getUser().getPasswordDate() == null){
+            FieldValueVO forcePinChange = new FieldValueVO(FORCED_PIN_CHANGE, Boolean.TRUE.toString());
+            vo.getFields().add(forcePinChange);
         }
         if (useImages) {
             vo.setImages(imageHelper.toVOs(member.getImages()));
