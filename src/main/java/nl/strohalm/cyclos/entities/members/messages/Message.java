@@ -97,7 +97,8 @@ public class Message extends Entity {
         INVOICE(RootType.SYSTEM, "inv"), REFERENCE(RootType.SYSTEM, "ref"), TRANSACTION_FEEDBACK(RootType.SYSTEM, "tfb"),
         CERTIFICATION(RootType.SYSTEM, "cer"), GUARANTEE(RootType.SYSTEM, "gua"),
         PAYMENT_OBLIGATION(RootType.SYSTEM, "pob"), CHANGE_PASSWORD(RootType.SYSTEM, "cps"),
-        CHANGE_PASSWORD_BY_ADMIN(RootType.SYSTEM, "cpa"), TOKEN(RootType.SYSTEM, "tkn");
+        CHANGE_PASSWORD_BY_ADMIN(RootType.SYSTEM, "cpa"), TOKEN(RootType.SYSTEM, "tkn"),
+        RESET_TRANSACTION_PASSWORD_BY_ADMIN(RootType.SYSTEM, "rtp");
 
         /**
          * Returns the second level message types given a first level one

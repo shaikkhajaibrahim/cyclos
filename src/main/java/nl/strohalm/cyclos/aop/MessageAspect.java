@@ -68,6 +68,7 @@ import nl.strohalm.cyclos.entities.services.ServiceClient;
 import nl.strohalm.cyclos.entities.settings.LocalSettings;
 import nl.strohalm.cyclos.entities.settings.MessageSettings;
 import nl.strohalm.cyclos.entities.tokens.Token;
+import nl.strohalm.cyclos.exceptions.UnexpectedEntityException;
 import nl.strohalm.cyclos.services.access.ChangeLoginPasswordDTO;
 import nl.strohalm.cyclos.services.access.ChannelService;
 import nl.strohalm.cyclos.services.access.exceptions.BlockedCredentialsException;
@@ -76,11 +77,7 @@ import nl.strohalm.cyclos.services.accounts.GetTransactionsDTO;
 import nl.strohalm.cyclos.services.accounts.guarantees.CertificationService;
 import nl.strohalm.cyclos.services.accounts.guarantees.PaymentObligationService;
 import nl.strohalm.cyclos.services.accounts.pos.exceptions.PosPinBlockedException;
-import nl.strohalm.cyclos.services.elements.BrokeringService;
-import nl.strohalm.cyclos.services.elements.ChangeBrokerDTO;
-import nl.strohalm.cyclos.services.elements.ElementService;
-import nl.strohalm.cyclos.services.elements.MessageService;
-import nl.strohalm.cyclos.services.elements.SendMessageFromSystemDTO;
+import nl.strohalm.cyclos.services.elements.*;
 import nl.strohalm.cyclos.services.fetch.FetchService;
 import nl.strohalm.cyclos.services.groups.GroupService;
 import nl.strohalm.cyclos.services.preferences.MessageChannel;
@@ -1304,6 +1301,33 @@ public class MessageAspect {
     private void sendRefundTokenMessage(SenderRedeemTokenData senderRedeemTokenData) {
         Token token = tokenService.loadTokenByTransactionId(senderRedeemTokenData.getTransactionId());
         paymentReceivedNotification(token.getTransferTo());
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.resetMemberTransactionPassword(..)) && args(dto)", argNames = "dto")
+    public void memberTransactionPasswordResetByAdmin(ResetTransactionPasswordDTO dto) {
+        transactionPasswordResetByAdmin(dto);
+    }
+
+    @AfterReturning(pointcut = "execution(* nl.strohalm.cyclos.services.access.AccessService.resetAdminTransactionPassword(..)) && args(dto)", argNames = "dto")
+    public void adminTransactionPasswordResetByAdmin(ResetTransactionPasswordDTO dto) {
+        transactionPasswordResetByAdmin(dto);
+    }
+
+    public void transactionPasswordResetByAdmin(ResetTransactionPasswordDTO dto) {
+        //send message when reset but not blocked
+        if(dto.isAllowGeneration()){
+            User user = dto.getUser();
+            MessageSettings messageSettings = settingsService.getMessageSettings();
+
+            final MemberUser memberUser = (MemberUser) fetchService.fetch(user, RelationshipHelper.nested(User.Relationships.ELEMENT, Element.Relationships.GROUP));
+            Member member = memberUser.getMember();
+
+            messageHelper().sendMemberMessage(messageSettings.getResetTransactionPasswordByAdminSubject(),
+                                messageSettings.getResetTransactionPasswordByAdminMessage(),
+                                messageSettings.getResetTransactionPasswordByAdminSms(),
+                                member,
+                                Message.Type.RESET_TRANSACTION_PASSWORD_BY_ADMIN);
+        }
     }
 
     @AfterReturning(pointcut = "(execution(* nl.strohalm.cyclos.services.transactions.InvoiceService.send*(..)) && args(invoice))", argNames = "invoice")

@@ -390,8 +390,11 @@ public class MessageSettings extends DataObject {
 
         CHANGE_PASSWORD_BY_ADMIN(MessageSettingsCategoryEnum.MEMBER, "Changed password by admin",
                 "Your new password is #password#. Please note that you will be required to change your password on next logon.",
-                "Your new password is #password#. Please note that you will be required to change your password on next logon.")
-        ;
+                "Your new password is #password#. Please note that you will be required to change your password on next logon."),
+
+        RESET_TRANSACTION_PASSWORD_BY_ADMIN(MessageSettingsCategoryEnum.MEMBER, "Transaction password reset by administrator",
+                "Your new transaction password has been reset by administrator. Please login to Bluecash system in order to generate new transaction password.",
+                "Your new transaction password has been reset by administrator.");
 
         private String                      defaultSubject;
         private String                      defaultMessage;
@@ -769,6 +772,9 @@ public class MessageSettings extends DataObject {
     private String            changePasswordByAdminMessage                        = MessageSettingsEnum.CHANGE_PASSWORD_BY_ADMIN.defaultMessage();
     private String            changePasswordByAdminSms                            = MessageSettingsEnum.CHANGE_PASSWORD_BY_ADMIN.defaultSms();
 
+    private String            resetTransactionPasswordByAdminSubject              = MessageSettingsEnum.RESET_TRANSACTION_PASSWORD_BY_ADMIN.defaultSubject();
+    private String            resetTransactionPasswordByAdminMessage              = MessageSettingsEnum.RESET_TRANSACTION_PASSWORD_BY_ADMIN.defaultMessage();
+    private String            resetTransactionPasswordByAdminSms                  = MessageSettingsEnum.RESET_TRANSACTION_PASSWORD_BY_ADMIN.defaultSms();
 
     public String getAccountFeeReceivedMessage() {
         return accountFeeReceivedMessage;
@@ -2408,5 +2414,29 @@ public class MessageSettings extends DataObject {
 
     public void setTokenResetPinGeneratedSms(String tokenResetPinGeneratedSms) {
         this.tokenResetPinGeneratedSms = tokenResetPinGeneratedSms;
+    }
+
+    public String getResetTransactionPasswordByAdminSubject() {
+        return resetTransactionPasswordByAdminSubject;
+    }
+
+    public void setResetTransactionPasswordByAdminSubject(String resetTransactionPasswordByAdminSubject) {
+        this.resetTransactionPasswordByAdminSubject = resetTransactionPasswordByAdminSubject;
+    }
+
+    public String getResetTransactionPasswordByAdminMessage() {
+        return resetTransactionPasswordByAdminMessage;
+    }
+
+    public void setResetTransactionPasswordByAdminMessage(String resetTransactionPasswordByAdminMessage) {
+        this.resetTransactionPasswordByAdminMessage = resetTransactionPasswordByAdminMessage;
+    }
+
+    public String getResetTransactionPasswordByAdminSms() {
+        return resetTransactionPasswordByAdminSms;
+    }
+
+    public void setResetTransactionPasswordByAdminSms(String resetTransactionPasswordByAdminSms) {
+        this.resetTransactionPasswordByAdminSms = resetTransactionPasswordByAdminSms;
     }
 }

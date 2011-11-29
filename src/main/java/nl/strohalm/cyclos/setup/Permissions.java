@@ -97,6 +97,7 @@ public class Permissions {
         buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberCards", "view", "generate", "cancel", "block", "unblock", "changeCardSecurityCode", "unblockSecurityCode");
         buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberPos", "view", "manage", "assign", "block", "discard", "unblockPin", "changePin", "changeParameters");
         buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberPreferences", "manageNotifications");
+        buildModule(modules, Module.Type.ADMIN_MEMBER, "adminMemberTokens", "resetTokenPin");
 
         buildModule(modules, Module.Type.ADMIN_ADMIN, "adminAdmins", "view", "register", "changeProfile", "changeGroup", "remove");
         buildModule(modules, Module.Type.ADMIN_ADMIN, "adminAdminAccess", "changePassword", "transactionPassword", "disconnect", "enableLogin");
