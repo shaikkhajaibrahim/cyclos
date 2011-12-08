@@ -299,7 +299,7 @@ public class PaymentWebServiceImpl implements PaymentWebService {
                 final DoExternalPaymentDTO dto = paymentHelper.toExternalPaymentDTO(params, result.getFrom(), result.getTo());
 
                 // Validate the transfer type
-                if (!validateTransferType(dto)) {
+                if ( !validateTransferType(dto)) {
                     status = PaymentStatus.INVALID_PARAMETERS;
                     webServiceHelper.trace(status + ". Reason: The service client doesn't have permission to the specified transfer type: " + dto.getTransferType());
                 } else {
