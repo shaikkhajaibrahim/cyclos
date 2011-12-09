@@ -59,7 +59,13 @@
 			<set-property property="secure" value="true" />
 			<forward name="success" path="/do/admin/searchAdmins" redirect="true"/>
 		</action>		
-		
+
+        <action
+            path="/admin/startDrawDown"
+            type="nl.strohalm.cyclos.controls.admins.StartDrawDown">
+            <set-property property="secure" value="true" />
+        </action>
+
 		<action 
 			path="/admin/mailPreferences" 
 			type="nl.strohalm.cyclos.controls.admins.mailPreferences.MailPreferencesAction"

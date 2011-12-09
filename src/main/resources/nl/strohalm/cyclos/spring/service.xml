@@ -138,5 +138,20 @@
 		<property name="maxThreads" value="#{cyclosProperties['cyclos.maxMailSenderThreads']}" />
 	</bean>
 
+
+    <bean id="drawDownService" class="nl.strohalm.cyclos.services.transactions.DrawDownService">
+        <property name="destinationAccountId" value="1"/>
+        <property name="sourceAccountIdAndTransferTypeIdMap" >
+            <map>
+                <entry key="11" value="116"/>
+                <entry key="13" value="118"/>
+                <!--<entry key="10" value="143"/>-->
+                <!--<entry key="11" value="142"/>-->
+                <!--<entry key="13" value="145"/>-->
+                <!--<entry key="15" value="144"/>-->
+            </map>
+        </property>
+    </bean>
+
     <bean id="tokenService" class="nl.strohalm.cyclos.services.tokens.TokenServiceImpl" />
 </beans>	
